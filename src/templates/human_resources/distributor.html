@@ -1,0 +1,145 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% include 'alerts.html' %}
+
+<style>
+	.dot_green {
+		height: 10px;
+		width: 10px;
+		background-color: green;
+		border-radius: 50%;
+		display: inline-block;
+	}
+
+	.dot_red {
+		height: 10px;
+		width: 10px;
+		background-color: red;
+		border-radius: 50%;
+		display: inline-block;
+	}
+
+	.img-container {
+		justify-content: center;
+		display: flex;
+		flex-direction: row;
+		overflow: hidden;
+		width: auto;
+		height: 250px;
+	}
+
+	.img-container .img-to-fit {
+		flex: 1;
+		height: 100%;
+	}
+</style>
+
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+	<div class="form-control">
+		<h4 style="text-align: center;">Distributor Record</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md">
+		<div class="col-md">
+			<div class="card card-body">
+				<h5>Distributor:</h5>
+				<hr>
+				<a class="btn btn-outline-info  btn-sm btn-block"
+					href="{% if user.groups.all.0.name == "CEO" %}
+						  {% url 'UpdateDistributorPage-CEO' Distributor.id %}
+						  {% else %}
+						  {% url 'UpdateDistributorPage' Distributor.id %}
+						  {% endif %}">Update Distributor</a>
+				<a class="btn btn-outline-danger  btn-sm btn-block"
+					href="{% if user.groups.all.0.name == "CEO" %}
+						  {% url 'DeleteDistributorPage-CEO' Distributor.id %}
+						  {% else %}
+						  {% url 'DeleteDistributorPage' Distributor.id %}
+						  {% endif %}">Delete Distributor</a>
+			</div>
+		</div>
+		<div class="col-md">
+			<div class="card card-body" style="margin-top: 20px;">
+				<h5>Address Information</h5>
+				<hr>
+				<p>Address: {{Distributor.person.address }}</p>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="col-md">
+		<div class="col-md">
+			<div class="card card-body">
+				<h5>Contact Information</h5>
+				<hr>
+				<p>Email: {{ Distributor.person.contacting_email }}</p>
+				<p>Phone: {{ Distributor.person.phone_number }}</p>
+			</div>
+		</div>
+		<div class="col-md">
+			<div class="card card-body" style="margin-top: 10px;">
+				<h5>System Account Information</h5>
+				<hr>
+				<p>Username: {{ Distributor.account }}</p>
+				<p>Email: {{ Distributor.account.email }}</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="card" style="width: 18rem;">
+		<form method="POST" enctype="multipart/form-data">
+			{% csrf_token %}
+			{% if not Distributor.person.photo and Distributor.person.gender == 'Male' %}
+			<label class="img-container" for="img-input"><img class="img-to-fit"
+					src="/media/images/default_profile_image_male.png" alt="Card image cap"></label>
+			{% elif Distributor.person.photo and Distributor.person.gender == 'Male' %}
+			<label class="img-container" for="img-input"><img class="img-to-fit"
+					src="{{ Distributor.person.photo.url }}" alt="Card image cap"></label>
+			{% elif not Distributor.person.photo and Distributor.person.gender == "Female" %}
+			<label class="img-container" for="img-input"><img class="img-to-fit"
+					src="/media/images/default_profile_image_female.png" alt="Card image cap"></label>
+			{% elif Distributor.person.photo and Distributor.person.gender == "Female" %}
+			<label class="img-container" for="img-input"><img class="img-to-fit"
+					src="{{ Distributor.person.photo.url }}" alt="Card image cap"></label>
+			{% endif %}
+			<center><button class="btn-sm btn-info" id="submit-photo" type="submit"
+					style="display: none; margin-top: 10px; margin-bottom: -30px;">Edit</button></center>
+			<input type="file" id="img-input" name="image_file" accept="image/*" style="display: none;"
+				onchange="document.getElementById('submit-photo').style.display = 'flex';">
+		</form>
+		<div class="card-body">
+			<p class="card-text" style="text-align: center;">
+				{% if Distributor.account.is_active %}
+				<span class="dot_green"></span>
+				{% else %}
+				<span class="dot_red"></span>
+				{% endif %}
+				{{ Distributor.person }}
+
+			</p>
+			<p class="card-text" style="text-align: center;">Distributor</p>
+
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div style="width: 50%;">
+		<div class="card" style="margin-right: 50px; margin-left: 30px; margin-top: 20px;">
+			<div class="card-body">
+				<p>Other Info</p>
+				<hr>
+				<p>Date of Birth: {{ Distributor.person.date_of_birth }}</p>
+				<p>Gender: {{ Distributor.person.gender }}</p>
+				<p>Register Date: {{ Distributor.account.date_joined }}</p>
+				<p>Last Login: {{ Distributor.account.last_login }}</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}

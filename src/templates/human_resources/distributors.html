@@ -1,0 +1,42 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% include 'alerts.html' %}
+
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" 
+        href="{% if user.groups.all.0.name == "CEO" %}
+              {% url 'AddDistributorPage-CEO' %}
+              {% else %}
+              {% url 'AddDistributorPage' %}
+              {% endif %}">Add Distributor</a></td>
+</div>
+<h2>Distributors</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">NO.</th>
+            <th scope="col">NAME</th>
+            <th scope="col">GENDER</th>
+            <th scope="col">NATIONALITY</th>
+            <th scope="col">RECORD</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for distributor in Distributors %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ distributor.person.name }}</td>
+            <td>{{ distributor.person.gender }}</td>
+            <td>{{ distributor.person.nationality }}</td>
+            <td><a class="btn btn-sm btn-info" 
+                href="{% if user.groups.all.0.name == "CEO" %}
+                      {% url 'DistributorPage-CEO' distributor.id %}
+                      {% else %}
+                      {% url 'DistributorPage' distributor.id %}
+                      {% endif %}">View</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

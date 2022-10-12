@@ -1,0 +1,55 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% load hr_tags %}
+{% include 'alerts.html' %}
+
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% if user.groups.all.0.name == "CEO" %}
+              {% url 'AddEmployeePage-CEO' %}
+              {% else %}
+              {% url 'AddEmployeePage' %}
+              {% endif %}">Add Employee</a></td>
+</div>
+<h2>Employees</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">NO.</th>
+            <th scope="col">NAME</th>
+            <th scope="col">GENDER</th>
+            <th scope="col">POSITION</th>
+            <th scope="col">NATIONALITY</th>
+            <th scope="col">OVERALL EVALUATION</th>
+            <th scope="col">RECORD</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in Employees %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ employee.person.name }}</td>
+            <td>{{ employee.person.gender }}</td>
+            <td>{{ employee.position }}</td>
+            <td>{{ employee.person.nationality }}</td>
+            <td>{% if employee.position == "CEO" %} - {% else %}{% getAllTimeEvaluation employee.id %}{% endif %}</td>
+            <td>
+                {% if employee.position == "CEO" %}
+                    {% if request.user.groups.all.0.name == "CEO" %}
+                    <a class="btn btn-sm btn-info" href="{% url 'EmployeePage-CEO' employee.id %}">View</a>
+                    {% else %}
+                    <a class="btn btn-sm btn-secondary" style="pointer-events: none;">View</a>
+                    {% endif %}
+                {% else %}
+                    {% if request.user.groups.all.0.name == "CEO" %}
+                    <a class="btn btn-sm btn-info" href="{% url 'EmployeePage-CEO' employee.id %}">View</a>
+                    {% else %}
+                    <a class="btn btn-sm btn-info" href="{% url 'EmployeePage' employee.id %}">View</a>
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

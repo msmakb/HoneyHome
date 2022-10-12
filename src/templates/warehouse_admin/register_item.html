@@ -1,0 +1,32 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control"><h4 style="text-align: center;">Register New Item</h4></div>
+</div>
+<form method="POST">
+    {% csrf_token %}
+    <div style="width: 60%; margin:auto;">
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Name</label>
+            <div>{{form.name}}</div>
+        </div>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">code</label>
+            <div>{{form.code}}</div>
+        </div>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">weight</label>
+            <div>{{form.weight}}</div>
+        </div>
+        <div class="form-group" style="margin-left: 50px;">
+            <span>{{form.is_retail}}</span>
+            <label for="exampleInputPassword1">Retail Item</label>
+        </div>
+        <div style="width: 60%; float: right; margin:auto; margin-top: 20px;">
+            <a style="margin:auto;" href="{% url 'RegisteredItemsPage' %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-xs btn-info">Regiester Item</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

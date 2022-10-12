@@ -1,0 +1,107 @@
+<style>
+    body {
+        background-color: red;
+    }
+
+    .float-container {
+        height: 100%;
+    }
+
+    .float-child1 {
+        width: 220px;
+        float: left;
+        padding: 20px;
+    }
+
+    .float-child2 {
+        width: 73%;
+        float: left;
+        padding: 20px;
+    }
+
+    .float-child3 {
+        right: 0px;
+        width: 15%;
+        float: right;
+        padding: 20px;
+        border: red;
+    }
+
+    .side-nave-item {
+        font-size: 24px;
+        color: gray;
+        padding: 5px;
+        text-decoration: none;
+    }
+
+    .side-nave-item:hover {
+        font-size: 24px;
+        color: white;
+        padding: 5px;
+        text-decoration: none;
+    }
+
+    .n {
+        background: linear-gradient(to right, #636363, #4e4e4e);
+        position: absolute;
+        height: 100%;
+        left: 0px;
+        top: 56px;
+        bottom: 0px;
+        width: 220px;
+        font-family: BloggerSans;
+        font-size: 1.5em;
+    }
+
+    .nav-list {
+        list-style-type: none;
+    }
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}Honey Home Website{% endblock %}</title>    
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body style="background-color: #FDFDFD;">
+    {% include 'navbar.html' %}
+    <div class="float-container">
+        <div class="float-child1">
+            <div>
+                <nav class="n">
+                    <div style="margin-left: 10px;">
+                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url 'HumanResourcesDashboard' %}">Dashboard</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'EmployeesPage' %}">Employees</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'DistributorsPage' %}">Distributors</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'TasksPage' %}">Employees' Tasks</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'EvaluationPage' %}">Evaluation</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'Tasks' %}">My Tasks</a></p>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="float-child2">
+            <div>                
+                {% block content %}
+                
+                {% endblock %}
+            </div>
+        </div>
+    
+        <div class="float-child3">
+            {% include 'task_cards.html' %}
+        </div>  
+    </div>
+    
+    {% include 'footer.html' %}
+</body>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+</html>

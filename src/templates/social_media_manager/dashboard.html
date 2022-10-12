@@ -1,0 +1,98 @@
+{% extends 'social_media_manager/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="/static/assets/css/bootstrap-extended.min.css">
+<link rel="stylesheet" type="text/css" href="https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/fonts/simple-line-icons/style.min.css">
+<link rel="stylesheet" type="text/css" href="https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/css/colors.min.css">
+<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+<h1 style="text-align: center; margin-top: 20px; margin-bottom: 30px;">General Statistics</h1>
+<div>
+  <div class="row">
+    <div class="col-xl-6 col-md-12">
+      <div class="card overflow-hidden">
+        <div class="card-content">
+          <div class="card-body cleartfix">
+            <div class="media align-items-stretch">
+              <div class="align-self-center">
+                <i class="icon-user-follow primary font-large-2 mr-2"></i>
+              </div>
+              <div class="media-body">
+                <h4>Total Customers Registered</h4>
+                <span><span style="color: green;">+2 </span>Added last 30 days</span>
+              </div>
+              <div class="align-self-center">
+                <h1>2</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6 col-md-12">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-body cleartfix">
+            <div class="media align-items-stretch">
+              <div class="align-self-center">
+                <i class="icon-docs warning font-large-2 mr-2"></i>
+              </div>
+              <div class="media-body">
+                <h4>Total Conducted Questionnaires</h4>
+                <span>In this month</span>
+              </div>
+              <div class="align-self-center"> 
+                <h1>1</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xl-6 col-md-12">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-body cleartfix">
+            <div class="media align-items-stretch">
+              <div class="align-self-center">
+                <h1 class="mr-2">Oct. 28</h1>
+              </div>
+              <div class="media-body" style="margin-left: 10px;">
+                <h4>Closest Customer's Birthday</h4>
+                <span>Customer name 'Customer1'</span>
+              </div>
+              <div class="align-self-center">
+                <i class="icon-calendar danger font-large-2"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-6 col-md-12">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-body cleartfix">
+            <div class="media align-items-stretch">
+              <div class="align-self-center">
+                <h1 class="mr-2">0</h1>
+              </div>
+              <div class="media-body" style="margin-left: 10px;">
+                <h4>Latest Questionnaire Total Replies</h4>
+                <span>Questionnaire name 'None'</span>
+              </div>
+              <div class="align-self-center">
+                <i class="icon-speech success font-large-2"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

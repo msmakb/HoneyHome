@@ -1,0 +1,40 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control"><h4 style="text-align: center;">Questionnaire Page</h4></div>
+</div>
+<div style="padding: 20px; width: 90%; margin: auto;">
+    <div class="row" style="width: 100%;">
+        <div class="float-child" style="width: 33.33333%;"><a style="width: 100%;" id="button" class="btn btn-dark" href="{% url 'QuestionnairePage' Questionnaire.id %}">Questionnaire Info</a></div>
+        <div class="float-child" style="width: 33.33333%;"><a style="width: 100%;" id="button" class="btn btn-light" href="{% url 'QuestionnaireQuestionsPage' Questionnaire.id %}">Questionnaire Questions</a></div>
+        <div class="float-child" style="width: 33.33333%;"><a style="width: 100%;" id="button" class="btn btn-dark" href="{% url 'QuestionnaireResultPage' Questionnaire.id %}">Questionnaire Result</a></div>
+    </div>
+</div>
+
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddQuestionPage' %}">Add Questionnaire</a></td>
+</div>
+<h2>Questionnaire's Questions</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ORDER</th>
+        <th scope="col">QUESTION</th>
+        <th scope="col">TYPE</th>
+        <th scope="col">EDIT</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for Question in Questions %}
+    <tr>
+        <td>{{Question.order}}</td>
+        <td>{{Question.question}}</td>
+        <td>{{Question.type}}</td>
+        <td><a class="btn btn-sm btn-info" href="">Edit</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

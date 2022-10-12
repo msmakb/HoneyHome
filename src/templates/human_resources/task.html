@@ -1,0 +1,104 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% load hr_tags %}
+{% include 'alerts.html' %}
+
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control">
+        <h4 style="text-align: center;">Task Information</h4>
+    </div>
+</div>
+
+<div class="card card-body" style="margin-bottom: 20px;">
+    <div class="row">
+        {% if not Task.submission_date %}
+        <div class="col-md">
+            <a class="btn btn-outline-info  btn-sm btn-block" style="width: 100% !important;"
+                href="{% if user.groups.all.0.name == "CEO" %}
+                      {% url 'UpdateTaskPage-CEO' Task.id %}
+                      {% else %}
+                      {% url 'UpdateTaskPage' Task.id %}
+                      {% endif %}">Update Task</a>
+        </div>
+        {% endif %}
+        <div class="col-md">
+            <a class="btn btn-outline-danger  btn-sm btn-block" style="width: 100% !important;"
+                href="{% if user.groups.all.0.name == "CEO" %}
+                      {% url 'DeleteTaskPage-CEO' Task.id %}
+                      {% else %}
+                      {% url 'DeleteTaskPage' Task.id %}
+                      {% endif %}">Remove Task</a>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td>Employee</td>
+                    <td>{{ Task.employee }}</td>
+                </tr>
+                <tr>
+                    <td>Position</td>
+                    <td>{{ Task.employee.position }}</td>
+                </tr>
+                <tr>
+                    <td>Task</td>
+                    <td>{{ Task.name }}</td>
+                </tr>
+                <tr>
+                    <td>Task Description</td>
+                    <td>{{ Task.description }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td>Task Status</td>
+                    <td>{{ Task.status }}</td>
+                </tr>
+                <tr>
+                    <td>Task Receiving Date</td>
+                    <td>{{ Task.receiving_date }}</td>
+                </tr>
+                <tr>
+                    <td>Task Deadline Date</td>
+                    <td>{{ Task.deadline_date }}</td>
+                </tr>
+                <tr>
+                    <td>Task Submission</td>
+                    <td>{% if Task.submission_date == None %} - {% else %}{{ Task.submission_date }}{% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Task Rate</td>
+                    {% if Task.status == "In-Progress" or Task.status == "Overdue" %}
+                    <td> - </td>
+                    {% else %}
+                    {% for g in request.user.groups.all %}
+                    {% if TaskRate.rate != None %}
+                    <td>{% calculateTaskRate TaskRate.rate TaskRate.on_time_rate %}\5</td>
+                    {% elif g.name == "Human Resources" %}
+                    <td> - </td>
+                    {% else %}
+                    <td><a class="btn btn-outline-info  btn-sm btn-block" 
+                        href="{% if user.groups.all.0.name == "CEO" %}
+                              {% url 'TaskEvaluationPage-CEO' %}
+                              {% else %}
+                              {% url 'TaskEvaluationPage' %}
+                              {% endif %}">Rate</a>
+                    </td>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

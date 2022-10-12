@@ -1,0 +1,65 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control"><h4 style="text-align: center;">Add New Customer</h4></div>
+</div>
+<form method="POST">
+    {% csrf_token %}
+    <div class="row">
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Name</label>
+            <div>{{PersonForm.name}}</div>
+        </div>
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Nationality</label>
+            <div>{{PersonForm.nationality}}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Gender</label>
+            <div>{{PersonForm.gender}}</div>
+        </div>
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Date of Birth</label>
+            <div>{{PersonForm.date_of_birth}}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Address</label>
+            <div>{{PersonForm.address}}</div>
+        </div>
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Phone number</label>
+            <div>{{PersonForm.phone_number}}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Email</label>
+            <div>{{PersonForm.contacting_email}}</div>
+        </div>
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Instagram Account</label>
+            <div>{{CustomerForm.instagram}}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Facebook Account</label>
+            <div>{{CustomerForm.facebook}}</div>
+        </div>
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Customer Shopee Account</label>
+            <div>{{CustomerForm.shopee}}</div>
+        </div>
+    </div>
+    <div style="float:right; margin-top: 20px;">
+        <a href="{% url 'CustomersPage' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-xs btn-info">Add Customer</button>
+    </div>
+</form>
+
+{% endblock %}

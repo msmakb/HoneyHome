@@ -1,0 +1,26 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'RegisterItemPage' %}">Register New Items</a></td>
+</div>
+<h2>Registered Items</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">NAME</th>
+        <th scope="col">CODE</th>
+        <th scope="col">WEIGHT</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in Items %}
+    <tr>
+        <td>{{item.name}}</td>
+        <td>{{item.code}}</td>
+        <td>{{item.weight}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

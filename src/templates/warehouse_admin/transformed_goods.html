@@ -1,0 +1,42 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<h2>Transformed Goods</h2>
+{% for message in messages %}
+<div class="alert alert-success" role="alert" style="width: 100%; height: 50px;">
+    <p style="text-align: center;">{{ message }}</p>
+</div> 
+{% endfor %}
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ITEM</th>
+        <th scope="col">BATCH</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">STSTUS</th>
+        <th scope="col">SENDER</th>
+        <th scope="col">RECEIVER</th>
+        <th scope="col">TRANSFORMING DATE</th>
+        <th scope="col">APPROVE</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in Items %}
+    <tr>
+        <td>{{item.type}}</td>
+        <td>{{item.batch}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.status}}</td>
+        <td>{{item.received_from}}</td>
+        <td>{{item.getReceiver}}</td>
+        <td>{{item.receiving_date}}</td>
+        <td>
+            <a class="btn btn-sm btn-info" href="{% url 'ApproveTransformedGoods' item.id %}">Approve</a>
+            <a class="btn btn-sm btn-danger" href="{% url 'ApproveTransformedGoods' item.id %}">Decline</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control"><h4 style="text-align: center;">Publish Questionnaire titled "{{Questionnaire.title}}"</h4></div>
+</div>
+<form method="POST">
+    {% csrf_token %}
+    <div style="width: 60%; margin:auto;">
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Questionnaire Period</label>
+            <div>{{form.period}}</div>
+        </div>
+        <div style="width: 300; margin:auto; margin-top: 20px;">
+            <a href="{% url 'QuestionnairePage' Questionnaire.id %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-xs btn-success">Publish Questionnaire</button>
+        </div>
+    </div>
+</form>
+{% endblock %}

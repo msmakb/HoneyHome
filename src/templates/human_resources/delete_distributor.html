@@ -1,0 +1,23 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% include 'alerts.html' %}
+
+<div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete distributor</p>
+    <p>Distributor Name: {{ Distributor.person.name }}</p>
+  </div>
+  <div class="modal-footer">
+    <a href="{% if user.groups.all.0.name == "CEO" %}
+             {% url 'DistributorPage-CEO' Distributor.id %}
+             {% else %}
+             {% url 'DistributorPage' Distributor.id %}
+             {% endif %}" class="btn btn-secondary">Close</a>
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-xs btn-outline-danger">Delete</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

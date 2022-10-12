@@ -1,0 +1,30 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddBatchPage' %}">Add New Batch</a></td>
+</div>
+<h2>Batches</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">NAME</th>
+        <th scope="col">CODE</th>
+        <th scope="col">ARRIVAL DATE</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">DESCRIPTION</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for batch in Batches %}
+    <tr>
+        <td>{{batch.name}}</td>
+        <td>{{batch.code}}</td>
+        <td>{{batch.arrival_date}}</td>
+        <td>{{batch.quantity}}</td>
+        <td>{{batch.description}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

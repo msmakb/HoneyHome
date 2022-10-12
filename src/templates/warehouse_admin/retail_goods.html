@@ -1,0 +1,50 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'ConvertToRetailPage' %}">Convert to Retail</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddRetailGoodsPage' %}">Add Retail Goods</a></td>
+</div>
+<h2>Retail Goods</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ITEM</th>
+        <th scope="col">WEIGHT</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">ITEM CODE</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in retailItem %}
+    <tr>
+        <td>{{item.type}}</td>
+        <td>{{item.type.weight}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.type.code}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<h2>Converted Retail</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ITEM</th>
+        <th scope="col">WEIGHT</th>
+        <th scope="col">CONVERSION DATE</th>
+        <th scope="col">ITEM CODE</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in retailCard %}
+    <tr>
+        <td>{{item.type}}</td>
+        <td>{{item.weight}}</td>
+        <td>{{item.conversion_date}}</td>
+        <td>{{item.type.code}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

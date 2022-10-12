@@ -1,0 +1,72 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% include 'alerts.html' %}
+
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control">
+        <h4 style="text-align: center;">Add New Employee</h4>
+    </div>
+</div>
+<form method="POST">
+    {% csrf_token %}
+    {% if position_form.position.field.choices %}
+    <div class="row">
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Full Name</label>
+            <div>{{ PersonForm.name }}</div>
+        </div>
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Nationality</label>
+            <div>{{ PersonForm.nationality }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Gender</label>
+            <div>{{ PersonForm.gender }}</div>
+        </div>
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Date of Birth</label>
+            <div>{{ PersonForm.date_of_birth }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Address</label>
+            <div>{{ PersonForm.address }}</div>
+        </div>
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Phone number</label>
+            <div>{{ PersonForm.phone_number }}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Position</label>
+            <div>{{ position_form.position }}</div>
+        </div>
+        <div class="form-group" style="width: 45%; margin-left: 50px;">
+            <label for="exampleInputPassword1">Contacting email</label>
+            <div>{{ PersonForm.contacting_email }}</div>
+        </div>
+    </div>
+    <center>
+        <div style="margin-top: 20px;">
+            <a href="{% if user.groups.all.0.name == "CEO" %}
+                     {% url 'EmployeesPage-CEO' %}
+                     {% else %}
+                     {% url 'EmployeesPage' %}
+                     {% endif %}" class="btn btn-secondary">Close</a>
+            <button type="submit" class="btn btn-xs btn-info">Add Employee</button>
+        </div>
+    </center>
+    {% else %}
+    <div class="alert alert-warning" role="alert" style="width: 100%; height: 50px;">
+        <p style="text-align: center;">No Employee Positions are available. If you want to chang employee position you
+            must delete existing employee to have an empty position</p>
+    </div>
+    {% endif %}
+</form>
+
+{% endblock %}

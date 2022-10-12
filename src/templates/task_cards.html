@@ -1,0 +1,30 @@
+{% if request.user.groups.all.0.name != "Distributor" %}
+    {% for task in EmployeeTasks %}
+    <div class="card w-100" style="margin-bottom: 5px;">
+        <div class="card-body">
+            <h5 class="card-title">{{task.name}}</h5>
+            <p class="card-text">{{task.description}}</p>
+            <a href="{% url 'Tasks' %}" class="btn btn-info">View Task</a>
+            {% if task.getTimeLeft != 'Overdue'%}
+            <span style="color: green;">{{task.getTimeLeft}}</span>
+            {% else %}
+            <span style="color: red;">{{task.getTimeLeft}}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="card w-100" style="margin-bottom: 5px;">
+        <div class="card-body">
+            <h5 class="card-title" style="text-align: center;">No Tasks</h5>
+            <p class="card-text" style="text-align: center;">Congratulations, you don't have any Tasks</p>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="card w-100" style="margin-bottom: 5px;">
+    <div class="card-body">
+        <h5 class="card-title" style="text-align: center;">Welcome {{request.user.first_name}}</h5>
+        <p class="card-text" style="text-align: center;">Please contact the human resources if you need help</p>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,32 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="">Download History</a></td>
+</div>
+<h2>Goods Movement History</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ITEM</th>
+        <th scope="col">BATCH</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">SENDER</th>
+        <th scope="col">RECEIVER</th>
+        <th scope="col">DATE</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for goods in GoodsMovement %}
+    <tr>
+        <td>{{goods.item.type}}</td>
+        <td>{{goods.item.batch}}</td>
+        <td>{{goods.item.quantity}}</td>
+        <td>{{goods.sender}}</td>
+        <td>{{goods.receiver}}</td>
+        <td>{{goods.date}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

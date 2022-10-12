@@ -1,0 +1,33 @@
+{% extends 'distributor/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Sales History</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ITEM</th>
+        <th scope="col">BATCH</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">PRICE</th>
+        <th scope="col">TOTAL</th>
+        <th scope="col">RECIVING DATE</th>
+        <th scope="col">RECEIVED FROM</th>
+        <th scope="col">PAYMENT DATE</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for Sale in Sales %}
+    <tr>
+        <td>{{Sale.type}}</td>
+        <td>{{Sale.batch}}</td>
+        <td>{{Sale.quantity}}</td>
+        <td>{{Sale.price}}</td>
+        <td>{{Sale.getTotal}}</td>
+        <td>{{Sale.receiving_date}}</td>
+        <td>{{Sale.received_from}}</td>
+        <td>{{Sale.payment_date}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddGoodsPage' %}">Add Goods</a></td>
+</div>
+<h2>Main Storage Goods</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">NO.</th>
+        <th scope="col">ITEM</th>
+        <th scope="col">BATCHES</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">RECIVING DATE</th>
+        <th scope="col">RECEIVED FROM</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in page_obj %}
+    <tr>
+        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+        <td>{{ item.type }}</td>
+        <td>{{ item.batch }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.receiving_date }}</td>
+        <td>{{ item.received_from }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% if is_paginated %}
+      {% if page_obj.has_previous %}
+        <a class="btn btn-sm btn-outline-info" href="?page=1">First</a>
+        <a class="btn btn-sm btn-outline-info" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <a class="btn btn-sm btn-info" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a class="btn btn-sm btn-outline-info" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <a class="btn btn-sm btn-outline-info" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-sm btn-outline-info" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+      {% endif %}
+    
+{% endif %}
+{% endblock %}

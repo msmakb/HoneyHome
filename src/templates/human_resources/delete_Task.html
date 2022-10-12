@@ -1,0 +1,26 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% include 'alerts.html' %}
+
+<div>
+  <div class="modal-body">
+    <p>Are you sure you want to remove Task</p>
+    <p>Task: {{ Task.name }}</p>
+    <p>Employee: {{ Task.employee }}</p>
+    <p>Position: {{ Task.employee.position }}</p>
+  </div>
+  <div class="modal-footer">
+    <a href="{% if user.groups.all.0.name == "CEO" %}
+             {% url 'TaskPage-CEO' Task.id %}
+             {% else %}
+             {% url 'TaskPage' Task.id %}
+             {% endif %}" class="btn btn-secondary">Close</a>
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-xs btn-outline-danger">Remove</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

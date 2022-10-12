@@ -1,0 +1,254 @@
+{% extends 'warehouse_admin/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/static/assets/css/bootstrap-extended.min.css">
+<link rel="stylesheet" type="text/css" href="https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/fonts/simple-line-icons/style.min.css">
+<link rel="stylesheet" type="text/css" href="https://pixinvent.com/stack-responsive-bootstrap-4-admin-template/app-assets/css/colors.min.css">
+<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+
+<h1 style="text-align: center; margin-top: 10px; margin-bottom: 30px;">General Statistics</h1>
+<div class="row">
+  <div class="col-xl-3 col-sm-6 col-12"> 
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="align-self-center">
+              <i class="icon-grid primary font-large-2 float-left"></i>
+            </div>
+            <div class="media-body text-right">
+              <h3>231</h3>
+              <span>Main Storage Goods</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="align-self-center">
+              <i class="icon-share warning font-large-2 float-left"></i>
+            </div>
+            <div class="media-body text-right">
+              <h3>211</h3>
+              <span>Distributed Goods</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="align-self-center">
+              <i class="icon-pie-chart success font-large-2 float-left"></i>
+            </div>
+            <div class="media-body text-right">
+              <h3>47</h3>
+              <span>Retail Goods</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="align-self-center">
+              <i class="icon-graph danger font-large-2 float-left"></i>
+            </div>
+            <div class="media-body text-right">
+              <h3>502</h3>
+              <span>Total Goods</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="danger">13</h3>
+              <span>Damaged Goods</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-fire danger font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="success">1</h3>
+              <span>Converted Retail</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-refresh success font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="warning">2</h3>
+              <span>Awaiting Approval Goods</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-doc warning font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="primary">55</h3>
+              <span>Monthly Movement Goods</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-directions primary font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="primary">8</h3>
+              <span>Distributors</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-user primary font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="warning">3</h3>
+              <span>Batches</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-layers warning font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="success">3</h3>
+              <span>Registered Retail Items</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-flag success font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6 col-12">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="media d-flex">
+            <div class="media-body text-left">
+              <h3 class="danger">13</h3>
+              <span>Registered Items</span>
+            </div>
+            <div class="align-self-center">
+              <i class="icon-key danger font-large-2 float-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mt-1" style="padding-left: 80px; margin-left: 100px;">
+    <div class="col-10">
+        <div class="card mb-4">
+            <div class="d-flex">
+            <h3 class="mt-3 mb-2 ms-3">Last Goods Movement History</h3>
+            </div>
+            <div class="card-body p-3">
+                <div class="row">
+                    <div>
+                        <table class="table align-items-center ">
+                            <tbody>
+                            {% for goods in GoodsMovement %}
+                            <tr>
+                                <td>{{goods.item.type}}</td>
+                                <td>{{goods.item.batch}}</td>
+                                <td>{{goods.item.quantity}}</td>
+                                <td>{{goods.sender}}</td>
+                                <td>{{goods.receiver}}</td>
+                                <td>{{goods.date}}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

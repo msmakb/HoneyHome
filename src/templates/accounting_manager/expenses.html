@@ -1,0 +1,36 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddExpensesPage' %}">Add Expenses</a></td>
+</div>
+<h2>Expenses</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ITEM</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">PRICE</th>
+        <th scope="col">TOTAL</th>
+        <th scope="col">DATE</th>
+        <th scope="col">NOTE</th>
+        <th scope="col">UPDATE</th>
+        <th scope="col">DELETE</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for Expense in Expenses %}
+    <tr>
+        <td>{{Expense.item}}</td>
+        <td>{{Expense.quantity}}</td>
+        <td>{{Expense.price}}</td>
+        <td>{{Expense.total}}</td>
+        <td>{{Expense.date}}</td>
+        <td>{{Expense.note}}</td>
+        <td><a class="btn btn-sm btn-info" href="{% url 'UpdateExpensePage' Expense.id %}">Update</a></td>
+        <td><a class="btn btn-sm btn-danger" href="{% url 'DeleteExpensePage' Expense.id %}">Delete</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

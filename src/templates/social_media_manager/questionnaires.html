@@ -1,0 +1,36 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'CreateQuestionnairePage' %}">Add Questionnaire</a></td>
+</div>
+<h2>Questionnaires</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">TITLE</th>
+        <th scope="col">NUMBER OF QUESTIONS</th>
+        <th scope="col">NUMBER OF REPLIES</th>
+        <th scope="col">PERIOD</th>
+        <th scope="col">STATUS</th>
+        <th scope="col">ISSUE DATE</th>
+        <th scope="col">DESCRIPTION</th>
+        <th scope="col">ROCERD</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for Questionnaire in Questionnaires %}
+    <tr>
+        <td>{{Questionnaire.title}}</td>
+        <td>{{Questionnaire.numbers_of_questions}}</td>
+        <td>{{Questionnaire.numbers_of_replies}}</td>
+        <td>{{Questionnaire.period}}</td>
+        <td>{{Questionnaire.status}}</td>
+        <td>{{Questionnaire.creation_date}}</td>
+        <td>{{Questionnaire.description}}</td>
+        <td><a class="btn btn-sm btn-info" href="{% url 'QuestionnairePage' Questionnaire.id %}">View</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

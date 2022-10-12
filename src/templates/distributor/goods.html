@@ -1,0 +1,34 @@
+{% extends 'distributor/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Goods</h2>
+
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ITEM</th>
+        <th scope="col">BATCH</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">STATUS</th>
+        <th scope="col">PRICE</th>
+        <th scope="col">TOTAL</th>
+        <th scope="col">RECIVING DATE</th>
+        <th scope="col">RECEIVED FROM</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in Items %}
+    <tr>
+        <td>{{item.type}}</td>
+        <td>{{item.batch}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{% if item.status == "Good" %}Open{% else %}{{item.status}}{% endif %}</td>
+        <td>{{item.price}}</td>
+        <td>{{item.getTotal}}</td>
+        <td>{{item.receiving_date}}</td>
+        <td>{{item.received_from}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

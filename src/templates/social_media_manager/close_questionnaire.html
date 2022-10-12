@@ -1,0 +1,17 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div >
+  <div class="modal-body">
+    <p>Are you sure you want to close Questionnaire</p>
+    <p>Questionnaire Title: {{Questionnaire.title}}</p>
+  </div>
+  <div class="modal-footer">
+    <a href="{% url 'QuestionnairePage' Questionnaire.id %}" class="btn btn-secondary">Close</a>
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-xs btn-outline-warning">Close</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

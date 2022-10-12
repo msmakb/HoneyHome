@@ -1,0 +1,68 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control"><h4 style="text-align: center;">Questionnaire Editor</h4></div>
+</div>
+
+<div style="padding: 20px; width: 90%; margin: auto;">
+    <div class="row" style="width: 100%;">
+        <div class="float-child" style="width: 33.33333%;"><a style="width: 100%;" id="button" class="btn btn-light" href="{% url 'QuestionnairePage' Questionnaire.id %}">Questionnaire Info</a></div>
+        <div class="float-child" style="width: 33.33333%;"><a style="width: 100%;" id="button" class="btn btn-dark" href="{% url 'QuestionnaireQuestionsPage' Questionnaire.id %}">Questionnaire Questions</a></div>
+        <div class="float-child" style="width: 33.33333%;"><a style="width: 100%;" id="button" class="btn btn-dark" href="{% url 'QuestionnaireResultPage' Questionnaire.id %}">Questionnaire Result</a></div>
+    </div>
+</div>
+
+<div class="row", style="margin-bottom: 20px;">
+	<div class="col-md">
+        <div class="card" style="margin:auto;">
+            <div class="card-body">
+                <p>Questionnaire Settings</p>
+                <hr>
+                {% if Questionnaire.status == "Pending" %}
+				<a class="btn btn-outline-success  btn-sm btn-block" href="{% url 'PublishQuestionnairePage' Questionnaire.id %}">Publish Questionnaire</a>
+                {% elif Questionnaire.status == "Running" %}
+                <a class="btn btn-outline-warning  btn-sm btn-block" href="{% url 'ColesQuestionnairePage' Questionnaire.id %}">Coles Questionnaire</a>
+                {% endif %}
+                {% if Questionnaire.status != "Closed" %}
+                <a class="btn btn-outline-info  btn-sm btn-block" href="{% url 'EditQuestionnairePage' Questionnaire.id %}">Edite Questionnaire</a>
+                {% endif %}
+                <a class="btn btn-outline-danger  btn-sm btn-block" href="{% url 'DeleteQuestionnairePage' Questionnaire.id %}">Delete Questionnaire</a>
+            </div>
+        </div>    
+    </div>
+    <div class="col-md">
+        <div class="card" style="margin:auto;">
+            <div class="card-body">
+                <p>Questionnaire Information</p>
+                <hr>
+                <p>Title: {{Questionnaire.title}}</p>
+                <p>Status: {{Questionnaire.status}}</p>
+                <p>Period: {{Questionnaire.period}}</p>
+            </div>
+        </div>    
+    </div>
+    <div class="col-md">
+        <div class="card" style="margin:auto;">
+            <div class="card-body">
+                <p>Questionnaire Information</p>
+                <hr>
+                <p>Numbers of Questions: {{Questionnaire.numbers_of_questions}}</p>
+                <p>Numbers of Replies: {{Questionnaire.numbers_of_replies}}</p>
+                <p>Creation Date: {{Questionnaire.creation_date}}</p>
+                <p>End Date: {{Questionnaire.end_date}}</p>
+            </div>
+        </div>    
+    </div>
+    <div class="col-md">
+        <div class="card" style="margin:auto;">
+            <div class="card-body">
+                <p>Questionnaire Description</p>
+                <hr>
+                <p>{{Questionnaire.description}}</p>
+            </div>
+        </div>    
+    </div>
+</div>
+{% endblock %}

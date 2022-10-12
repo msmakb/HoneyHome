@@ -1,0 +1,58 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% include 'alerts.html' %}
+
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" 
+        href="{% if user.groups.all.0.name == "CEO" %}
+              {% url 'TaskEvaluationPage-CEO' %}
+              {% else %}
+              {% url 'TaskEvaluationPage' %}
+              {% endif %}">Task Evaluation</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" 
+        href="{% if user.groups.all.0.name == "CEO" %}
+              {% url 'WeeklyEvaluationPage-CEO' %}
+              {% else %}
+              {% url 'WeeklyEvaluationPage' %}
+              {% endif %}">Weekly Evaluation</a></td>
+</div>
+<h2>Employees' Evaluation</h2>
+<table style="text-align:center; vertical-align: middle;" class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">NO.</th>
+            <th scope="col">NAME</th>
+            <th scope="col">GENDER</th>
+            <th scope="col">POSITION</th>
+            <th scope="col">LAST WEEK RATE</th>
+            <th scope="col">LAST MONTH RATE</th>
+            <th scope="col">LAST MONTH TASKS RATE</th>
+            <th scope="col">LAST MONTH OVERALL EVALUATION</th>
+            <th scope="col">ALL-TIME OVERALL EVALUATION</th>
+            <th scope="col">RECORD</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, value in Evaluation.items %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ value.Employee.person.name }}</td>
+            <td>{{ value.Employee.person.gender }}</td>
+            <td>{{ value.Employee.position }}</td>
+            <td>{{ value.WeeklyRate }}</td>
+            <td>{{ value.MonthlyRate }}</td>
+            <td>{{ value.MonthlyTaskRate }}</td>
+            <td>{{ value.MonthlyOverallEvaluation }}</td>
+            <td>{{ value.AllTimeEvaluation }}</td>
+            <td><a class="btn btn-sm btn-info" 
+                href="{% if user.groups.all.0.name == "CEO" %}
+                {% url 'EmployeePage-CEO' value.Employee.id %}
+                {% else %}
+                {% url 'EmployeePage' value.Employee.id %}
+                {% endif %}">View</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

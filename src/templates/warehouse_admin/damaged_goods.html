@@ -1,0 +1,30 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddDamagedGoodsPage' %}">Add Damaged Goods</a></td>
+</div>
+<h2>Damaged Goods</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">ITEM</th>
+        <th scope="col">BATCH</th>
+        <th scope="col">QUANTITY</th>
+        <th scope="col">RECIVING DATE</th>
+        <th scope="col">RECEIVED FROM</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in Items %}
+    <tr>
+        <td>{{item.type}}</td>
+        <td>{{item.batch}}</td>
+        <td>{{item.quantity}}</td>
+        <td>{{item.receiving_date}}</td>
+        <td>{{item.received_from}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

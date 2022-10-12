@@ -1,0 +1,27 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2>Distributed Goods</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">NAME</th>
+        <th scope="col">GENDER</th>
+        <th scope="col">NATIONALITY</th>
+        <th scope="col">QUANTITY OF GOODS</th>
+        <th scope="col">STOCK</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for key, value in Distributors.items %}
+    <tr>
+        <td>{{value.distributor.person.name}}</td>
+        <td>{{value.distributor.person.gender}}</td>
+        <td>{{value.distributor.person.nationality}}</td>
+        <td>{{value.quantityOfGoods}}</td>
+        <td><a class="btn btn-sm btn-info" href="{% url 'DistributorStockPage' value.distributor.id %}">View</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

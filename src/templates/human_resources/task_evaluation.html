@@ -1,0 +1,44 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% include 'alerts.html' %}
+
+<h2>Tasks Evaluations</h2>
+<table style="text-align:center; vertical-align:middle;" class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">NO.</th>
+            <th scope="col">TASK</th>
+            <th scope="col">EMPLOYEE NAME</th>
+            <th scope="col">POSISTION</th>
+            <th scope="col">STATUS</th>
+            <th scope="col">RECEIVING DATE</th>
+            <th scope="col">SUBMISSION DATE</th>
+            <th scope="col">RATE</th>
+            <th scope="col">SET</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in Tasks %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ task.name }}</td>
+            <td>{{ task.employee.person.name }}</td>
+            <td>{{ task.employee.position }}</td>
+            <td>{{ task.status }}</td>
+            <td>{{ task.receiving_date }}</td>
+            <td>{{ task.submission_date }}</td>
+            <form method="post">
+                {% csrf_token %}
+                <td>
+                    <div style="width: 70%; margin: auto;"><input class="form-control" type="number"
+                            name="val{{task.id}}" min="1" max="5" value="5"></div>
+                    <input type="hidden" name="id" value={{ task.id }}>
+                </td>
+                <td><button type="submit" class="btn btn-info">Rate</button></td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

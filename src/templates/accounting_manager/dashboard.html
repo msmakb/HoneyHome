@@ -1,0 +1,100 @@
+{% extends 'accounting_manager/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2 class="font-weight-bolder mb-0" style="text-align: center; margin: 20px; padding-bottom: 20px;">General Statistics</h2>
+
+<link rel="stylesheet" href="/static/assets-2/vendors/mdi/css/materialdesignicons.min.css">
+<link rel="stylesheet" href="/static/assets-2/vendors/css/vendor.bundle.base.css">
+<link rel="stylesheet" href="/static/assets-2/css/style.css">
+<link rel="shortcut icon" href="/static/assets-2/images/favicon.ico" />
+
+<style>
+    .n{
+    top: 50px;
+    }
+</style>
+
+<div>
+    <div class="row">
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-danger card-img-holder text-white">
+        <div class="card-body">
+            <img src="/static/assets-2/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+            <h4 class="font-weight-normal mb-3">Weekly Sales <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+            </h4>
+            <h2 class="mb-5">IDR 21.000.000</h2>
+            <h6 class="card-text">Increased by 60%</h6>
+        </div>
+        </div>
+    </div>
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-info card-img-holder text-white">
+        <div class="card-body">
+            <img src="/static/assets-2/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+            <h4 class="font-weight-normal mb-3">Monthly Sales <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
+            </h4>
+            <h2 class="mb-5">IDR 25.500.000</h2>
+            <h6 class="card-text">Decreased by 10%</h6>
+        </div>
+        </div>
+    </div>
+    <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-success card-img-holder text-white">
+        <div class="card-body">
+            <img src="/static/assets-2/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+            <h4 class="font-weight-normal mb-3">Best Weekly Selling Item <i class="mdi mdi-diamond mdi-24px float-right"></i>
+            </h4>
+            <h2 class="mb-5">Marai no.1</h2>
+            <h6 class="card-text">7 Sales this week</h6>
+        </div>
+        </div>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Recent Sales</h4>
+            <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ITEM</th>
+                    <th scope="col">CODE</th>
+                    <th scope="col">WEIGHT</th>
+                    <th scope="col">BATCH</th>
+                    <th scope="col">QUANTITY</th>
+                    <th scope="col">PRICE</th>
+                    <th scope="col">TOTAL</th>
+                    <th scope="col">SELLER</th>
+                    <th scope="col">DATE</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for Sale in Sales %}
+                <tr>
+                    <td>{{Sale.type.name}}</td>
+                    <td>{{Sale.type.code}}</td>
+                    <td>{{Sale.type.weight}}</td>
+                    <td>{{Sale.batch}}</td>
+                    <td>{{Sale.quantity}}</td>
+                    <td>{{Sale.price}}</td>
+                    <td>{{Sale.getTotal}}</td>
+                    <td>{{Sale.seller}}</td>
+                    <td>{{Sale.date}}</td>
+                    {% if Sale.seller == 'Main Storage' and Sale.type.weight == 500 or Sale.seller == 'Abdul' %}
+                    <td><label class="badge badge-gradient-success">NEW</label></td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

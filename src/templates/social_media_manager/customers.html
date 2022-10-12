@@ -1,0 +1,40 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div style="float: right;">
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddCustomerPage' %}">Add Customer</a></td>
+</div>
+<h2>Customers</h2>
+<table style="text-align:center;" class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">NAME</th>
+        <th scope="col">GENDER</th>
+        <th scope="col">DATE OF BIRTH</th>
+        <th scope="col">INSTAGRAM</th>
+        <th scope="col">FACEBOOK</th>
+        <th scope="col">SHOPEE</th>
+        <th scope="col">E-MAIL</th>
+        <th scope="col">PHONE NUMBER</th>
+        <th scope="col">UPDATE</th>
+        <th scope="col">DELETE</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for Customer in Customers %}
+    <tr>
+        <td>{{Customer.person.name}}</td>
+        <td>{{Customer.person.gender}}</td>
+        <td>{{Customer.person.date_of_birth}}</td>
+        <td>{{Customer.instagram}}</td>
+        <td>{{Customer.facebook}}</td>
+        <td>{{Customer.shopee}}</td>
+        <td>{{Customer.person.contacting_email}}</td>
+        <td>{{Customer.person.phone_number}}</td>
+        <td><a class="btn btn-sm btn-info" href="{% url 'UpdateCustomerPage' Customer.id %}">Update</a></td>
+        <td><a class="btn btn-sm btn-danger" href="{% url 'DeleteCustomerPage' Customer.id %}">Delete</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

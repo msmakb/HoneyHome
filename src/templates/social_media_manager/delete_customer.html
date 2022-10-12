@@ -1,0 +1,17 @@
+{% extends base %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div >
+  <div class="modal-body">
+    <p>Are you sure you want to delete Customer</p>
+    <p>Customer Name: {{Customer.person.name}}</p>
+  </div>
+  <div class="modal-footer">
+    <a href="{% url 'CustomersPage' %}" class="btn btn-secondary">Close</a>
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-xs btn-outline-danger">Delete</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

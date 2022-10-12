@@ -1,0 +1,16 @@
+{% extends 'social_media_manager/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control"><h4 style="text-align: center;">Questionnaire Page</h4></div>
+</div>
+
+<div style="padding: 20px; width: 90%; margin: auto;">
+    <div class="row" style="width: 100%;">
+        <div class="float-child" style="width: 33.33333%;"><a style="width: 100%;" id="button" class="btn btn-dark" href="{% url 'QuestionnairePage' Questionnaire.id %}">Questionnaire Info</a></div>
+        <div class="float-child" style="width: 33.33333%;"><a style="width: 100%;" id="button" class="btn btn-dark" href="{% url 'QuestionnaireQuestionsPage' Questionnaire.id %}">Questionnaire Questions</a></div>
+        <div class="float-child" style="width: 33.33333%;"><a style="width: 100%;" id="button" class="btn btn-light" href="{% url 'QuestionnaireResultPage' Questionnaire.id %}">Questionnaire Result</a></div>
+    </div>
+</div>
+{% endblock %}
