@@ -3,7 +3,7 @@ from django.db.models.functions import Lower
 from django.shortcuts import redirect, render
 
 from distributor.models import Distributor
-from main.decorators import allowed_users
+from main.decorators import allowedUsers
 from main.utils import getEmployeesTasks as EmployeeTasks
 from main.utils import getUserBaseTemplate as base
 from main.utils import Pagination
@@ -12,12 +12,11 @@ from .models import (ItemCard, RetailCard, Stock, ItemType, Batch,
                      GoodsMovement, RetailItem)
 from .forms import (AddGoodsForm, RegisterItemForm, AddBatchForm,
                     SendGoodsForm, AddRetailGoodsForm, ConvertToRetailForm)
-
-MAIN_STORAGE_ID = 1
+from main import constant
 
 
 # ----------------------------Dashboard------------------------------
-@allowed_users(allowed_roles=['Admin', 'Warehouse Admin'])
+@allowedUsers(allowed_roles=['Admin', 'Warehouse Admin'])
 def warehouseAdminDashboard(request):
     goodsMovement = GoodsMovement.objects.all().order_by('-id')[:3]
 
@@ -31,7 +30,7 @@ def warehouseAdminDashboard(request):
 def MainStorageGoodsPage(request):
     # Getting the main storage goods
     Items = ItemCard.objects.filter(
-        stock__id=MAIN_STORAGE_ID,
+        stock__id=constant.MAIN_STORAGE_ID,
         status='Good',
         is_transforming=False
     ).order_by(Lower('type__name'))
@@ -75,7 +74,7 @@ def MainStorageGoodsPage(request):
 def DetailItemCardsPage(request, type):
     # Getting the main storage cards with the specified type
     Items = ItemCard.objects.filter(
-        stock__id=MAIN_STORAGE_ID,
+        stock__id=constant.MAIN_STORAGE_ID,
         type__name=type,
         status='Good',
         is_transforming=False
@@ -94,7 +93,7 @@ def DetailItemCardsPage(request, type):
 
 
 def AddGoodsPage(request):
-    stock = Stock.objects.get(id=MAIN_STORAGE_ID)
+    stock = Stock.objects.get(id=constant.MAIN_STORAGE_ID)
     form = AddGoodsForm()
     if request.method == "POST":
         updated_request = request.POST.copy()

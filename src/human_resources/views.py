@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 
 from distributor.models import Distributor
-from main.decorators import allowed_users
+from main.decorators import allowedUsers
 from main.models import Person
 from main.utils import getEmployeesTasks as EmployeeTasks
 from main.utils import getUserBaseTemplate as base
@@ -24,7 +24,7 @@ from django.views.generic.list import ListView
 # ------------------------------Dashboard------------------------------ #
 
 
-@allowed_users(['Human Resources'])
+@allowedUsers(['Human Resources'])
 def humanResourcesDashboard(request):
     # Count in-progress Tasks
     in_progress = Task.objects.filter(status='In-Progress').count()

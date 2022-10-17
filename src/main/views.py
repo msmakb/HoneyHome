@@ -12,13 +12,14 @@ from .decorators import isAuthenticatedUser
 from .forms import CreateUserForm
 from .utils import getEmployeesTasks as EmployeeTasks
 from .utils import getUserBaseTemplate as base
+# from .utils import getLastInsertedObjectId
 
 
 @isAuthenticatedUser
 def index(request):
     if request.method == "POST":
-        UserName = request.POST.get('user_name')
-        Password = request.POST.get('password')
+        UserName: str = request.POST.get('user_name')
+        Password: str = request.POST.get('password')
         User = authenticate(request, username=UserName, password=Password)
 
         if User is not None:
@@ -31,11 +32,16 @@ def index(request):
 
 
 def about(request):
-    return render(request, 'about.html')
+    # last_added_emp = getLastInsertedObjectId(Employee.objects.filter(id=5))
+    context: dict = {}
+    template: str = 'about.html'
+    return render(request, template, context)
 
 
 def unauthorized(request):
-    return render(request, 'unauthorized.html')
+    context: dict = {}
+    template: str = 'unauthorized.html'
+    return render(request, template, context)
 
 
 @login_required(login_url='Index')
@@ -43,7 +49,10 @@ def dashboard(request):
     group = None
     if request.user.groups.exists():
         group = request.user.groups.all()[0].name
-    return render(request, 'Dashboard.html', {'group': group})
+
+    context: dict = {'group': group}
+    template: str = 'Dashboard.html'
+    return render(request, template, context)
 
 
 def logoutUser(request):
@@ -82,8 +91,8 @@ def createUserPage(request):
 
             return redirect('Index')
 
-    template = 'create_user.html'
-    context = {'form': form}
+    context: dict = {'form': form}
+    template: str = 'create_user.html'
     return render(request, template, context)
 
 
