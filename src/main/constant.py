@@ -1,5 +1,11 @@
 from collections import namedtuple as _namedtuple
 
+# ----------------------private--------------------------- #
+_main_app__templates_folder = '.'                          #
+_ceo_templates_folder = 'ceo'                              #
+_human_resources_templates_folder = 'human_resources'      #
+_warehouse_admin_templates_folder = 'warehouse_admin'      #
+# -------------------------------------------------------- #
 
 MAIN_STORAGE_ID: int = 1
 PAGINATE_BY: int = 10
@@ -67,34 +73,40 @@ TEMPLATES = _namedtuple('str', [
     'EVALUATION_TEMPLATE',
     'WEEKLY_EVALUATION_TEMPLATE',
     'TASK_EVALUATION_TEMPLATE',
+
+    # CEO templates
+    'CEO_DASHBOARD_TEMPLATE',
 ])(
     # Main templates
-    'index.html',
-    'about.html',
-    'unauthorized.html',
-    'Dashboard.html',
-    'create_user.html',
-    'tasks.html',
+    f'{_main_app__templates_folder}/index.html',
+    f'{_main_app__templates_folder}/about.html',
+    f'{_main_app__templates_folder}/unauthorized.html',
+    f'{_main_app__templates_folder}/Dashboard.html',
+    f'{_main_app__templates_folder}/create_user.html',
+    f'{_main_app__templates_folder}/tasks.html',
     # Human resources templates
-    'human_resources/dashboard.html',
-    'human_resources/employees.html',
-    'human_resources/add_employee.html',
-    'human_resources/employee.html',
-    'human_resources/update_employee.html',
-    'human_resources/delete_employee.html',
-    'human_resources/distributors.html',
-    'human_resources/add_distributor.html',
-    'human_resources/distributor.html',
-    'human_resources/update_distributor.html',
-    'human_resources/delete_distributor.html',
-    'human_resources/tasks.html',
-    'human_resources/add_task.html',
-    'human_resources/task.html',
-    'human_resources/update_task.html',
-    'human_resources/delete_Task.html',
-    'human_resources/evaluation.html',
-    'human_resources/weekly_rate.html',
-    'human_resources/task_evaluation.html',
+    f'{_human_resources_templates_folder}/dashboard.html',
+    f'{_human_resources_templates_folder}/employees.html',
+    f'{_human_resources_templates_folder}/add_employee.html',
+    f'{_human_resources_templates_folder}/employee.html',
+    f'{_human_resources_templates_folder}/update_employee.html',
+    f'{_human_resources_templates_folder}/delete_employee.html',
+    f'{_human_resources_templates_folder}/distributors.html',
+    f'{_human_resources_templates_folder}/add_distributor.html',
+    f'{_human_resources_templates_folder}/distributor.html',
+    f'{_human_resources_templates_folder}/update_distributor.html',
+    f'{_human_resources_templates_folder}/delete_distributor.html',
+    f'{_human_resources_templates_folder}/tasks.html',
+    f'{_human_resources_templates_folder}/add_task.html',
+    f'{_human_resources_templates_folder}/task.html',
+    f'{_human_resources_templates_folder}/update_task.html',
+    f'{_human_resources_templates_folder}/delete_Task.html',
+    f'{_human_resources_templates_folder}/evaluation.html',
+    f'{_human_resources_templates_folder}/weekly_rate.html',
+    f'{_human_resources_templates_folder}/task_evaluation.html',
+
+    # CEO templates
+    f'{_ceo_templates_folder}/dashboard.html',
 )
 
 PAGES = _namedtuple('str', [
