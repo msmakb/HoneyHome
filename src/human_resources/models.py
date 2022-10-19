@@ -1,26 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 from main.models import Person
+from main import constant
 
 
 class Employee(models.Model):
-
-    POSITIONS = [
-        ('CEO', 'CEO'),
-        ('Human Resources', 'Human Resources'),
-        ('Warehouse Admin', 'Warehouse Admin'),
-        ('Accounting Manager', 'Accounting Manager'),
-        ('Social Media Manager', 'Social Media Manager'),
-        ('Designer', 'Designer'),
-        ('Distributor', 'Distributor')
-    ]
 
     id = models.AutoField(primary_key=True)
     person = models.OneToOneField(Person, on_delete=models.SET_NULL,
                                   null=True, blank=True)
     account = models.OneToOneField(User, on_delete=models.SET_NULL,
                                    null=True, blank=True)
-    position = models.CharField(max_length=20, choices=POSITIONS)
+    position = models.CharField(max_length=20,
+                                choices=constant.CHOICES.POSITIONS)
 
     def __str__(self) -> str:
         return self.person.name
@@ -55,21 +47,14 @@ class Employee(models.Model):
 
 class Task(models.Model):
 
-    STATUS = [
-        ('In-Progress', 'In-Progress'),
-        ('On-Time', 'On-Time'),
-        ('Late-Submission', 'Late-Submission'),
-        ('Overdue', 'Overdue')
-    ]
-
     id = models.AutoField(primary_key=True)
     employee = models.ForeignKey(Employee, on_delete=models.SET_NULL,
                                  null=True, blank=True)
     name = models.CharField(max_length=20)
     description = models.TextField(max_length=500, default="-",
                                    null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS, null=True,
-                              blank=True, default='In-Progress')
+    status = models.CharField(max_length=20, choices=constant.CHOICES.STATUS,
+                              null=True, blank=True, default='In-Progress')
     receiving_date = models.DateTimeField(auto_now_add=True)
     deadline_date = models.DateTimeField(null=True, blank=True)
     submission_date = models.DateTimeField(null=True, blank=True)

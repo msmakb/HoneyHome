@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User, Group
+from main import constant
 from main.models import Person
 from warehouse_admin.models import Stock
 from .models import TaskRate
 
 
-def createUserAccount(person: object, is_ceo=False):
+def _createUserAccount(person: object, is_ceo=False):
     """
     Crete new user account for the employees and distributors
 
@@ -37,9 +38,9 @@ def onAddingUpdatingEmployee(sender, instance, created, **kwargs):
     """
     if created:
         # If not CEO
-        if instance.position != "CEO":
+        if instance.position != constant.ROLES.CEO:
             person = Person.objects.all().order_by('-id')[0]
-            createUserAccount(person)
+            _createUserAccount(person)
             account = User.objects.all().order_by('-id')[0]
             # The position of the Employee
             Group.objects.get(name=instance.position).user_set.add(account)
@@ -48,9 +49,9 @@ def onAddingUpdatingEmployee(sender, instance, created, **kwargs):
             instance.save()
         else:
             # If CEO. This will be initialized on migrating
-            Person.objects.create(name="CEO").save()
+            Person.objects.create(name=constant.ROLES.CEO).save()
             person = Person.objects.all()[0]
-            createUserAccount(person, is_ceo=True)
+            _createUserAccount(person, is_ceo=True)
             super_user = User.objects.all()[0]
             # Print in console during migrating
             print(f"  Super User '{super_user.username}' was created.")
@@ -77,10 +78,11 @@ def onAddingUpdatingDistributor(sender, instance, created, **kwargs):
     """
     if created:
         person = Person.objects.all().order_by('-id')[0]
-        createUserAccount(person)
+        _createUserAccount(person)
         account = User.objects.all().order_by('-id')[0]
         # Setting the distributor groupe
-        Group.objects.get(name="Distributor").user_set.add(account)
+        Group.objects.get(
+            name=constant.ROLES.DISTRIBUTOR).user_set.add(account)
         # Create new stock object for the distributor
         Stock.objects.create()
         stock = Stock.objects.all().order_by('-id')[0]

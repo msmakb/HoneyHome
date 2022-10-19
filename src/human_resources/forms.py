@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import ModelForm
+from main import constant
 from main.models import Person
 from .models import Employee, Task
 
@@ -136,7 +137,7 @@ class EmployeePositionForm(ModelForm):
         super(EmployeePositionForm, self).__init__(*args, **kwargs)
 
         # Get a copy list of employees positions
-        POSITIONS = Employee.POSITIONS.copy()
+        POSITIONS = list(constant.CHOICES.POSITIONS)
 
         # Get all employees
         employees = Employee.objects.all()

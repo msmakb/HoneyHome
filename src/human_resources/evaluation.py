@@ -1,9 +1,10 @@
 from django.db.models import Q
 from django.db.models.functions import Lower
+from main import constant
 from .models import Employee, Task, TaskRate, Week, WeeklyRate
 
 
-def newEmployee(emp_id: int) -> bool:
+def _newEmployee(emp_id: int) -> bool:
     """
     This function checks if the Employee is new 
     by checking if there is any weekly rate existed
@@ -32,7 +33,7 @@ def monthlyRate(emp_id: int) -> float:
     Returns:
         float: Monthly rate
     """
-    if not newEmployee(emp_id):
+    if not _newEmployee(emp_id):
         rate, count = 0, 0
         # Get all weekly rates of the employee
         emp_weekly_rates = WeeklyRate.objects.filter(
@@ -48,6 +49,7 @@ def monthlyRate(emp_id: int) -> float:
         return 0 if count == 0 else round((rate/count), 2)
 
     return 0
+
 
 def getTaskRateFrom(emp_id: int, days: int) -> float:
     """
@@ -87,6 +89,7 @@ def getTaskRateFrom(emp_id: int, days: int) -> float:
 
     return 0
 
+
 def monthlyTaskRate(emp_id: int) -> float:
     """
     This function will return the monthly task rate of the employee 
@@ -113,7 +116,7 @@ def weeklyRate(week_id: int, emp_id: int) -> float:
     Returns:
         float: Employee weekly rate
     """
-    if not newEmployee(emp_id):
+    if not _newEmployee(emp_id):
         # Check if there is a last week rate for the employee
         if week_id != -1:
             return WeeklyRate.objects.get(week__id=week_id, employee=emp_id).rate
@@ -131,11 +134,10 @@ def monthlyOverallEvaluation(emp_id: int) -> float:
     Returns:
         float: Monthly overall evaluation
     """
-    if not newEmployee(emp_id):
+    if not _newEmployee(emp_id):
         return round(((monthlyRate(emp_id) + monthlyTaskRate(emp_id)) / 2), 2)
     else:
         return monthlyTaskRate(emp_id)
-
 
 
 def allTimeEvaluation(emp_id: int) -> float:
@@ -210,7 +212,7 @@ def getEvaluation(emp_id=-1) -> dict:
                       }
     # if the employee not specified
     else:
-        for employee in Employee.objects.filter(~Q(position="CEO")).order_by(Lower('person__name')):
+        for employee in Employee.objects.filter(~Q(position=constant.ROLES.CEO)).order_by(Lower('person__name')):
             emp_id = employee.id
             evaluation[employee.person.name] = {'Employee': employee,
                                                 'MonthlyRate': monthlyRate(emp_id),
@@ -226,7 +228,7 @@ def getEvaluation(emp_id=-1) -> dict:
 def allEmployeesWeeklyEvaluations():
     rate, count = 0, 0
     # Get all employees except the CEO
-    employees = Employee.objects.filter(~Q(position="CEO"))
+    employees = Employee.objects.filter(~Q(position=constant.ROLES.CEO))
     for employee in employees:
         # Get all employees weekly rates
         emp_weekly_rate = weeklyRate(Week.getLastWeekID(), employee.id)
@@ -243,7 +245,7 @@ def allEmployeesWeeklyEvaluations():
 def allEmployeesMonthlyEvaluations():
     rate, count = 0, 0
     # Get all employees except the CEO
-    employees = Employee.objects.filter(~Q(position="CEO"))
+    employees = Employee.objects.filter(~Q(position=constant.ROLES.CEO))
     for employee in employees:
         # Get all employees monthly rates
         emp_monthly_rate = monthlyRate(employee.id)
@@ -260,7 +262,7 @@ def allEmployeesMonthlyEvaluations():
 def allEmployeesMonthlyTaskRate():
     rate, count = 0, 0
     # Get all employees except the CEO
-    employees = Employee.objects.filter(~Q(position="CEO"))
+    employees = Employee.objects.filter(~Q(position=constant.ROLES.CEO))
     for employee in employees:
         # Get all employees monthly task rates
         emp_monthly_rate = monthlyTaskRate(employee.id)
@@ -277,7 +279,7 @@ def allEmployeesMonthlyTaskRate():
 def allEmployeesMonthlyOverallEvaluation():
     rate, count = 0, 0
     # Get all employees except the CEO
-    employees = Employee.objects.filter(~Q(position="CEO"))
+    employees = Employee.objects.filter(~Q(position=constant.ROLES.CEO))
     for employee in employees:
         # Get all employees monthly overall rates
         emp_monthly_rate = monthlyOverallEvaluation(employee.id)

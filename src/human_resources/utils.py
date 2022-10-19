@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
+from main import constant
+from main.utils import getUserRole
 
 
-def isUserAllowedToModify(user:User, employee_position_to_modify:str, employee_position:str) -> bool:
+def isUserAllowedToModify(user: User, employee_position_to_modify: str, employee_position: str) -> bool:
     """
     Check if the user is the allowed to view or modify data.
     Ex: the user cannot modify his own data.
@@ -17,11 +19,12 @@ def isUserAllowedToModify(user:User, employee_position_to_modify:str, employee_p
     # Check if it's CEO page.
     if employee_position_to_modify == employee_position:
         # if it's CEO page it cannot be changed by anyone except the CEO
-        if user.groups.all()[0].name != "CEO":
-            # If the user is not CEO redirect him 
+        if getUserRole(user) != constant.ROLES.CEO:
+            # If the user is not CEO redirect him
             return False
-    
+
     return True
 
 
-isRequesterCEO = lambda request: True if request.user.groups.all()[0].name == "CEO" else False
+def isRequesterCEO(request):
+    return True if getUserRole(request) == constant.ROLES.CEO else False

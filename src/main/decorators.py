@@ -3,12 +3,12 @@ from django.shortcuts import redirect
 
 from distributor.models import Distributor
 from human_resources.models import Employee
-from .utils import getRequesterRole
+from .utils import getUserRole
 from . import constant
 
 
 def _newEmployee(request) -> bool:
-    if getRequesterRole(request) == constant.ROLES.DISTRIBUTOR:
+    if getUserRole(request) == constant.ROLES.DISTRIBUTOR:
         name: str = Distributor.objects.get(account=request.user).getName()
     else:
         name: str = Employee.objects.get(account=request.user).getName()
@@ -28,32 +28,32 @@ def isAuthenticatedUser(view_func):
     def wrapper_func(request, *args, **kwargs):
         if request.user.is_authenticated:
             if _newEmployee(request):
-                return redirect('CreateUserPage')
+                return redirect(constant.PAGES.CREATE_USER_PAGE)
             role: str = ''
             if request.user.groups.exists():
-                role = getRequesterRole(request)
+                role = getUserRole(request)
                 g = role.split(' ')
                 role = ''
                 for i in g:
                     role += i
-            return redirect(role + 'Dashboard')
+            return redirect(role + constant.PAGES.DASHBOARD)
         else:
             return view_func(request, *args, **kwargs)
 
     return wrapper_func
 
 
-def allowedUsers(allowed_roles:list=[]):
+def allowedUsers(allowed_roles: list = []):
     def decorator(view_func):
         def wrapper_func(request, *args, **kwargs):
             role: str = ''
             if request.user.groups.exists():
                 if _newEmployee(request):
-                    return redirect('CreateUserPage')
-                role = getRequesterRole(request)
+                    return redirect(constant.PAGES.CREATE_USER_PAGE)
+                role = getUserRole(request)
             if role in allowed_roles:
                 return view_func(request, *args, **kwargs)
             else:
-                return redirect('Unauthorized')
+                return redirect(constant.PAGES.UNAUTHORIZED_PAGE)
         return wrapper_func
     return decorator
