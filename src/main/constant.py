@@ -138,6 +138,26 @@ PAGES = _namedtuple('str', [
     'EVALUATION_PAGE',
     'WEEKLY_EVALUATION_PAGE',
     'TASK_EVALUATION_PAGE',
+    # Warehouse admin pages
+    'WAREHOUSE_ADMIN_DASHBOARD',
+    'MAIN_STORAGE_GOODS_PAGE',
+    'DETAIL_ITEM_CARDS_PAGE',
+    'ADD_GOODS_PAGE',
+    'REGISTERED_ITEMS_PAGE',
+    'REGISTER_NEW_ITEM_PAGE',
+    'BATCHES_PAGE',
+    'ADD_BATCH_PAGE',
+    'DISTRIBUTED_GOODS_PAGE',
+    'DISTRIBUTOR_STOCK_PAGE',
+    'SEND_GOODS_PAGE',
+    'GOODS_MOVEMENT_PAGE',
+    'DAMAGED_GOODS_PAGE',
+    'ADD_DAMAGED_GOODS_PAGE',
+    'TRANSFORMED_GOODS_PAGE',
+    'APPROVE_TRANSFORMED_GOODS_PAGE',
+    'RETAIL_GOODS_PAGE',
+    'CONVERT_TO_RETAIL_PAGE',
+    'ADD_RETAIL_GOODS_PAGE',
 
     # CEO pages
     'CEO_DASHBOARD',
@@ -159,6 +179,7 @@ PAGES = _namedtuple('str', [
     'EVALUATION_PAGE_CEO',
     'WEEKLY_EVALUATION_PAGE_CEO',
     'TASK_EVALUATION_PAGE_CEO',
+
 ])(
     # Main pages
     'Index',
@@ -188,6 +209,26 @@ PAGES = _namedtuple('str', [
     'EvaluationPage',
     'WeeklyEvaluationPage',
     'TaskEvaluationPage',
+    # Warehouse admin pages
+    'WarehouseAdminDashboard',
+    'MainStorageGoodsPage',
+    'DetailItemCardsPage',
+    'AddGoodsPage',
+    'RegisteredItemsPage',
+    'RegisterItemPage',
+    'BatchesPage',
+    'AddBatchPage',
+    'DistributedGoodsPage',
+    'DistributorStockPage',
+    'SendGoodsPage',
+    'GoodsMovementPage',
+    'DamagedGoodsPage',
+    'AddDamagedGoodsPage',
+    'TransformedGoodsPage',
+    'ApproveTransformedGoods',
+    'RetailGoodsPage',
+    'ConvertToRetailPage',
+    'AddRetailGoodsPage',
 
     # CEO pages
     'CEODashboard',
