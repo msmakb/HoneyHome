@@ -1,7 +1,7 @@
 {% extends base %}
+{% load hr_tags %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-{% load hr_tags %}
 {% include 'alerts.html' %}
 
 <div style="float: right;">
@@ -25,9 +25,9 @@
         </tr>
     </thead>
     <tbody>
-        {% for employee in Employees %}
+        {% for employee in page_obj %}
         <tr>
-            <td>{{ forloop.counter }}</td>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
             <td>{{ employee.person.name }}</td>
             <td>{{ employee.person.gender }}</td>
             <td>{{ employee.position }}</td>

@@ -1,4 +1,8 @@
+from main.constants import CRON_AT, CRON_DIR, LOGGERS, PAGES
+from django.utils import timezone
 from pathlib import Path
+import os
+import sys
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,6 +42,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+
+    # django Middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -45,6 +51,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Honey Home System Middleware
+    'main.middleware.AllowedClientMiddleware',
+    'main.middleware.LoginRequiredMiddleware',
+    'main.middleware.AllowedUserMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -111,11 +122,104 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+EXCLUDED_PAGES_FORM_REQUIRED_AUTHENTICATION = [
+    PAGES.INDEX,
+    PAGES.LOGOUT,
+    PAGES.ABOUT_PAGE,
+]
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Corn jobs
+# Crontab jobs
 CRONJOBS = [
-    ('*/1 * * * *', 'human_resources.cron.checkTaskDateTime'),
-    ('1 0 * * 0', 'human_resources.cron.addWeekToRate'),
+    (CRON_AT.EVERY_HOUR, CRON_DIR.MAIN + '.setMagicNumber'),
+    (CRON_AT.EVERY_MINUTE, CRON_DIR.HUMAN_RESOURCES + '.checkTaskDateTime'),
+    (CRON_AT.FIRST_MINUTE_ON_SUNDAY, CRON_DIR.HUMAN_RESOURCES + '.addWeekToRate'),
 ]
+
+LOGS_PATH = BASE_DIR.parent / 'logs'
+
+Path(LOGS_PATH).mkdir(parents=True, exist_ok=True)
+LOG_FILE_NAME = str(timezone.datetime.date(timezone.now())) + '_HoneyHome.log'
+LOGGING_LEVEL = 'DEBUG' if DEBUG else 'INFO'
+HANDLERS = ['console', 'file']
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': "{asctime} [{levelname}] - {name}.{module}.('{funcName}') - {message}",
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{levelname}] {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'stream': sys.__stdout__,
+            'formatter': 'simple',
+        },
+        'file': {
+            'level': LOGGING_LEVEL,
+            'class': 'logging.FileHandler',
+            'filename': LOGS_PATH / LOG_FILE_NAME,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        "django": {
+            'handlers': HANDLERS,
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        "django.server": {
+            'handlers': HANDLERS,
+            'level': os.getenv('DJANGO_LOG_LEVEL', LOGGING_LEVEL),
+            'filters': ['require_debug_true'],
+            'propagate': False,
+        },
+        "django.template": {
+            'handlers': HANDLERS,
+            'level': os.getenv('DJANGO_LOG_LEVEL', LOGGING_LEVEL),
+            'filters': ['require_debug_true'],
+            'propagate': False,
+        },
+        "django.db.backends.schema": {
+            'handlers': HANDLERS,
+            'level': os.getenv('DJANGO_LOG_LEVEL', LOGGING_LEVEL),
+            'filters': ['require_debug_true'],
+            'propagate': False,
+        },
+        "django.security.*": {
+            'handlers': HANDLERS,
+            'level': os.getenv('DJANGO_LOG_LEVEL', LOGGING_LEVEL),
+            'filters': ['require_debug_true'],
+            'propagate': False,
+        },
+        LOGGERS.MIDDLEWARE: {
+            'handlers': HANDLERS,
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        LOGGERS.MAIN: {
+            'handlers': HANDLERS,
+            'level': LOGGING_LEVEL,
+            'propagate': False,
+        },
+        LOGGERS.HUMAN_RESOURCES: {
+            'handlers': HANDLERS,
+            'level': LOGGING_LEVEL,
+            'propagate': False,
+        },
+    },
+}

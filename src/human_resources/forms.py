@@ -1,7 +1,12 @@
 from django import forms
+from django.db.models.query import QuerySet
 from django.forms import ModelForm
-from main import constant
+from django.http import HttpRequest
+
+from main import constants
 from main.models import Person
+from main.utils import getUserRole, clean_form_created_by, clean_form_updated_by
+
 from .models import Employee, Task
 
 
@@ -17,6 +22,12 @@ class DateTimeInput(forms.DateInput):
 
 class AddPersonForm(ModelForm):
 
+    def __init__(self, request: HttpRequest, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not isinstance(request, HttpRequest):
+            raise TypeError("Invalid request object!")
+        self.request: HttpRequest = request
+
     class Meta:
         model = Person
         fields = [
@@ -27,6 +38,8 @@ class AddPersonForm(ModelForm):
             'address',
             'contacting_email',
             'phone_number',
+            'created_by',
+            'updated_by',
         ]
         widgets = {
             'name': forms.TextInput(
@@ -84,7 +97,16 @@ class AddPersonForm(ModelForm):
                     'type': 'tel',
                 }
             ),
+            'created_by': forms.HiddenInput(attrs={'required': False}),
+            'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
+
+    def clean_created_by(self):
+        object_str_representation: str = self.cleaned_data.get('name')
+        return clean_form_created_by(self, object_str_representation)
+
+    def clean_updated_by(self):
+        return clean_form_updated_by(self)
 
     def clean_phone_number(self) -> str:
         """
@@ -102,8 +124,8 @@ class AddPersonForm(ModelForm):
         Returns:
             str: A valid format for phon number
         """
-        phone_number = self.cleaned_data.get('phone_number')
-        splitted = phone_number.split(' ')
+        phone_number: str = self.cleaned_data.get('phone_number')
+        splitted: str = phone_number.split(' ')
         # '+' sign in the begging
         if phone_number[0] != '+':
             raise forms.ValidationError(
@@ -131,76 +153,77 @@ class AddPersonForm(ModelForm):
         return phone_number
 
 
-class EmployeePositionForm(ModelForm):
+class EmployeeForm(ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(EmployeePositionForm, self).__init__(*args, **kwargs)
+    def __init__(self, request: HttpRequest, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not isinstance(request, HttpRequest):
+            raise TypeError("Invalid request object!")
+        self.request: HttpRequest = request
 
-        # Get a copy list of employees positions
-        POSITIONS = list(constant.CHOICES.POSITIONS)
-
-        # Get all employees
-        employees = Employee.objects.all()
+        # Update the position choices
+        POSITIONS: list = list(self.fields['position'].choices)
+        employees: QuerySet[Employee] = Employee.getAll()
         for employee in employees:
-            existingPosition = employee.position
-            # This is on updating employee's record
-            if 'instance' in kwargs:
-                # Ignore if the existing position is the instance position
-                if kwargs['instance'].position == existingPosition:
+            existingPosition: str = employee.position
+            instance: Employee = kwargs.get('instance')
+            if instance:
+                if instance.position == existingPosition:
                     continue
-            # If the position is exists, remove it from available positions
             if (f'{existingPosition}', f'{existingPosition}') in POSITIONS:
                 POSITIONS.remove(
                     (f'{existingPosition}', f'{existingPosition}'))
 
-        widget = forms.Select(
-            attrs={
-                'required': True,
-                'class': 'form-control',
-            }
-        )
-
-        self.fields['position'] = forms.ChoiceField(
-            choices=POSITIONS,
-            widget=widget
-        )
+        self.fields['position'].choices = POSITIONS
+        self.fields['position'].widget.choices = POSITIONS
 
     class Meta:
         model = Employee
-        fields = ['position', ]
+        fields = ['position', 'created_by', 'updated_by']
+        widgets = {
+            'position': forms.Select(
+                attrs={
+                    'required': True,
+                    'class': 'form-control',
+                }
+            ),
+            'created_by': forms.HiddenInput(attrs={'required': False}),
+            'updated_by': forms.HiddenInput(attrs={'required': False}),
+        }
+
+    def clean_created_by(self):
+        object_str_representation: str = self.cleaned_data.get('position')
+        return clean_form_created_by(self, object_str_representation)
+
+    def clean_updated_by(self):
+        return clean_form_updated_by(self)
 
 
 class AddTaskForm(ModelForm):
 
-    def __init__(self, requester_position, *args, **kwargs):
-        super(AddTaskForm, self).__init__(*args, **kwargs)
+    def __init__(self, request: HttpRequest, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not isinstance(request, HttpRequest):
+            raise TypeError("Invalid request object!")
+        self.request: HttpRequest = request
 
-        # Get the current field's choices
         CHOICES = list(self.fields['employee'].choices)
-
-        choices_to_remove = []
-        # Loop to get the choices to remove
+        choices_to_remove: list = []
         for choice in CHOICES:
-            # Avoid the first choice '......' from django
             if not choice[0]:
                 continue
             else:
-                # Get the employee position by there name
-                employee_position = Employee.objects.get(
-                    person__name=choice[1]).position
-            # If it's CEO add the choice to be removed
-            if employee_position == "CEO":
+                employee: Employee = Employee.get(
+                    person__name=choice[1])
+            if employee.position == constants.ROLES.CEO:
                 choices_to_remove.append(choice)
-            # If it's HR and the requester also the HR, add the choice to be removed
-            if employee_position == "Human Resources":
-                if requester_position == "Human Resources":
+            if employee.position == constants.ROLES.HUMAN_RESOURCES:
+                if getUserRole(request) == constants.ROLES.HUMAN_RESOURCES:
                     choices_to_remove.append(choice)
 
-        # Remove the choices in 'choices_to_remove' list
         for choice in choices_to_remove:
             CHOICES.remove(choice)
 
-        # Update the choices list
         self.fields['employee'].choices = CHOICES
         self.fields['employee'].widget.choices = CHOICES
 
@@ -208,16 +231,18 @@ class AddTaskForm(ModelForm):
         model = Task
         fields = [
             'employee',
-            'name',
+            'task',
             'description',
             'deadline_date',
+            'created_by',
+            'updated_by',
         ]
         widgets = {
             'employee': forms.Select(
                 attrs={'required': True, 'class': 'form-control'}
             ),
 
-            'name': forms.TextInput(
+            'task': forms.TextInput(
                 attrs={
                     'required': True,
                     'class': 'form-control',
@@ -227,7 +252,7 @@ class AddTaskForm(ModelForm):
 
             'description': forms.Textarea(
                 attrs={
-                    'required': False,
+                    'required': True,
                     'class': 'form-control',
                     'placeholder': 'Description',
                 }
@@ -240,4 +265,13 @@ class AddTaskForm(ModelForm):
                     'data-provide': 'datepicker',
                 }
             ),
+            'created_by': forms.HiddenInput(attrs={'required': False}),
+            'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
+
+    def clean_created_by(self):
+        object_str_representation: str = self.cleaned_data.get('task')
+        return clean_form_created_by(self, object_str_representation)
+
+    def clean_updated_by(self):
+        return clean_form_updated_by(self)

@@ -32,4 +32,4 @@ def calculateTaskRate(a: float, b: float) -> float:
     Returns:
         float: _description_
     """
-    return (a+b) / 2
+    return (a + b) / 2

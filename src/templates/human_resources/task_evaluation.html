@@ -22,7 +22,7 @@
         {% for task in Tasks %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ task.name }}</td>
+            <td>{{ task.task }}</td>
             <td>{{ task.employee.person.name }}</td>
             <td>{{ task.employee.position }}</td>
             <td>{{ task.status }}</td>

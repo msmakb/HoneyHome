@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Honey Home{% endblock %}
+{% load static  %}
 {% block content %}
-
 
 <style>
     .logo{
@@ -14,7 +14,7 @@
         margin-bottom: 20px;
     }
 </style>
-<img class="logo" src="media/images/HoneyHomeLogo.png">
+<img class="logo" src="{% static 'images/HoneyHomeLogo.png' %}">
 
 <div class="container">
     <div class="row mgTp">

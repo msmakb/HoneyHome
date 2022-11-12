@@ -23,9 +23,9 @@
         </tr>
     </thead>
     <tbody>
-        {% for distributor in Distributors %}
+        {% for distributor in page_obj %}
         <tr>
-            <td>{{ forloop.counter }}</td>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
             <td>{{ distributor.person.name }}</td>
             <td>{{ distributor.person.gender }}</td>
             <td>{{ distributor.person.nationality }}</td>

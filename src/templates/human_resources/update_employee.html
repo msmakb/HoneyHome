@@ -43,7 +43,7 @@
     <div class="row">
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Position</label>
-            <div>{{ position_form.position }}</div>
+            <div>{{ employee_form.position }}</div>
         </div>
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Contacting email</label>
@@ -53,9 +53,9 @@
     <center>
         <div style="margin-top: 20px;">
             <a href="{% if user.groups.all.0.name == "CEO" %}
-                     {% url 'EmployeePage-CEO' Employee.id %}
+                     {% url 'EmployeePage-CEO' employee_form.instance.id %}
                      {% else %}
-                     {% url 'EmployeePage' Employee.id %}
+                     {% url 'EmployeePage' employee_form.instance.id %}
                      {% endif %}" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-xs btn-info">Save Changes</button>
         </div>

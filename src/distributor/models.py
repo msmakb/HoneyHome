@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
 from django.db import models
-from main.models import Person
+from main.models import BaseModel, Person
 from warehouse_admin.models import ItemType, Batch, Stock
 
 
-class Distributor(models.Model):
+class Distributor(BaseModel):
+
     id = models.AutoField(primary_key=True)
     person = models.ForeignKey(
         Person, on_delete=models.SET_NULL, null=True, blank=True)
@@ -16,35 +17,39 @@ class Distributor(models.Model):
     def __str__(self) -> str:
         return self.person.name
 
-    def getPhotoUrl(self) -> str:
-        return self.person.photo.url
+    @property
+    def getId(self) -> int:
+        return self.id
 
-    def getName(self) -> str:
-        return self.person.name
+    @property
+    def getPerson(self) -> Person:
+        return self.person
 
-    def getGender(self) -> str:
-        return self.person.gender
+    @getPerson.setter
+    def setPerson(self, person: Person) -> None:
+        self.person = person
+        self.save()
 
-    def getNationality(self) -> str:
-        return self.person.nationality
+    @property
+    def getAccount(self) -> User:
+        return self.account
 
-    def getDateOfBirth(self) -> str:
-        return self.person.date_of_birth
+    @getAccount.setter
+    def setAccount(self, account: User) -> None:
+        self.account = account
+        self.save()
 
-    def getAddress(self) -> str:
-        return self.person.address
+    @property
+    def getStock(self) -> Stock:
+        return self.stock
 
-    def getContactingEmail(self) -> str:
-        return self.person.contacting_email
-
-    def getPhoneNumber(self) -> str:
-        return self.person.phone_number
-
-    def getRegisteringDate(self) -> str:
-        return self.person.register_date
+    @getStock.setter
+    def setStock(self, stock: Stock) -> None:
+        self.stock = stock
+        self.save()
 
 
-class SalesHistory(models.Model):
+class SalesHistory(BaseModel):
     id = models.AutoField(primary_key=True)
     distributor = models.ForeignKey(Distributor, on_delete=models.CASCADE)
     type = models.ForeignKey(ItemType, on_delete=models.CASCADE)

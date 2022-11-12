@@ -1,51 +1,67 @@
-from django.contrib import admin
+from django.contrib.admin import ModelAdmin, register
+from main.constants import BASE_MODEL_FIELDS, MAIN_STORAGE_ID
 from .models import Batch, ItemType, ItemCard, RetailItem, RetailCard, Stock, GoodsMovement
 
 
-# Batch model
-class BatchAdmin(admin.ModelAdmin):
+@register(Batch)
+class BatchAdmin(ModelAdmin):
     list_display = ('id', 'name', 'code', 'arrival_date',
-                    'quantity', 'description')
+                    'quantity', 'description', *BASE_MODEL_FIELDS)
+    list_filter = ('arrival_date', 'created')
 
 
-# Item type model
-class ItemTypeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'code', 'weight', 'is_retail')
+@register(ItemType)
+class ItemTypeAdmin(ModelAdmin):
+    list_display = ('id', 'name', 'code', 'weight',
+                    'is_retail', *BASE_MODEL_FIELDS)
+    list_filter = ('weight', 'is_retail', 'created')
 
 
-# Item card model
-class ItemCardAdmin(admin.ModelAdmin):
+@register(ItemCard)
+class ItemCardAdmin(ModelAdmin):
     list_display = ('id', 'type', 'batch', 'stock',
                     'quantity', 'status', 'price',
                     'receiving_date', 'received_from',
-                    'is_transforming', 'is_priced')
+                    'is_transforming', 'is_priced',
+                    *BASE_MODEL_FIELDS)
+    list_filter = ('type', 'batch', 'stock', 'status',
+                   'is_transforming', 'is_priced', 'created')
 
 
-# Goods movement model
-class GoodsMovementAdmin(admin.ModelAdmin):
-    list_display = ('id', 'item', 'sender', 'receiver', 'date')
+@register(GoodsMovement)
+class GoodsMovementAdmin(ModelAdmin):
+    list_display = ('id', 'item', 'sender', 'receiver',
+                    'date', *BASE_MODEL_FIELDS)
+    list_filter = ('item', 'sender', 'receiver',
+                   'date', 'created')
 
 
-# Retail card model
-class RetailCardAdmin(admin.ModelAdmin):
-    list_display = ('id', 'type', 'conversion_date', 'weight')
+@register(RetailCard)
+class RetailCardAdmin(ModelAdmin):
+    list_display = ('id', 'type', 'conversion_date',
+                    'weight', *BASE_MODEL_FIELDS)
+    list_filter = ('type', 'weight', 'created')
 
 
-# Retail item model
-class RetailItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'type', 'quantity', 'price')
+@register(RetailItem)
+class RetailItemAdmin(ModelAdmin):
+    list_display = ('id', 'type', 'quantity',
+                    'price', *BASE_MODEL_FIELDS)
+    list_filter = ('type', 'created')
 
 
-# Stock model
-class StockAdmin(admin.ModelAdmin):
-    list_display = ('id',)
+@register(Stock)
+class StockAdmin(ModelAdmin):
+    list_display = ('id', 'stock_owner', *BASE_MODEL_FIELDS)
+    list_filter = ('created',)
 
-
-# Registering models in admen page
-admin.site.register(Batch, BatchAdmin)
-admin.site.register(ItemType, ItemTypeAdmin)
-admin.site.register(ItemCard, ItemCardAdmin)
-admin.site.register(GoodsMovement, GoodsMovementAdmin)
-admin.site.register(RetailCard, RetailCardAdmin)
-admin.site.register(RetailItem, RetailItemAdmin)
-admin.site.register(Stock, StockAdmin)
+    def stock_owner(self, obj):
+        stock: str = ''
+        if obj.id == MAIN_STORAGE_ID:
+            stock = 'Main Storage Stock'
+        else:
+            from distributor.models import Distributor
+            distributor = Distributor.get(stock=obj.id)
+            person = distributor.getPerson
+            stock = person.getName
+        return stock

@@ -1,7 +1,9 @@
 from django.db import models
+from main import constants
+from main.models import BaseModel
 
 
-class Batch(models.Model):
+class Batch(BaseModel):
 
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20)
@@ -14,7 +16,7 @@ class Batch(models.Model):
         return self.name
 
 
-class ItemType(models.Model):
+class ItemType(BaseModel):
 
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20)
@@ -26,12 +28,27 @@ class ItemType(models.Model):
         return self.name
 
 
-class Stock(models.Model):
+class Stock(BaseModel):
 
     id = models.AutoField(primary_key=True)
-    
 
-class ItemCard(models.Model):
+    def __str__(self):
+        stock: str = ''
+        if self.id == constants.MAIN_STORAGE_ID:
+            stock = 'Main Storage Stock'
+        else:
+            try:
+                from distributor.models import Distributor
+                distributor = Distributor.get(stock=self.id)
+                person = distributor.person
+                distributor_first_name = person.name.split(' ')[0]
+                stock = distributor_first_name + "'s Stock"
+            except Distributor.DoesNotExist:
+                return super().__str__()
+        return stock
+
+
+class ItemCard(BaseModel):
 
     STATUS = [
         ('Good', 'Good'),
@@ -74,7 +91,7 @@ class ItemCard(models.Model):
         return self.price.price * self.quantity
 
 
-class RetailCard(models.Model):
+class RetailCard(BaseModel):
 
     id = models.AutoField(primary_key=True)
     type = models.ForeignKey(ItemType, on_delete=models.CASCADE)
@@ -85,7 +102,7 @@ class RetailCard(models.Model):
         return f'{self.type.name}'
 
 
-class RetailItem(models.Model):
+class RetailItem(BaseModel):
 
     id = models.AutoField(primary_key=True)
     type = models.ForeignKey(ItemType, on_delete=models.CASCADE)
@@ -96,8 +113,8 @@ class RetailItem(models.Model):
         return f'{self.type.name}-{self.type.weight}'
 
 
-class GoodsMovement(models.Model):
-    
+class GoodsMovement(BaseModel):
+
     id = models.AutoField(primary_key=True)
     item = models.ForeignKey(ItemCard, on_delete=models.CASCADE)
     sender = models.CharField(max_length=50, null=True, blank=True)

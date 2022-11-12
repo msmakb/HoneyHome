@@ -13,7 +13,7 @@
     <div class="col-md">
         <div class="card w-100" style="margin-bottom: 5px;">
             <div class="card-body">
-                <h5 class="card-title">{{Task.name}}</h5>
+                <h5 class="card-title">{{Task.task}}</h5>
                 <p class="card-text">{{Task.description}}</p>
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -30,10 +30,10 @@
                 <h5 class="card-title">Task Information</h5>
                 <p style="margin-bottom: 5px;" class="card-text">Task Receiving Date: {{Task.receiving_date}}</p>
                 <p style="margin-bottom: 5px;" class="card-text">Task Deadline Date: {{Task.deadline_date}}</p>
-                {% if Task.getTimeLeft != 'Overdue' %}
-                <span style="color: green;">{{Task.getTimeLeft}} Left</span>
+                {% if Task.time_left != 'Overdue' %}
+                <span style="color: green;">{{Task.time_left}} Left</span>
                 {% else %}
-                <span style="color: red;">{{Task.getTimeLeft}}</span>
+                <span style="color: red;">{{Task.time_left}}</span>
                 {% endif %}
             </div>
         </div>

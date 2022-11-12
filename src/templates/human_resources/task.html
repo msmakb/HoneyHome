@@ -2,6 +2,8 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 {% load hr_tags %}
+{% load main_tags %}
+{% getUserRole request as user_role %}
 {% include 'alerts.html' %}
 
 <div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
@@ -46,7 +48,7 @@
                 </tr>
                 <tr>
                     <td>Task</td>
-                    <td>{{ Task.name }}</td>
+                    <td>{{ Task.task }}</td>
                 </tr>
                 <tr>
                     <td>Task Description</td>
@@ -78,23 +80,19 @@
                 <tr>
                     <td>Task Rate</td>
                     {% if Task.status == "In-Progress" or Task.status == "Overdue" %}
-                    <td> - </td>
+                        <td> - </td>
                     {% else %}
-                    {% for g in request.user.groups.all %}
-                    {% if TaskRate.rate != None %}
-                    <td>{% calculateTaskRate TaskRate.rate TaskRate.on_time_rate %}\5</td>
-                    {% elif g.name == "Human Resources" %}
-                    <td> - </td>
-                    {% else %}
-                    <td><a class="btn btn-outline-info  btn-sm btn-block" 
-                        href="{% if user.groups.all.0.name == "CEO" %}
-                              {% url 'TaskEvaluationPage-CEO' %}
-                              {% else %}
-                              {% url 'TaskEvaluationPage' %}
-                              {% endif %}">Rate</a>
-                    </td>
-                    {% endif %}
-                    {% endfor %}
+                        {% if TaskRate is not None %}
+                            <td>{% calculateTaskRate TaskRate.rate TaskRate.on_time_rate %}\5</td>
+                        {% else %}
+                            <td><a class="btn btn-outline-info  btn-sm btn-block" 
+                                href="{% if user_role == "CEO" %}
+                                    {% url 'TaskEvaluationPage-CEO' %}
+                                    {% elif user_role == "Human Resources" %}
+                                    {% url 'TaskEvaluationPage' %}
+                                    {% endif %}">Rate</a>
+                            </td>
+                        {% endif %}
                     {% endif %}
                 </tr>
             </tbody>

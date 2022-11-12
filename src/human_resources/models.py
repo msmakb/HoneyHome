@@ -1,132 +1,171 @@
-from django.db import models
+from typing import Union
+
 from django.contrib.auth.models import User
-from main.models import Person
-from main import constant
+from django.db import models
+from django.http import HttpRequest
+from django.utils import timezone
+
+from main.models import BaseModel, Person
+from main import constants
 
 
-class Employee(models.Model):
+class Employee(BaseModel):
 
-    id = models.AutoField(primary_key=True)
-    person = models.OneToOneField(Person, on_delete=models.SET_NULL,
-                                  null=True, blank=True)
-    account = models.OneToOneField(User, on_delete=models.SET_NULL,
-                                   null=True, blank=True)
-    position = models.CharField(max_length=20,
-                                choices=constant.CHOICES.POSITIONS)
+    person: Person = models.OneToOneField(Person, on_delete=models.SET_NULL,
+                                          null=True, blank=True)
+    account: User = models.OneToOneField(User, on_delete=models.SET_NULL,
+                                         null=True, blank=True)
+    position: str = models.CharField(max_length=20,
+                                     choices=constants.CHOICES.POSITIONS)
 
     def __str__(self) -> str:
         return self.person.name
 
-    def getPhotoUrl(self) -> str:
-        return self.person.photo.url
+    def setPerson(self, requester: Union[HttpRequest, str], person: Person) -> None:
+        self.person = person
+        self.setCreatedByUpdatedBy(requester)
 
-    def getName(self) -> str:
-        return self.person.name
+    def setAccount(self, requester: Union[HttpRequest, str], account: User) -> None:
+        self.account = account
+        self.setCreatedByUpdatedBy(requester)
 
-    def getGender(self) -> str:
-        return self.person.gender
-
-    def getNationality(self) -> str:
-        return self.person.nationality
-
-    def getDateOfBirth(self) -> str:
-        return self.person.date_of_birth
-
-    def getAddress(self) -> str:
-        return self.person.address
-
-    def getContactingEmail(self) -> str:
-        return self.person.contacting_email
-
-    def getPhoneNumber(self) -> str:
-        return self.person.phone_number
-
-    def getRegisteringDate(self) -> str:
-        return self.person.register_date
+    def setPosition(self, requester: Union[HttpRequest, str], position: str) -> None:
+        self.position = position
+        self.setCreatedByUpdatedBy(requester)
 
 
-class Task(models.Model):
+class Task(BaseModel):
 
-    id = models.AutoField(primary_key=True)
-    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL,
-                                 null=True, blank=True)
-    name = models.CharField(max_length=20)
-    description = models.TextField(max_length=500, default="-",
-                                   null=True, blank=True)
-    status = models.CharField(max_length=20, choices=constant.CHOICES.STATUS,
-                              null=True, blank=True, default='In-Progress')
-    receiving_date = models.DateTimeField(auto_now_add=True)
-    deadline_date = models.DateTimeField(null=True, blank=True)
-    submission_date = models.DateTimeField(null=True, blank=True)
-    is_rated = models.BooleanField(default=False, null=True, blank=True)
+    employee: Employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    task: str = models.CharField(max_length=20)
+    description: str = models.TextField(max_length=500, default="-")
+    status: str = models.CharField(max_length=20, choices=constants.CHOICES.TASK_STATUS,
+                                   default=constants.TASK_STATUS.IN_PROGRESS)
+    deadline_date: timezone.datetime = models.DateTimeField(null=True,
+                                                            blank=True)
+    submission_date: timezone.datetime = models.DateTimeField(null=True,
+                                                              blank=True)
+    is_rated: bool = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return self.name
+        return self.task
 
     @property
-    def getTimeLeft(self) -> str:
+    def receiving_date(self) -> str:
+        return self.created
+
+    @property
+    def time_left(self) -> str:
         """
         Calculating the time difference between the time now and the task's deadline.
 
         Returns:
             str: The time left from the task deadline.
         """
-        from django.utils import timezone
-
         # If the deadline date is declared
-        if self.deadline_date:
-            time_difference = str(self.deadline_date - timezone.now())[:-7]
-            # Check if the time difference is a negative value
-            if time_difference[0] == '-':
-                return 'Overdue'
+        if not self.submission_date:
+            if self.deadline_date:
+                time_difference = str(self.deadline_date - timezone.now())[:-7]
+                # Check if the time difference is a negative value
+                if time_difference[0].startswith('-'):
+                    return 'Overdue'
+                else:
+                    return time_difference
             else:
-                return time_difference
+                return "Open"
         else:
-            return "Open"
+            return "Submitted"
+
+    def setEmployee(self, requester: Union[HttpRequest, str], employee: Employee) -> None:
+        self.employee = employee
+        self.setCreatedByUpdatedBy(requester)
+
+    def setName(self, requester: Union[HttpRequest, str], name: str) -> None:
+        self.name = name
+        self.setCreatedByUpdatedBy(requester)
+
+    def setDescription(self, requester: Union[HttpRequest, str], description: str) -> None:
+        self.description = description
+        self.setCreatedByUpdatedBy(requester)
+
+    def setStatus(self, requester: Union[HttpRequest, str], status: str) -> None:
+        self.status = status
+        self.setCreatedByUpdatedBy(requester)
+
+    def setDeadlineDate(self, requester: Union[HttpRequest, str], deadline_date: timezone.datetime) -> None:
+        self.deadline_date = timezone.datetime(deadline_date)
+        self.setCreatedByUpdatedBy(requester)
+
+    def setSubmissionDate(self, requester: Union[HttpRequest, str], submission_date: timezone.datetime) -> None:
+        self.submission_date = timezone.datetime(submission_date)
+        self.setCreatedByUpdatedBy(requester)
+
+    def setRated(self, requester: Union[HttpRequest, str], is_rated: bool) -> None:
+        self.is_rated = is_rated
+        self.setCreatedByUpdatedBy(requester)
 
 
-class TaskRate(models.Model):
+class TaskRate(BaseModel):
 
-    id = models.AutoField(primary_key=True)
-    task = models.OneToOneField(Task, on_delete=models.CASCADE)
-    on_time_rate = models.FloatField()
-    rate = models.FloatField()
-
-    def __str__(self) -> str:
-        return str(self.rate)
-
-
-class Week(models.Model):
-
-    id = models.AutoField(primary_key=True)
-    week_start_date = models.DateField(null=True, blank=True)
-    week_end_date = models.DateField(null=True, blank=True)
-    is_rated = models.BooleanField(default=False, null=True, blank=True)
-
-    def __str__(self) -> str:
-        return f'Week {self.id}'
-
-    @classmethod
-    def getLastWeekID(cls) -> int:
-        """
-        If there is no weeks added yet this function will return -1 
-        else will return the ID of the last week added and have been rated
-
-        Returns:
-            int: Last week ID, -1 if there is no weeks added or rated
-        """
-        if not cls.objects.filter(is_rated=True).exists():
-            return -1
-        return cls.objects.filter(is_rated=True).order_by('-id')[0].id
-
-
-class WeeklyRate(models.Model):
-
-    id = models.AutoField(primary_key=True)
-    week = models.ForeignKey(Week, on_delete=models.CASCADE)
-    employee = models.ForeignKey(Employee, on_delete=models.SET_NULL,
-                                 null=True, blank=True)
-    rate = models.FloatField()
+    task: Task = models.OneToOneField(Task, on_delete=models.CASCADE)
+    on_time_rate: float = models.FloatField()
+    rate: float = models.FloatField()
 
     def __str__(self) -> str:
         return str(self.rate)
+
+    def setTask(self, requester: Union[HttpRequest, str], task: Task) -> None:
+        self.task = task
+        self.setCreatedByUpdatedBy(requester)
+
+    def setOnTimeRate(self, requester: Union[HttpRequest, str], on_time_rate: float) -> None:
+        self.on_time_rate = on_time_rate
+        self.setCreatedByUpdatedBy(requester)
+
+    def setRate(self, requester: Union[HttpRequest, str], rate: float) -> None:
+        self.rate = rate
+        self.setCreatedByUpdatedBy(requester)
+
+
+class Week(BaseModel):
+
+    week_start_date: timezone.datetime = models.DateField()
+    week_end_date: timezone.datetime = models.DateField()
+    is_rated: bool = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f'{self.week_start_date}'
+
+    def setWeekStartDate(self, requester: Union[HttpRequest, str], week_start_date: timezone.datetime) -> None:
+        self.week_start_date = timezone.datetime.date(week_start_date)
+        self.setCreatedByUpdatedBy(requester)
+
+    def setWeekEndDate(self, requester: Union[HttpRequest, str], week_end_date: timezone.datetime) -> None:
+        self.week_end_date = timezone.datetime.date(week_end_date)
+        self.setCreatedByUpdatedBy(requester)
+
+    def setRated(self, requester: Union[HttpRequest, str], is_rated: bool) -> None:
+        self.is_rated = is_rated
+        self.setCreatedByUpdatedBy(requester)
+
+
+class WeeklyRate(BaseModel):
+
+    week: Week = models.ForeignKey(Week, on_delete=models.CASCADE)
+    employee: Employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    rate: float = models.FloatField()
+
+    def __str__(self) -> str:
+        return f"{str(self.week)} - {self.employee.person.name}"
+
+    def setWeek(self, requester: Union[HttpRequest, str], week: Week) -> None:
+        self.week = week
+        self.setCreatedByUpdatedBy(requester)
+
+    def setEmployee(self, requester: Union[HttpRequest, str], employee: Employee) -> None:
+        self.employee = employee
+        self.setCreatedByUpdatedBy(requester)
+
+    def setRate(self, requester: Union[HttpRequest, str], rate: float) -> None:
+        self.rate = rate
+        self.setCreatedByUpdatedBy(requester)

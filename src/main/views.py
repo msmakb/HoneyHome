@@ -1,132 +1,136 @@
-from django.shortcuts import redirect, render
-from django.contrib import messages
+import logging
+
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from django.db.models import Q
-from datetime import timedelta
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect, render
+from django.utils import timezone
 
 from distributor.models import Distributor
 from human_resources.models import Employee, Task
-from . import constant
+
+from . import constants
+from . import messages as MSG
 from .decorators import isAuthenticatedUser
 from .forms import CreateUserForm
-from .utils import getEmployeesTasks as EmployeeTasks
 from .utils import getUserBaseTemplate as base
 from .utils import getUserRole
 
+logger = logging.getLogger(constants.LOGGERS.MAIN)
+
 
 @isAuthenticatedUser
-def index(request):
-    if request.method == "POST":
+def index(request: HttpRequest) -> HttpResponse:
+    if request.method == constants.POST:
+        print(request.POST)
         UserName: str = request.POST.get('user_name')
         Password: str = request.POST.get('password')
-        User = authenticate(request, username=UserName, password=Password)
+        user: User = authenticate(
+            request, username=UserName, password=Password)
+        print(user.get_full_name())
 
-        if User is not None:
-            login(request, User)
-            return redirect(constant.PAGES.INDEX)
+        if user is not None:
+            login(request, user)
+            return redirect(constants.PAGES.INDEX)
         else:
-            messages.info(request, "Username or Password is incorrect")
+            MSG.INCORRECT_INFO(request)
 
-    return render(request, constant.TEMPLATES.INDEX_TEMPLATE)
-
-
-def about(request):
-    context: dict = {}
-    return render(request, constant.TEMPLATES.ABOUT_TEMPLATE, context)
+    return render(request, constants.TEMPLATES.INDEX_TEMPLATE)
 
 
-def unauthorized(request):
-    context: dict = {}
-    return render(request, constant.TEMPLATES.UNAUTHORIZED_TEMPLATE)
+def about(request: HttpRequest) -> HttpResponse:
+    return render(request, constants.TEMPLATES.ABOUT_TEMPLATE)
 
 
-@login_required(login_url=constant.PAGES.INDEX)
-def dashboard(request):
-    group = None
-    if request.user.groups.exists():
-        group = getUserRole(request)
+def unauthorized(request: HttpRequest) -> HttpResponse:
+    logger.warning(
+        f"The user [{request.user}] is unauthorized to view this page")
+    return render(request, constants.TEMPLATES.UNAUTHORIZED_TEMPLATE)
 
+
+# this is admin dashboard 'for testing purpose only'
+def dashboard(request: HttpRequest) -> HttpResponse:
+    group: str = getUserRole(request)
     context: dict = {'group': group}
-    return render(request, constant.TEMPLATES.DASHBOARD_TEMPLATE, context)
+    return render(request, constants.TEMPLATES.DASHBOARD_TEMPLATE, context)
 
 
-def logoutUser(request):
-    logout(request)
-    return redirect(constant.PAGES.INDEX)
+def logoutUser(request: HttpRequest) -> HttpResponse:
+    try:
+        logout(request)
+    except AttributeError:
+        pass
+    return redirect(constants.PAGES.INDEX)
 
 
-def createUserPage(request):
+def createUserPage(request: HttpRequest) -> HttpResponse:
     form = CreateUserForm()
-    if request.method == constant.POST:
+    if request.method == constants.POST:
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
 
-            old_user = request.user
-            new_user = User.objects.all().order_by('-id')[0]
-            if getUserRole(old_user) == constant.ROLES.DISTRIBUTOR:
-                user = Distributor.objects.get(account=old_user)
-                Group.objects.get(
-                    name=constant.ROLES.DISTRIBUTOR).user_set.add(new_user)
+            old_user: User = request.user
+            # Get last inserted user object
+            new_user: User = User.objects.all().order_by('-id')[0]
+            new_user.first_name = old_user.first_name
+            new_user.last_name = old_user.last_name
+            if getUserRole(old_user) == constants.ROLES.DISTRIBUTOR:
+                user: Distributor = Distributor.get(account=old_user)
+                Group.objects.get(name=constants.ROLES.DISTRIBUTOR
+                                  ).user_set.add(new_user)
             else:
-                user = Employee.objects.get(account=old_user)
+                user: Employee = Employee.get(account=old_user)
                 Group.objects.get(name=user.position).user_set.add(new_user)
-                if user.position == constant.ROLES.CEO:
+                if user.position == constants.ROLES.CEO:
                     new_user.is_superuser = True
                     new_user.is_staff = True
-                    new_user.is_admin = True
                     new_user.save()
 
-            user.account = new_user
-            user.save()
-
+            user.setAccount(request, new_user)
             logout(request)
             old_user.delete()
+            MSG.LOGIN_WITH_NEW_ACCOUNT(request)
 
-            messages.info(request, "Please sing in with your new account")
-
-            return redirect(constant.PAGES.INDEX)
+            return redirect(constants.PAGES.INDEX)
 
     context: dict = {'form': form}
-    return render(request, constant.TEMPLATES.CREATE_USER_TEMPLATE, context)
+    return render(request, constants.TEMPLATES.CREATE_USER_TEMPLATE, context)
 
 
-def tasks(request):
-    Tasks = Task.objects.filter(~Q(status="Late-Submission") & ~Q(
-        status="On-Time"), employee__account=request.user)
+# Needs fix
+def tasks(request: HttpRequest) -> HttpResponse:
+    Tasks: Task = Task.filter(~Q(status=constants.TASK_STATUS.LATE_SUBMISSION) & ~Q(
+        status=constants.TASK_STATUS.ON_TIME), employee__account=request.user)
 
-    if request.method == constant.POST:
-        from django.utils import timezone
-        from datetime import datetime
+    if request.method == constants.POST:
 
         task_id = request.POST.get('task_id', False)
-        task = Task.objects.get(id=int(task_id))
-        onTime = request.POST.get(f'onTime{id}', False)
-        now = datetime.strftime(timezone.now(), '%Y-%m-%d %H:%M:%s')
+        task: Task = Task.get(id=int(task_id))
+        # onTime = request.POST.get(f'onTime{id}', False)
+        now: timezone.datetime = timezone.now()
 
-        if task.name == "Evaluate employees":
-            return redirect(constant.PAGES.WEEKLY_EVALUATION_PAGE)
-        elif task.name == "Rate task":
-            return redirect(constant.PAGES.TASK_EVALUATION_PAGE)
-        elif not task.deadline_date or str(task.deadline_date) >= now:
-            task.status = "On-Time"
+        if task.task == "Evaluate employees":
+            return redirect(constants.PAGES.WEEKLY_EVALUATION_PAGE)
+        elif task.task == "Rate task":
+            return redirect(constants.PAGES.TASK_EVALUATION_PAGE)
+        elif not task.deadline_date or task.deadline_date >= now:
+            task.status = constants.TASK_STATUS.ON_TIME
         else:
-            task.status = "Late-Submission"
+            task.status = constants.TASK_STATUS.LATE_SUBMISSION
 
         task.submission_date = timezone.now()
         task.save()
 
-        if getUserRole(request) != constant.ROLES.HUMAN_RESOURCES:
-            emp = Employee.objects.get(position=constant.ROLES.HUMAN_RESOURCES)
-            Task.objects.create(
-                employee=emp,
-                name="Rate task",
-                description=f"Don't forget to rate {task.employee.person.name}'s submitted task. '{task.name}' Task.",
-                deadline_date=timezone.now() + timedelta(days=3)
-            )
+        if getUserRole(request) != constants.ROLES.HUMAN_RESOURCES:
+            emp = Employee.get(position=constants.ROLES.HUMAN_RESOURCES)
+            Task.create("Auto Task System",
+                        employee=emp,
+                        task="Rate task",
+                        description=f"Don't forget to rate {task.employee.person.name}'s submitted task. '{task.task}' Task.",
+                        deadline_date=timezone.now() + timezone.timedelta(days=3)
+                        )
 
-    context = {'Tasks': Tasks, 'base': base(request),
-               'EmployeeTasks': EmployeeTasks(request)}
-    return render(request, constant.TEMPLATES.TASKS_TEMPLATE, context)
+    context = {'Tasks': Tasks, 'base': base(request)}
+    return render(request, constants.TEMPLATES.TASKS_TEMPLATE, context)

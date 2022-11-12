@@ -64,7 +64,7 @@
 			<div class="card card-body" style="margin-top: 20px;">
 				<h5>Address Information</h5>
 				<hr>
-				<p>Address: {{Distributor.getAddress }}</p>
+				<p>Address: {{Distributor.person.address }}</p>
 			</div>
 		</div>
 
@@ -75,15 +75,15 @@
 			<div class="card card-body">
 				<h5>Contact Information</h5>
 				<hr>
-				<p>Email: {{ Distributor.getContactingEmail }}</p>
-				<p>Phone: {{ Distributor.getPhoneNumber }}</p>
+				<p>Email: {{ Distributor.person.contacting_email }}</p>
+				<p>Phone: {{ Distributor.person.phone_number }}</p>
 			</div>
 		</div>
 		<div class="col-md">
 			<div class="card card-body" style="margin-top: 10px;">
 				<h5>System Account Information</h5>
 				<hr>
-				<p>Username: {{ Distributor.account }}</p>
+				<p>Username: {{ Distributor.account.username }}</p>
 				<p>Email: {{ Distributor.account.email }}</p>
 			</div>
 		</div>
@@ -92,18 +92,18 @@
 	<div class="card" style="width: 18rem;">
 		<form method="POST" enctype="multipart/form-data">
 			{% csrf_token %}
-			{% if not Distributor.person.photo and Distributor.getGender == 'Male' %}
+			{% if not Distributor.person.photo and Distributor.person.gender == 'Male' %}
 			<label class="img-container" for="img-input"><img class="img-to-fit"
 					src="/media/images/default_profile_image_male.png" alt="Card image cap"></label>
-			{% elif Distributor.person.photo and Distributor.getGender == 'Male' %}
+			{% elif Distributor.person.photo and Distributor.person.gender == 'Male' %}
 			<label class="img-container" for="img-input"><img class="img-to-fit"
-					src="{{ Distributor.getPhotoUrl }}" alt="Card image cap"></label>
-			{% elif not Distributor.person.photo and Distributor.getGender == "Female" %}
+					src="{{ Distributor.person.getImageUrl }}" alt="Card image cap"></label>
+			{% elif not Distributor.person.photo and Distributor.person.gender == "Female" %}
 			<label class="img-container" for="img-input"><img class="img-to-fit"
 					src="/media/images/default_profile_image_female.png" alt="Card image cap"></label>
-			{% elif Distributor.person.photo and Distributor.getGender == "Female" %}
+			{% elif Distributor.person.photo and Distributor.person.gender == "Female" %}
 			<label class="img-container" for="img-input"><img class="img-to-fit"
-					src="{{ Distributor.getPhotoUrl }}" alt="Card image cap"></label>
+					src="{{ Distributor.person.getImageUrl }}" alt="Card image cap"></label>
 			{% endif %}
 			<center><button class="btn-sm btn-info" id="submit-photo" type="submit"
 					style="display: none; margin-top: 10px; margin-bottom: -30px;">Edit</button></center>
@@ -117,7 +117,7 @@
 				{% else %}
 				<span class="dot_red"></span>
 				{% endif %}
-				{{ Distributor.getName }}
+				{{ Distributor.person.name }}
 
 			</p>
 			<p class="card-text" style="text-align: center;">Distributor</p>
@@ -132,8 +132,8 @@
 			<div class="card-body">
 				<p>Other Info</p>
 				<hr>
-				<p>Date of Birth: {{ Distributor.getRegisteringDate }}</p>
-				<p>Gender: {{ Distributor.getGender }}</p>
+				<p>Date of Birth: {{ Distributor.person.date_of_birth }}</p>
+				<p>Gender: {{ Distributor.person.gender }}</p>
 				<p>Register Date: {{ Distributor.account.date_joined }}</p>
 				<p>Last Login: {{ Distributor.account.last_login }}</p>
 			</div>

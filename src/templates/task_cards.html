@@ -1,14 +1,16 @@
+{% load main_tags %}
 {% if request.user.groups.all.0.name != "Distributor" %}
+    {% getEmployeeTasks request as EmployeeTasks %}
     {% for task in EmployeeTasks %}
     <div class="card w-100" style="margin-bottom: 5px;">
         <div class="card-body">
-            <h5 class="card-title">{{task.name}}</h5>
+            <h5 class="card-title">{{task.task}}</h5>
             <p class="card-text">{{task.description}}</p>
             <a href="{% url 'Tasks' %}" class="btn btn-info">View Task</a>
-            {% if task.getTimeLeft != 'Overdue'%}
-            <span style="color: green;">{{task.getTimeLeft}}</span>
+            {% if task.time_left != 'Overdue'%}
+            <span style="color: green;">{{task.time_left}}</span>
             {% else %}
-            <span style="color: red;">{{task.getTimeLeft}}</span>
+            <span style="color: red;">{{task.time_left}}</span>
             {% endif %}
         </div>
     </div>

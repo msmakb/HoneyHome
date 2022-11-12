@@ -13,7 +13,8 @@ def addWeekToRate():
     now = timezone.now()
     today = datetime.strftime(timezone.now(), '%Y-%m-%d')
     # Check if the last week object is today
-    if str(Week.objects.get(id=Week.getLastWeekID()).week_end_date) != today:
+    last_week: Week = Week.getLastInsertedObject()
+    if str(last_week.week_end_date) != today:
         emp = Employee.objects.get(position='Human Resources')
         # If it's not today add new week object
         Week.objects.create(
