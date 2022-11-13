@@ -9,7 +9,7 @@ from human_resources.models import Employee
 
 from . import constants
 from . import messages as MSG
-from .utils import getUserRole
+from .utils import getUserRole, resolvePageUrl
 
 logger = logging.getLogger(constants.LOGGERS.MAIN)
 
@@ -70,8 +70,8 @@ def isAuthenticatedUser(view_func):
             else:
                 logger.warning("The user has no groups!!")
                 MSG.SOMETHING_WRONG(request)
-                return redirect(constants.PAGES.LOGOUT)
-            return redirect(dashboard)
+                return redirect(f"{role}:{constants.PAGES.LOGOUT}")
+            return redirect(resolvePageUrl(request, dashboard))
         else:
             return view_func(*args, **kwargs)
     return wrapper_func

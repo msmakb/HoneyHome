@@ -122,7 +122,7 @@
         <td>{{Sale.date}}</td>
         <td><img id="myImg" src="/media/receipts/receipt-icon.png" alt="Snow" style="max-width:30px; max-height:30px;"></td>
         <td>
-          <a class="btn btn-sm btn-info" href="{% url 'ApprovePayment' Sale.id %}">Approve</a>
+          <a class="btn btn-sm btn-info" href="{% url namespaec|add:'ApprovePayment' Sale.id %}">Approve</a>
           <a class="btn btn-sm btn-danger" href="">Decline</a>
         </td>
     </tr>

@@ -32,8 +32,8 @@
         <td>{{item.getReceiver}}</td>
         <td>{{item.receiving_date}}</td>
         <td>
-            <a class="btn btn-sm btn-info" href="{% url 'ApproveTransformedGoods' item.id %}">Approve</a>
-            <a class="btn btn-sm btn-danger" href="{% url 'ApproveTransformedGoods' item.id %}">Decline</a>
+            <a class="btn btn-sm btn-info" href="{% url namespaec|add:'ApproveTransformedGoods' item.id %}">Approve</a>
+            <a class="btn btn-sm btn-danger" href="{% url namespaec|add:'ApproveTransformedGoods' item.id %}">Decline</a>
         </td>
     </tr>
     {% endfor %}

@@ -47,7 +47,9 @@
         list-style-type:none;
     }
 </style>
-
+{% load main_tags %}
+{% getNamespace request as namespaec %}
+{% getUserRole request as userRolae %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,15 +68,15 @@
             <div>
                 <nav class="n">
                     <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url 'WarehouseAdminDashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'MainStorageGoodsPage' %}">Main Storage Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'DistributedGoodsPage' %}">Distributed Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'RetailGoodsPage' %}">Retail Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'DamagedGoodsPage' %}">Damaged Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'TransformedGoodsPage' %}">Transformed Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'GoodsMovementPage' %}">Goods Movement</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'RegisteredItemsPage' %}">Registered Items</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'BatchesPage' %}">Batches</a></p>
+                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'WarehouseAdminDashboard' %}">Dashboard</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'MainStorageGoodsPage' %}">Main Storage Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributedGoodsPage' %}">Distributed Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'RetailGoodsPage' %}">Retail Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DamagedGoodsPage' %}">Damaged Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'TransformedGoodsPage' %}">Transformed Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'GoodsMovementPage' %}">Goods Movement</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'RegisteredItemsPage' %}">Registered Items</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'BatchesPage' %}">Batches</a></p>
                         <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'Tasks' %}">My Tasks</a></p>
                     </div>
                 </nav>

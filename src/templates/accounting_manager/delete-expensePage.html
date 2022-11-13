@@ -7,7 +7,7 @@
       <p>Item: {{Expense.item}}</p>
     </div>
     <div class="modal-footer">
-      <a href="{% url 'ExpensesPage' %}" class="btn btn-secondary">Close</a>
+      <a href="{% url namespaec|add:'ExpensesPage' %}" class="btn btn-secondary">Close</a>
       <form method="POST">
         {% csrf_token %}
         <button type="submit" class="btn btn-xs btn-outline-danger">Delete</button>

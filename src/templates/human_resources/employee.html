@@ -47,17 +47,9 @@
 				<h5>Employee:</h5>
 				<hr>
 				<a class="btn btn-outline-info  btn-sm btn-block"
-					href="{% if user.groups.all.0.name == "CEO" %}
-						  {% url 'UpdateEmployeePage-CEO' Employee.id %}
-						  {% else %}
-						  {% url 'UpdateEmployeePage' Employee.id %}
-						  {% endif %}">Update Employee</a>
+					href="{% url namespaec|add:'UpdateEmployeePage' Employee.id %}">Update Employee</a>
 				<a class="btn btn-outline-danger  btn-sm btn-block"
-					href="{% if user.groups.all.0.name == "CEO" %}
-						  {% url 'DeleteEmployeePage-CEO' Employee.id %}
-						  {% else %}
-						  {% url 'DeleteEmployeePage' Employee.id %}
-						  {% endif %}">Delete Employee</a>
+					href="{% url namespaec|add:'DeleteEmployeePage' Employee.id %}">Delete Employee</a>
 			</div>
 		</div>
 		<div class="col-md">

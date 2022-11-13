@@ -13,6 +13,7 @@ from main import messages as MSG
 from main.models import Person
 from main.utils import Pagination
 from main.utils import getUserBaseTemplate as base
+from main.utils import getUserRole, resolvePageUrl
 
 from .evaluation import (allEmployeesMonthlyEvaluations,
                          allEmployeesMonthlyOverallEvaluation,
@@ -75,17 +76,14 @@ def addEmployeePage(request: HttpRequest) -> HttpResponse:
             employee_form.save()
             MSG.EMPLOYEE_ADDED(request)
 
-            if isRequesterCEO(request):
-                return redirect(constants.PAGES.EMPLOYEES_PAGE_CEO)
-            else:
-                return redirect(constants.PAGES.EMPLOYEES_PAGE)
+            return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEES_PAGE))
 
     context: dict = {'PersonForm': person_form, 'employee_form': employee_form,
                      'base': base(request)}
     return render(request, constants.TEMPLATES.ADD_EMPLOYEE_TEMPLATE, context)
 
 
-def employeePage(request: HttpRequest, pk: int) -> HttpResponse:
+def employeePage(request: HttpRequest, pk: int, hash=None) -> HttpResponse:
     employee: Employee = get_object_or_404(Employee, id=pk)
     evaluation: dict = getEvaluation(emp_id=pk)
     if not isUserAllowedToModify(request.user, employee.position, constants.ROLES.CEO):
@@ -114,10 +112,7 @@ def updateEmployeePage(request: HttpRequest, pk: int) -> HttpResponse:
             employee_form.save()
             MSG.EMPLOYEE_DATA_UPDATED(request)
 
-            if isRequesterCEO(request):
-                return redirect(constants.PAGES.EMPLOYEE_RECORD_PAGE_CEO, pk)
-            else:
-                return redirect(constants.PAGES.EMPLOYEE_RECORD_PAGE, pk)
+            return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEE_RECORD_PAGE), pk)
 
     context: dict = {'PersonForm': person_form, 'employee_form': employee_form,
                      'base': base(request)}
@@ -132,10 +127,7 @@ def deleteEmployeePage(request: HttpRequest, pk: int) -> HttpResponse:
         employee.delete(request)
         MSG.EMPLOYEE_REMOVED(request)
 
-        if isRequesterCEO(request):
-            return redirect(constants.PAGES.EMPLOYEES_PAGE_CEO)
-        else:
-            return redirect(constants.PAGES.EMPLOYEES_PAGE)
+        return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEES_PAGE))
 
     context: dict = {'Employee': employee, 'base': base(request)}
     return render(request, constants.TEMPLATES.DELETE_EMPLOYEE_TEMPLATE, context)
@@ -165,10 +157,7 @@ def addDistributorPage(request: HttpRequest) -> HttpResponse:
             Distributor.create(request)
             MSG.DISTRIBUTOR_ADDED(request)
 
-            if isRequesterCEO(request):
-                return redirect(constants.PAGES.DISTRIBUTORS_PAGE_CEO)
-            else:
-                return redirect(constants.PAGES.DISTRIBUTORS_PAGE)
+            return redirect(resolvePageUrl(request, constants.PAGES.DISTRIBUTORS_PAGE))
 
     context: dict = {'PersonForm': person_form, 'base': base(request)}
     return render(request, constants.TEMPLATES.ADD_DISTRIBUTOR_TEMPLATE, context)
@@ -194,10 +183,7 @@ def updateDistributorPage(request: HttpRequest, pk: int) -> HttpResponse:
             person_form.save()
             MSG.DISTRIBUTOR_DATA_UPDATED(request)
 
-            if isRequesterCEO(request):
-                return redirect(constants.PAGES.DISTRIBUTOR_RECORD_PAGE_CEO, pk)
-            else:
-                return redirect(constants.PAGES.DISTRIBUTOR_RECORD_PAGE, pk)
+            return redirect(resolvePageUrl(request, constants.PAGES.DISTRIBUTOR_RECORD_PAGE), pk)
 
     context: dict = {'PersonForm': person_form, 'distributor_id': distributor.id,
                      'base': base(request)}
@@ -210,10 +196,7 @@ def deleteDistributorPage(request: HttpRequest, pk: int) -> HttpResponse:
         distributor.delete(request)
         MSG.DISTRIBUTOR_REMOVED(request)
 
-        if isRequesterCEO(request):
-            return redirect(constants.PAGES.DISTRIBUTORS_PAGE_CEO)
-        else:
-            return redirect(constants.PAGES.DISTRIBUTORS_PAGE)
+        return redirect(resolvePageUrl(request, constants.PAGES.DISTRIBUTORS_PAGE))
 
     context: dict = {'Distributor': distributor, 'base': base(request)}
     return render(request, constants.TEMPLATES.DELETE_DISTRIBUTOR_TEMPLATE, context)
@@ -240,10 +223,7 @@ def addTaskPage(request: HttpRequest) -> HttpResponse:
             form.save()
             MSG.TASK_ADDED(request)
 
-            if isRequesterCEO(request):
-                return redirect(constants.PAGES.EMPLOYEES_TASKS_PAGE_CEO)
-            else:
-                return redirect(constants.PAGES.EMPLOYEES_TASKS_PAGE)
+        return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEES_TASKS_PAGE))
 
     context: dict = {'form': form, 'base': base(request)}
     return render(request, constants.TEMPLATES.ADD_TASK_TEMPLATE, context)
@@ -277,10 +257,7 @@ def updateTaskPage(request: HttpRequest, pk: int) -> HttpResponse:
             form.save()
             MSG.TASK_DATA_UPDATED(request)
 
-            if isRequesterCEO(request):
-                return redirect(constants.PAGES.DETAILED_TASK_PAGE_CEO, pk)
-            else:
-                return redirect(constants.PAGES.DETAILED_TASK_PAGE, pk)
+        return redirect(resolvePageUrl(request, constants.PAGES.DETAILED_TASK_PAGE), pk)
 
     context: dict = {'form': form, 'base': base(request)}
     return render(request, constants.TEMPLATES.UPDATE_TASK_TEMPLATE, context)
@@ -296,10 +273,7 @@ def deleteTaskPage(request: HttpRequest, pk: int) -> HttpResponse:
         task.delete(request)
         MSG.TASK_REMOVED(request)
 
-        if isRequesterCEO(request):
-            return redirect(constants.PAGES.EMPLOYEES_TASKS_PAGE_CEO)
-        else:
-            return redirect(constants.PAGES.EMPLOYEES_TASKS_PAGE)
+        return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEES_TASKS_PAGE))
 
     context: dict = {'Task': task, 'base': base(request)}
     return render(request, constants.TEMPLATES.DELETE_TASK_TEMPLATE, context)
@@ -382,10 +356,7 @@ def weeklyEvaluationPage(request: HttpRequest) -> HttpResponse:
                 TaskRate.create(constants.SYSTEM_NAME, task=task,
                                 on_time_rate=5, rate=5)
 
-            if isRequesterCEO(request):
-                return redirect(constants.PAGES.EVALUATION_PAGE_CEO)
-            else:
-                return redirect(constants.PAGES.EVALUATION_PAGE)
+            return redirect(resolvePageUrl(request, constants.PAGES.EVALUATION_PAGE))
 
     return render(request, constants.TEMPLATES.WEEKLY_EVALUATION_TEMPLATE, context)
 

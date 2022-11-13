@@ -4,11 +4,7 @@
 {% include 'alerts.html' %}
 
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% if user.groups.all.0.name == "CEO" %}
-              {% url 'AddTaskPage-CEO' %}
-              {% else %}
-              {% url 'AddTaskPage' %}
-              {% endif %}">Add Task</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddTaskPage' %}">Add Task</a></td>
 </div>
 <h2>Employees' Tasks</h2>
 <table style="text-align:center;" class="table table-striped">
@@ -37,16 +33,12 @@
             <td>
                 {% if task.employee.position == "CEO" or task.employee.position == "Human Resources" %}
                     {% if request.user.groups.all.0.name == "CEO" %}
-                    <a class="btn btn-sm btn-info" href="{% url 'TaskPage-CEO' task.id %}">View</a>
+                        <a class="btn btn-sm btn-info" href="{% url namespaec|add:'TaskPage' task.id %}">View</a>
                     {% else %}
-                    <a class="btn btn-sm btn-secondary" style="pointer-events: none;">View</a>
+                        <a class="btn btn-sm btn-secondary" style="pointer-events: none;">View</a>
                     {% endif %}
                 {% else %}
-                    {% if request.user.groups.all.0.name == "CEO" %}
-                    <a class="btn btn-sm btn-info" href="{% url 'TaskPage-CEO' task.id %}">View</a>
-                    {% else %}
-                    <a class="btn btn-sm btn-info" href="{% url 'TaskPage' task.id %}">View</a>
-                    {% endif %}
+                    <a class="btn btn-sm btn-info" href="{% url namespaec|add:'TaskPage' task.id %}">View</a>
                 {% endif %}
             </td>
         </tr>

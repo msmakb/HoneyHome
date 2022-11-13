@@ -9,11 +9,7 @@
     <p>Distributor Name: {{ Distributor.person.name }}</p>
   </div>
   <div class="modal-footer">
-    <a href="{% if user.groups.all.0.name == "CEO" %}
-             {% url 'DistributorPage-CEO' Distributor.id %}
-             {% else %}
-             {% url 'DistributorPage' Distributor.id %}
-             {% endif %}" class="btn btn-secondary">Close</a>
+    <a class="btn btn-secondary" href="{% url namespaec|add:'DistributorPage' Distributor.id %}">Close</a>
     <form method="POST">
       {% csrf_token %}
       <button type="submit" class="btn btn-xs btn-outline-danger">Delete</button>

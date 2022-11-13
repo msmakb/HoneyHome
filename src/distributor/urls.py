@@ -1,12 +1,40 @@
 from django.urls import path
+
+from main.constants import PAGES
+
 from . import views
 
 
+app_name = 'distributor'
 urlpatterns = [
-    path('Dashboard', views.Dashboard, name='DistributorDashboard'),
-    path('Goods', views.GoodsPage, name='GoodsPage'),
-    path('Send-Payment', views.SendPaymentPage, name='SendPaymentPage'),
-    path('Freeze-Item', views.FreezeItemPage, name='FreezeItemPage'),
-    path('Return-Item', views.ReturnItemPage, name='ReturnItemPage'),
-    path('History', views.HistoryPage, name='HistoryPage'),
+    path(
+        f'{PAGES.DASHBOARD}/',
+        views.Dashboard,
+        name=PAGES.DISTRIBUTOR_DASHBOARD
+    ),
+    path(
+        f'{PAGES.DASHBOARD}/Goods',
+        views.GoodsPage,
+        name=PAGES.GOODS_PAGE
+    ),
+    path(
+        f'{PAGES.DASHBOARD}/Send-Payment',
+        views.SendPaymentPage,
+        name=PAGES.SEND_PAYMENT_PAGE
+    ),
+    path(
+        f'{PAGES.DASHBOARD}/Freeze-Item',
+        views.FreezeItemPage,
+        name=PAGES.FREEZE_ITEMS_PAGE
+    ),
+    path(
+        f'{PAGES.DASHBOARD}/Return-Item',
+        views.ReturnItemPage,
+        name=PAGES.RETURN_ITEMS_PAGE
+    ),
+    path(
+        f'{PAGES.DASHBOARD}/History',
+        views.HistoryPage,
+        name=PAGES.HISTORY_PAGE
+    ),
 ]

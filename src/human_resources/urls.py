@@ -1,8 +1,8 @@
 from django.urls import path
 from main.constants import PAGES
-from main.views import tasks
 from . import views
 
+app_name = 'human_resources'
 urlpatterns = [
     # Dashboard URL
     path(

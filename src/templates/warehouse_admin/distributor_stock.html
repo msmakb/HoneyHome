@@ -2,7 +2,7 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'SendGoodsPage' distributor.id %}">Send Goods</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'SendGoodsPage' distributor.id %}">Send Goods</a></td>
 </div>
 <h2>Distributor Stock - Name: {{distributor.person.name}}</h2>
 <table style="text-align:center;" class="table table-striped">

@@ -2,7 +2,7 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddBatchPage' %}">Add New Batch</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddBatchPage' %}">Add New Batch</a></td>
 </div>
 <h2>Batches</h2>
 <table style="text-align:center;" class="table table-striped">

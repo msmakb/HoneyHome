@@ -1,15 +1,12 @@
 {% extends base %}
 {% load hr_tags %}
+{% load main_tags %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 {% include 'alerts.html' %}
 
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% if user.groups.all.0.name == "CEO" %}
-              {% url 'AddEmployeePage-CEO' %}
-              {% else %}
-              {% url 'AddEmployeePage' %}
-              {% endif %}">Add Employee</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddEmployeePage' %}">Add Employee</a></td>
 </div>
 <h2>Employees</h2>
 <table style="text-align:center;" class="table table-striped">
@@ -35,17 +32,13 @@
             <td>{% if employee.position == "CEO" %} - {% else %}{% getAllTimeEvaluation employee.id %}{% endif %}</td>
             <td>
                 {% if employee.position == "CEO" %}
-                    {% if request.user.groups.all.0.name == "CEO" %}
-                    <a class="btn btn-sm btn-info" href="{% url 'EmployeePage-CEO' employee.id %}">View</a>
+                    {% if userRolae == "CEO" %}
+                    <a class="btn btn-sm btn-info" href="{% url namespaec|add:'EmployeePage' employee.id %}">View</a>
                     {% else %}
                     <a class="btn btn-sm btn-secondary" style="pointer-events: none;">View</a>
                     {% endif %}
                 {% else %}
-                    {% if request.user.groups.all.0.name == "CEO" %}
-                    <a class="btn btn-sm btn-info" href="{% url 'EmployeePage-CEO' employee.id %}">View</a>
-                    {% else %}
-                    <a class="btn btn-sm btn-info" href="{% url 'EmployeePage' employee.id %}">View</a>
-                    {% endif %}
+                    <a class="btn btn-sm btn-info" href="{% url namespaec|add:'EmployeePage' employee.id %}">View</a>
                 {% endif %}
             </td>
         </tr>

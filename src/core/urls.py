@@ -16,12 +16,14 @@ urlpatterns = [
     # System apps URLs
     # Note: the url must be the same as the role.
     # check 'AllowedUserMiddleware'
-    path('HumanResources/', include('human_resources.urls')),
-    path('WarehouseAdmin/', include('warehouse_admin.urls')),
-    path('SocialMediaManager/', include('social_media_manager.urls')),
-    path('AccountingManager/', include('accounting_manager.urls')),
-    path('Distributor/', include('distributor.urls')),
-    path('CEO/', include('ceo.urls')),
+    path('HumanResources/', include('human_resources.urls', namespace='HumanResources')),
+    path('WarehouseAdmin/', include('warehouse_admin.urls', namespace='WarehouseAdmin')),
+    path('SocialMediaManager/', include('social_media_manager.urls',
+         namespace='SocialMediaManager')),
+    path('AccountingManager/', include('accounting_manager.urls',
+         namespace='AccountingManager')),
+    path('Distributor/', include('distributor.urls', namespace='Distributor')),
+    path('CEO/', include('ceo.urls', namespace='CEO')),
 ]
 
 # Static and Media URL Patterns

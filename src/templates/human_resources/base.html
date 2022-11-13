@@ -1,3 +1,7 @@
+{% load main_tags %}
+{% getNamespace request as namespaec %}
+{% getUserRole request as userRolae %}
+
 <style>
     body {
         background-color: red;
@@ -75,11 +79,11 @@
             <div>
                 <nav class="n">
                     <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url 'HumanResourcesDashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'EmployeesPage' %}">Employees</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'DistributorsPage' %}">Distributors</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'TasksPage' %}">Employees' Tasks</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'EvaluationPage' %}">Evaluation</a></p>
+                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'HumanResourcesDashboard' %}">Dashboard</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'EmployeesPage' %}">Employees</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributorsPage' %}">Distributors</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'TasksPage' %}">Employees' Tasks</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'EvaluationPage' %}">Evaluation</a></p>
                         <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'Tasks' %}">My Tasks</a></p>
                     </div>
                 </nav>

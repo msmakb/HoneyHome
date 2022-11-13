@@ -47,17 +47,9 @@
 				<h5>Distributor:</h5>
 				<hr>
 				<a class="btn btn-outline-info  btn-sm btn-block"
-					href="{% if user.groups.all.0.name == "CEO" %}
-						  {% url 'UpdateDistributorPage-CEO' Distributor.id %}
-						  {% else %}
-						  {% url 'UpdateDistributorPage' Distributor.id %}
-						  {% endif %}">Update Distributor</a>
+					href="{% url namespaec|add:'UpdateDistributorPage' Distributor.id %}">Update Distributor</a>
 				<a class="btn btn-outline-danger  btn-sm btn-block"
-					href="{% if user.groups.all.0.name == "CEO" %}
-						  {% url 'DeleteDistributorPage-CEO' Distributor.id %}
-						  {% else %}
-						  {% url 'DeleteDistributorPage' Distributor.id %}
-						  {% endif %}">Delete Distributor</a>
+					href="{% url namespaec|add:'DeleteDistributorPage' Distributor.id %}">Delete Distributor</a>
 			</div>
 		</div>
 		<div class="col-md">

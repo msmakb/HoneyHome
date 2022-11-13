@@ -5,11 +5,7 @@
 
 <div style="float: right;">
     <td><a id="button" class="btn btn-xs btn-info" 
-        href="{% if user.groups.all.0.name == "CEO" %}
-              {% url 'AddDistributorPage-CEO' %}
-              {% else %}
-              {% url 'AddDistributorPage' %}
-              {% endif %}">Add Distributor</a></td>
+        href="{% url namespaec|add:'AddDistributorPage' %}">Add Distributor</a></td>
 </div>
 <h2>Distributors</h2>
 <table style="text-align:center;" class="table table-striped">
@@ -30,11 +26,7 @@
             <td>{{ distributor.person.gender }}</td>
             <td>{{ distributor.person.nationality }}</td>
             <td><a class="btn btn-sm btn-info" 
-                href="{% if user.groups.all.0.name == "CEO" %}
-                      {% url 'DistributorPage-CEO' distributor.id %}
-                      {% else %}
-                      {% url 'DistributorPage' distributor.id %}
-                      {% endif %}">View</a></td>
+                href="{% url namespaec|add:'DistributorPage' distributor.id %}">View</a></td>
         </tr>
         {% endfor %}
     </tbody>

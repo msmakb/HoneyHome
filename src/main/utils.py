@@ -140,3 +140,7 @@ def getUserAgent(request: HttpRequest) -> str:
     if request.META.get('HTTP_USER_AGENT'):
         return request.META.get('HTTP_USER_AGENT')
     return request.headers.get('User-Agent', 'Unknown')
+
+
+def resolvePageUrl(request: HttpRequest, page: str) -> str:
+    return f"{getUserRole(request).replace(' ', '')}:{page}"

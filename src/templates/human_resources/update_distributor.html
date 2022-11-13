@@ -48,11 +48,7 @@
     </div>
     <center>
         <div style="margin-top: 20px;">
-            <a href="{% if user.groups.all.0.name == "CEO" %}
-                     {% url 'DistributorPage-CEO' distributor_id %}
-                     {% else %}
-                     {% url 'DistributorPage' distributor_id %}
-                     {% endif %}" class="btn btn-secondary">Cancel</a>
+            <a href="{% url namespaec|add:'DistributorPage' distributor_id %}" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-xs btn-info">Save Changes</button>
         </div>
     </center>

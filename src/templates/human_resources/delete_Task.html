@@ -11,11 +11,7 @@
     <p>Position: {{ Task.employee.position }}</p>
   </div>
   <div class="modal-footer">
-    <a href="{% if user.groups.all.0.name == "CEO" %}
-             {% url 'TaskPage-CEO' Task.id %}
-             {% else %}
-             {% url 'TaskPage' Task.id %}
-             {% endif %}" class="btn btn-secondary">Close</a>
+    <a href="{% url namespaec|add:'TaskPage' Task.id %}" class="btn btn-secondary">Close</a>
     <form method="POST">
       {% csrf_token %}
       <button type="submit" class="btn btn-xs btn-outline-danger">Remove</button>

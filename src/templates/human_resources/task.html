@@ -17,20 +17,12 @@
         {% if not Task.submission_date %}
         <div class="col-md">
             <a class="btn btn-outline-info  btn-sm btn-block" style="width: 100% !important;"
-                href="{% if user.groups.all.0.name == "CEO" %}
-                      {% url 'UpdateTaskPage-CEO' Task.id %}
-                      {% else %}
-                      {% url 'UpdateTaskPage' Task.id %}
-                      {% endif %}">Update Task</a>
+                href="{% url namespaec|add:'UpdateTaskPage' Task.id %}">Update Task</a>
         </div>
         {% endif %}
         <div class="col-md">
             <a class="btn btn-outline-danger  btn-sm btn-block" style="width: 100% !important;"
-                href="{% if user.groups.all.0.name == "CEO" %}
-                      {% url 'DeleteTaskPage-CEO' Task.id %}
-                      {% else %}
-                      {% url 'DeleteTaskPage' Task.id %}
-                      {% endif %}">Remove Task</a>
+                href="{% url namespaec|add:'DeleteTaskPage' Task.id %}">Remove Task</a>
         </div>
     </div>
 </div>
@@ -86,11 +78,7 @@
                             <td>{% calculateTaskRate TaskRate.rate TaskRate.on_time_rate %}\5</td>
                         {% else %}
                             <td><a class="btn btn-outline-info  btn-sm btn-block" 
-                                href="{% if user_role == "CEO" %}
-                                    {% url 'TaskEvaluationPage-CEO' %}
-                                    {% elif user_role == "Human Resources" %}
-                                    {% url 'TaskEvaluationPage' %}
-                                    {% endif %}">Rate</a>
+                                href="{% url namespaec|add:'TaskEvaluationPage' %}">Rate</a>
                             </td>
                         {% endif %}
                     {% endif %}

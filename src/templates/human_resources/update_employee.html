@@ -52,11 +52,7 @@
     </div>
     <center>
         <div style="margin-top: 20px;">
-            <a href="{% if user.groups.all.0.name == "CEO" %}
-                     {% url 'EmployeePage-CEO' employee_form.instance.id %}
-                     {% else %}
-                     {% url 'EmployeePage' employee_form.instance.id %}
-                     {% endif %}" class="btn btn-secondary">Cancel</a>
+            <a href="{% url namespaec|add:'EmployeePage' employee_form.instance.id %}" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-xs btn-info">Save Changes</button>
         </div>
     </center>

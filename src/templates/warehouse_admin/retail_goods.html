@@ -2,8 +2,8 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'ConvertToRetailPage' %}">Convert to Retail</a></td>
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddRetailGoodsPage' %}">Add Retail Goods</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'ConvertToRetailPage' %}">Convert to Retail</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddRetailGoodsPage' %}">Add Retail Goods</a></td>
 </div>
 <h2>Retail Goods</h2>
 <table style="text-align:center;" class="table table-striped">

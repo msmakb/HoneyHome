@@ -2,7 +2,7 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'AddExpensesPage' %}">Add Expenses</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddExpensesPage' %}">Add Expenses</a></td>
 </div>
 <h2>Expenses</h2>
 <table style="text-align:center;" class="table table-striped">
@@ -27,8 +27,8 @@
         <td>{{Expense.total}}</td>
         <td>{{Expense.date}}</td>
         <td>{{Expense.note}}</td>
-        <td><a class="btn btn-sm btn-info" href="{% url 'UpdateExpensePage' Expense.id %}">Update</a></td>
-        <td><a class="btn btn-sm btn-danger" href="{% url 'DeleteExpensePage' Expense.id %}">Delete</a></td>
+        <td><a class="btn btn-sm btn-info" href="{% url namespaec|add:'UpdateExpensePage' Expense.id %}">Update</a></td>
+        <td><a class="btn btn-sm btn-danger" href="{% url namespaec|add:'DeleteExpensePage' Expense.id %}">Delete</a></td>
     </tr>
     {% endfor %}
     </tbody>

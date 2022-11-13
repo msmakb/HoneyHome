@@ -48,10 +48,13 @@
     }
 </style>
 
+{% load main_tags %}
+{% getNamespace request as namespaec %}
+{% getUserRole request as userRolae %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% block title %}Honey Home Website{{% endblock %}</title>    
+    <title>{% block title %}Honey Home Website{% endblock %}</title>    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -64,11 +67,11 @@
             <div>
                 <nav class="n">
                     <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url 'AccountingManagerDashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'SalesPage' %}">Sales</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'PricingPage' %}">Pricing</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'ExpensesPage' %}">Expenses</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'ApprovePaymentsPage' %}">Approve Payments</a></p>
+                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'AccountingManagerDashboard' %}">Dashboard</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'SalesPage' %}">Sales</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'PricingPage' %}">Pricing</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ExpensesPage' %}">Expenses</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ApprovePaymentsPage' %}">Approve Payments</a></p>
                         <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'Tasks' %}">My Tasks</a></p>
                     </div>
                 </nav>

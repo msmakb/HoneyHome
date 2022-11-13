@@ -41,11 +41,13 @@
         list-style-type:none;
     }
 </style>
-
+{% load main_tags %}
+{% getNamespace request as namespaec %}
+{% getUserRole request as userRolae %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% block title %}Honey Home Website{{% endblock %}</title>    
+    <title>{% block title %}Honey Home Website{% endblock %}</title>    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -58,25 +60,25 @@
             <div>
                 <nav class="n">
                     <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url 'CEODashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'SalesPage' %}">Sales</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'PricingPage' %}">Pricing</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'ExpensesPage' %}">Expenses</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'ApprovePaymentsPage' %}">Approve Payments</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'MainStorageGoodsPage' %}">Main Storage Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'DistributedGoodsPage' %}">Distributed Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'RetailGoodsPage' %}">Retail Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'DamagedGoodsPage' %}">Damaged Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'TransformedGoodsPage' %}">Transformed Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'GoodsMovementPage' %}">Goods Movement</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'RegisteredItemsPage' %}">Registered Items</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'BatchesPage' %}">Batches</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'EmployeesPage-CEO' %}">Employees</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'DistributorsPage-CEO' %}">Distributors</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'TasksPage-CEO' %}">Employees' Tasks</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'EvaluationPage-CEO' %}">Evaluation</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'CustomersPage' %}">Customers</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'QuestionnairesPage' %}">Questionnaires</a></p>
+                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'CEODashboard' %}">Dashboard</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'SalesPage' %}">Sales</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'PricingPage' %}">Pricing</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ExpensesPage' %}">Expenses</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ApprovePaymentsPage' %}">Approve Payments</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'MainStorageGoodsPage' %}">Main Storage Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributedGoodsPage' %}">Distributed Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'RetailGoodsPage' %}">Retail Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DamagedGoodsPage' %}">Damaged Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'TransformedGoodsPage' %}">Transformed Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'GoodsMovementPage' %}">Goods Movement</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'RegisteredItemsPage' %}">Registered Items</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'BatchesPage' %}">Batches</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'EmployeesPage' %}">Employees</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributorsPage' %}">Distributors</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'TasksPage' %}">Employees' Tasks</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'EvaluationPage' %}">Evaluation</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'SocialMediaManager:CustomersPage' %}">Customers</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'SocialMediaManager:QuestionnairesPage' %}">Questionnaires</a></p>
                         <p style="margin-bottom: 5px;"><a class="side-nave-item" href="">File Manager</a></p>
                     </div>
                 </nav>

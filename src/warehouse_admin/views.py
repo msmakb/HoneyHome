@@ -3,15 +3,16 @@ from django.db.models.functions import Lower
 from django.shortcuts import redirect, render
 
 from distributor.models import Distributor
+from main import constants
+from main.utils import Pagination
 from main.utils import getEmployeesTasks as EmployeeTasks
 from main.utils import getUserBaseTemplate as base
-from main.utils import Pagination
+from main.utils import resolvePageUrl
 
-from .models import (ItemCard, RetailCard, Stock, ItemType, Batch,
-                     GoodsMovement, RetailItem)
-from .forms import (AddGoodsForm, RegisterItemForm, AddBatchForm,
-                    SendGoodsForm, AddRetailGoodsForm, ConvertToRetailForm)
-from main import constants
+from .forms import (AddBatchForm, AddGoodsForm, AddRetailGoodsForm,
+                    ConvertToRetailForm, RegisterItemForm, SendGoodsForm)
+from .models import (Batch, GoodsMovement, ItemCard, ItemType, RetailCard,
+                     RetailItem, Stock)
 
 
 # ----------------------------Dashboard------------------------------
@@ -100,7 +101,7 @@ def AddGoodsPage(request):
         if form.is_valid:
             form.save()
 
-        return redirect('MainStorageGoodsPage')
+        return redirect(resolvePageUrl(request, constants.PAGES.MAIN_STORAGE_GOODS_PAGE))
 
     context = {'form': form, 'base': base(
         request), 'EmployeeTasks': EmployeeTasks(request)}
@@ -122,7 +123,7 @@ def RegisterItemPage(request):
         form = RegisterItemForm(request.POST)
         if form.is_valid:
             form.save()
-        return redirect('RegisteredItemsPage')
+        return redirect(resolvePageUrl(request, constants.PAGES.REGISTERED_ITEMS_PAGE))
     context = {'form': form, 'base': base(
         request), 'EmployeeTasks': EmployeeTasks(request)}
     return render(request, 'warehouse_admin/register_item.html', context)
@@ -142,7 +143,7 @@ def AddBatchPage(request):
         form = AddBatchForm(request.POST)
         if form.is_valid:
             form.save()
-        return redirect('BatchesPage')
+        return redirect(resolvePageUrl(request, constants.PAGES.BATCHES_PAGE))
     context = {'form': form, 'base': base(
         request), 'EmployeeTasks': EmployeeTasks(request)}
     return render(request, 'warehouse_admin/add_batch.html', context)
@@ -226,8 +227,8 @@ def SendGoodsPage(request, pk):
             else:
                 messages.info(
                     request, "Item or quantity is not available in the stock")
-                return redirect('SendGoodsPage', pk)
-        return redirect('DistributorStockPage', pk)
+                return redirect(resolvePageUrl(request, constants.PAGES.SEND_GOODS_PAGE), pk)
+        return redirect(resolvePageUrl(request, constants.PAGES.DISTRIBUTOR_STOCK_PAGE), pk)
     context = {'availableItems': availableItems, 'form': form, 'base': base(
         request), 'EmployeeTasks': EmployeeTasks(request)}
     return render(request, 'warehouse_admin/send_goods.html', context)
@@ -290,8 +291,8 @@ def AddDamagedGoodsPage(request):
             else:
                 messages.info(
                     request, "Item or quantity is not available in the stock")
-                return redirect('AddDamagedGoodsPage')
-        return redirect('DamagedGoodsPage')
+                return redirect(resolvePageUrl(request, constants.PAGES.ADD_DAMAGED_GOODS_PAGE))
+        return redirect(resolvePageUrl(request, constants.PAGES.DAMAGED_GOODS_PAGE))
     context = {'availableItems': availableItems, 'form': form, 'base': base(
         request), 'EmployeeTasks': EmployeeTasks(request)}
     return render(request, 'warehouse_admin/add_damaged_goods.html', context)
@@ -319,7 +320,7 @@ def ApproveTransformedGoods(request, pk):
         task.save()
     messages.success(
         request, f"The transformed goods '{item.type}' from '{item.received_from}' to '{item.getReceiver()}' has been 'approved'")
-    return redirect(TransformedGoodsPage)
+    return redirect(resolvePageUrl(request, constants.PAGES.TRANSFORMED_GOODS_PAGE))
 
 
 def RetailGoodsPage(request):
@@ -365,7 +366,7 @@ def ConvertToRetailPage(request):
                 messages.info(
                     request, "Item or quantity is not available in the stock")
                 return redirect('ConvertToRetailPage')
-        return redirect('RetailGoodsPage')
+        return redirect(resolvePageUrl(request, constants.PAGES.RETAIL_GOODS_PAGE))
 
     context = {'availableItems': availableItems, 'form': form, 'base': base(
         request), 'EmployeeTasks': EmployeeTasks(request)}
@@ -395,7 +396,7 @@ def AddRetailGoodsPage(request):
             q.weight = int(
                 q.weight) - int(RetailItem.objects.all().order_by('-id')[0].type.weight)
             q.save()
-        return redirect('RetailGoodsPage')
+        return redirect(resolvePageUrl(request, constants.PAGES.RETAIL_GOODS_PAGE))
 
     context = {'form': form, 'base': base(
         request), 'EmployeeTasks': EmployeeTasks(request)}

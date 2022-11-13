@@ -49,7 +49,9 @@
         list-style-type:none;
     }
 </style>
-
+{% load main_tags %}
+{% getNamespace request as namespaec %}
+{% getUserRole request as userRolae %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,12 +81,12 @@
             <div>
                 <nav class="n">
                     <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url 'DistributorDashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'GoodsPage' %}">Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'SendPaymentPage' %}">Send Payment</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'FreezeItemPage' %}">Freeze Item</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'ReturnItemPage' %}">Send/Return Item</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'HistoryPage' %}">History</a></p>
+                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributorDashboard' %}">Dashboard</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'GoodsPage' %}">Goods</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'SendPaymentPage' %}">Send Payment</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'FreezeItemPage' %}">Freeze Item</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ReturnItemPage' %}">Send/Return Item</a></p>
+                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'HistoryPage' %}">History</a></p>
                     </div>
                 </nav>
             </div>

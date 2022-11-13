@@ -49,11 +49,7 @@
     </div>
     <center>
         <div style="margin-top: 20px;">
-            <a href="{% if user.groups.all.0.name == "CEO" %}
-                     {% url 'DistributorsPage-CEO' %}
-                     {% else %}
-                     {% url 'DistributorsPage' %}
-                     {% endif %}" class="btn btn-secondary">Close</a>
+            <a href="{% url namespaec|add:'DistributorsPage' %}" class="btn btn-secondary">Close</a>
             <button type="submit" class="btn btn-xs btn-info">Add Distributor</button>
         </div>
     </center>

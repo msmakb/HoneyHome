@@ -2,7 +2,7 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url 'RegisterItemPage' %}">Register New Items</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'RegisterItemPage' %}">Register New Items</a></td>
 </div>
 <h2>Registered Items</h2>
 <table style="text-align:center;" class="table table-striped">
