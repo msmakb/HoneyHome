@@ -64,18 +64,7 @@
     {% include 'navbar.html' %}
     <div class="float-container">
         <div class="float-child1">
-            <div>
-                <nav class="n">
-                    <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'AccountingManagerDashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'SalesPage' %}">Sales</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'PricingPage' %}">Pricing</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ExpensesPage' %}">Expenses</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ApprovePaymentsPage' %}">Approve Payments</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'Tasks' %}">My Tasks</a></p>
-                    </div>
-                </nav>
-            </div>
+            {% include 'menu.html' %}
         </div>
         
         <div class="float-child2">

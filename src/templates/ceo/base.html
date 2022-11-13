@@ -57,33 +57,9 @@
     {% include 'navbar.html' %}
     <div class="float-container">
         <div class="float-child1">
-            <div>
-                <nav class="n">
-                    <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'CEODashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'SalesPage' %}">Sales</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'PricingPage' %}">Pricing</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ExpensesPage' %}">Expenses</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ApprovePaymentsPage' %}">Approve Payments</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'MainStorageGoodsPage' %}">Main Storage Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributedGoodsPage' %}">Distributed Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'RetailGoodsPage' %}">Retail Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DamagedGoodsPage' %}">Damaged Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'TransformedGoodsPage' %}">Transformed Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'GoodsMovementPage' %}">Goods Movement</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'RegisteredItemsPage' %}">Registered Items</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'BatchesPage' %}">Batches</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'EmployeesPage' %}">Employees</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributorsPage' %}">Distributors</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'TasksPage' %}">Employees' Tasks</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'EvaluationPage' %}">Evaluation</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'SocialMediaManager:CustomersPage' %}">Customers</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'SocialMediaManager:QuestionnairesPage' %}">Questionnaires</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="">File Manager</a></p>
-                    </div>
-                </nav>
-            </div>
+            {% include 'menu.html' %}
         </div>
+       
         <div class="float-child2">
             <div style="margin: auto;">
                 {% block content %}{% endblock %}

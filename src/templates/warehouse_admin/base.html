@@ -55,7 +55,7 @@
 <head>
     <!--<link id="pagestyle" href="/static/assets/css/material-dashboard.css?v=3.0.4" rel="stylesheet" />-->
 
-    <title>{% block title %}Honey Home Website{{% endblock %}</title>    
+    <title>{% block title %}Honey Home Website{% endblock %}</title>    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -65,22 +65,7 @@
     {% include 'navbar.html' %}
     <div class="float-container">
         <div class="float-child1">
-            <div>
-                <nav class="n">
-                    <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'WarehouseAdminDashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'MainStorageGoodsPage' %}">Main Storage Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributedGoodsPage' %}">Distributed Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'RetailGoodsPage' %}">Retail Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DamagedGoodsPage' %}">Damaged Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'TransformedGoodsPage' %}">Transformed Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'GoodsMovementPage' %}">Goods Movement</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'RegisteredItemsPage' %}">Registered Items</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'BatchesPage' %}">Batches</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'Tasks' %}">My Tasks</a></p>
-                    </div>
-                </nav>
-            </div>
+            {% include 'menu.html' %}
         </div>
         
         <div class="float-child2">

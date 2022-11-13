@@ -72,7 +72,7 @@ def clean_form_created_by(self: ModelForm, object_str_representation: str) -> st
                     + f"adding new object. [{object_str_representation}] By: {created_by}")
     else:
         if not instance.created_by:
-            raise "Ops.. Something went wrong!!"
+            raise TypeError("'NoneTypeError' Something went wrong!!")
         created_by: str = instance.created_by
     return created_by
 
@@ -115,7 +115,7 @@ def getUserBaseTemplate(request: HttpRequest) -> str:
         if Role.split(' ')[-1] != i:
             base += '_'
     base += '/base.html'
-    return base
+    return 'base.html'
 
 
 def getEmployeesTasks(request: HttpRequest) -> QuerySet:

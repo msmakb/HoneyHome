@@ -1,5 +1,6 @@
 from django.urls import path
 from main.constants import PAGES
+from main.views import tasks
 from . import views
 
 app_name = 'warehouse_admin'
@@ -110,5 +111,10 @@ urlpatterns = [
         f'{PAGES.DASHBOARD}/Add-Retail-Goods/',
         views.AddRetailGoodsPage,
         name=PAGES.ADD_RETAIL_GOODS_PAGE
+    ),
+    path(
+        f'{PAGES.DASHBOARD}/My-Tasks/',
+        tasks,
+        name=PAGES.TASKS_PAGE
     ),
 ]

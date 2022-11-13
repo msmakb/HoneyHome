@@ -3,13 +3,12 @@ from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.template.context import RenderContext
-from django.urls import reverse
 
 from human_resources.models import Employee, Task
 
 from .. import constants
+from ..menu import getUserMenu as _getUserMenu
 from ..utils import getUserRole as _getUserRole
-from ..utils import resolvePageUrl as _resolvePageUrl
 
 # Register template library
 register = template.Library()
@@ -43,3 +42,8 @@ def isVarExists(context: RenderContext, name: str) -> bool:
 @register.simple_tag
 def getNamespace(request: HttpRequest) -> str:
     return f"{_getUserRole(request).replace(' ', '')}:"
+
+
+@register.simple_tag
+def getUserMenu(request: HttpRequest) -> dict:
+    return _getUserMenu(request)

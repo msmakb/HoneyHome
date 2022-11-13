@@ -1,6 +1,7 @@
 from django.urls import path
 
 from main.constants import PAGES
+from main.views import tasks
 
 from . import views
 
@@ -56,5 +57,10 @@ urlpatterns = [
         f'{PAGES.DASHBOARD}/Approve-Payment/<str:pk>/',
         views.ApprovePayment,
         name=PAGES.APPROVE_PAYMENT_PAGE
+    ),
+    path(
+        f'{PAGES.DASHBOARD}/My-Tasks/',
+        tasks,
+        name=PAGES.TASKS_PAGE
     ),
 ]

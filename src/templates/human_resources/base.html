@@ -76,18 +76,7 @@
     {% include 'navbar.html' %}
     <div class="float-container">
         <div class="float-child1">
-            <div>
-                <nav class="n">
-                    <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'HumanResourcesDashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'EmployeesPage' %}">Employees</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributorsPage' %}">Distributors</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'TasksPage' %}">Employees' Tasks</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'EvaluationPage' %}">Evaluation</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'Tasks' %}">My Tasks</a></p>
-                    </div>
-                </nav>
-            </div>
+            {% include 'menu.html' %}
         </div>
         
         <div class="float-child2">

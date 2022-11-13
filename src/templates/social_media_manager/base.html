@@ -47,11 +47,13 @@
         list-style-type:none;
     }
 </style>
-
+{% load main_tags %}
+{% getNamespace request as namespaec %}
+{% getUserRole request as userRolae %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% block title %}Honey Home Website{{% endblock %}</title>    
+    <title>{% block title %}Honey Home Website{% endblock %}</title>    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -61,19 +63,9 @@
     {% include 'navbar.html' %}
     <div class="float-container">
         <div class="float-child1">
-            <div>
-                <nav class="n">
-                    <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url 'SocialMediaManagerDashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'CustomersPage' %}">Customers</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'QuestionnairesPage' %}">Questionnaires</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="">File Manager</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url 'Tasks' %}">My Tasks</a></p>
-                    </div>
-                </nav>
-            </div>
+            {% include 'menu.html' %}
         </div>
-        
+
         <div class="float-child2">
             <div>
                 

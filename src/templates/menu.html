@@ -1,0 +1,41 @@
+{% load main_tags %}
+{% getUserMenu request as userMenu %}
+<style>
+    .side-nave-item{
+        font-size: 24px;
+        color: gray;
+        padding: 5px;
+        text-decoration: none;
+    }
+    .side-nave-item:hover{
+        font-size: 24px;
+        color: white;
+        padding: 5px;
+        text-decoration: none;
+    }
+    .n{
+        background: linear-gradient(to right, #636363, #4e4e4e);
+        position: absolute;
+        height: 100%;
+        left: 0px;
+        top: 53px;
+        bottom: 0px;
+        width: 220px;
+        font-family: BloggerSans;
+        font-size: 1.5em;
+    }
+    .nav-list{
+        list-style-type:none;
+    }
+</style>
+<nav class="n">
+    <div style="margin-left: 10px;">
+        {% for menu_name, menu_url in userMenu.items %}
+            {% if 'Dashboard' in menu_name %}
+                <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:menu_url %}">{{menu_name}}</a></p>
+            {% else %}
+                <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:menu_url %}">{{menu_name}}</a></p>
+            {% endif %}
+        {% endfor %}
+    </div>
+</nav>

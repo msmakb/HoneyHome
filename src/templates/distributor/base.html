@@ -1,5 +1,3 @@
-{% load static %}
-
 <style>
     .float-container {
         height: 100%;
@@ -22,33 +20,8 @@
         padding: 20px;
         border: red;
     }  
-    .side-nave-item{
-        font-size: 24px;
-        color: gray;
-        padding: 5px;
-        text-decoration: none;
-    }
-    .side-nave-item:hover{
-        font-size: 24px;
-        color: white;
-        padding: 5px;
-        text-decoration: none;
-    }
-    .n{
-        background: linear-gradient(to right, #636363, #4e4e4e);
-        position: absolute;
-        height: 100%;
-        left: 0px;
-        top: 53px;
-        bottom: 0px;
-        width: 220px;
-        font-family: BloggerSans;
-        font-size: 1.5em;
-    }
-    .nav-list{
-        list-style-type:none;
-    }
 </style>
+{% load static %}
 {% load main_tags %}
 {% getNamespace request as namespaec %}
 {% getUserRole request as userRolae %}
@@ -68,7 +41,7 @@
     <!-- CSS Files -->
     <link id="pagestyle" href="/static/assets/css/material-dashboard.css?v=3.0.4" rel="stylesheet" />
 
-    <title>{% block title %}Honey Home Website{{% endblock %}</title>    
+    <title>{% block title %}Honey Home Website{% endblock %}</title>    
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -78,18 +51,7 @@
     {% include 'navbar.html' %}
     <div class="float-container">
         <div class="float-child1">
-            <div>
-                <nav class="n">
-                    <div style="margin-left: 10px;">
-                        <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:'DistributorDashboard' %}">Dashboard</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'GoodsPage' %}">Goods</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'SendPaymentPage' %}">Send Payment</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'FreezeItemPage' %}">Freeze Item</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'ReturnItemPage' %}">Send/Return Item</a></p>
-                        <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:'HistoryPage' %}">History</a></p>
-                    </div>
-                </nav>
-            </div>
+            {% include 'menu.html' %}
         </div>
         
         <div class="float-child2">

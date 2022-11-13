@@ -1,4 +1,7 @@
 from django.urls import path
+from main.constants import PAGES
+
+from main.views import tasks
 from . import views
 
 
@@ -29,4 +32,5 @@ urlpatterns = [
     path('Questionnaire/Result/<str:pk>',
          views.QuestionnaireResultPage, name='QuestionnaireResultPage'),
     path('Add-Question', views.AddQuestionPage, name='AddQuestionPage'),
+    path('Dashboard/My-Tasks/', tasks, name=PAGES.TASKS_PAGE),
 ]

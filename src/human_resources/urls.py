@@ -1,5 +1,6 @@
 from django.urls import path
 from main.constants import PAGES
+from main.views import tasks
 from . import views
 
 app_name = 'human_resources'
@@ -103,5 +104,10 @@ urlpatterns = [
         f'{PAGES.DASHBOARD}/Task-Evaluation/',
         views.taskEvaluationPage,
         name=PAGES.TASK_EVALUATION_PAGE
+    ),
+    path(
+        f'{PAGES.DASHBOARD}/My-Tasks/',
+        tasks,
+        name=PAGES.TASKS_PAGE
     ),
 ]
