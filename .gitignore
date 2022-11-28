@@ -1,4 +1,5 @@
 /logs/
+/venv/
 /src/.vscode/
 /src/accounting_manager/__pycache__/
 /src/accounting_manager/migrations/__pycache__/
