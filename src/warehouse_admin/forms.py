@@ -119,7 +119,7 @@ class AddGoodsForm(ModelForm):
                 "Select a valid choice. That choice is not one of the available choices.")
         return batch
 
-    def clean_quantity(self):
+    def clean_quantity(self) -> int:
         batch: Batch = self.cleaned_data.get("batch")
         quantity: int = self.cleaned_data["quantity"]
         if batch is None:
@@ -134,14 +134,14 @@ class AddGoodsForm(ModelForm):
 
         return quantity
 
-    def clean_created_by(self):
+    def clean_created_by(self) -> str:
         item_type: ItemType = self.cleaned_data.get('type')
         batch: Batch = self.cleaned_data.get('batch')
         if item_type is not None and batch is not None:
             object_str_representation: str = f"{item_type.name}-{batch.name}"
             return clean_form_created_by(self, object_str_representation)
 
-    def clean_updated_by(self):
+    def clean_updated_by(self) -> str:
         return clean_form_updated_by(self)
 
 
@@ -188,7 +188,7 @@ class RegisterItemForm(ModelForm):
             'is_retail': forms.CheckboxInput()
         }
 
-    def clean_weight(self):
+    def clean_weight(self) -> int:
         data = self.cleaned_data["weight"]
         if data <= 0:
             raise forms.ValidationError(
@@ -196,11 +196,11 @@ class RegisterItemForm(ModelForm):
 
         return data
 
-    def clean_created_by(self):
+    def clean_created_by(self) -> str:
         object_str_representation: str = self.cleaned_data.get('name')
         return clean_form_created_by(self, object_str_representation)
 
-    def clean_updated_by(self):
+    def clean_updated_by(self) -> str:
         return clean_form_updated_by(self)
 
 
@@ -261,7 +261,7 @@ class AddBatchForm(ModelForm):
             ),
         }
 
-    def clean_quantity(self):
+    def clean_quantity(self) -> int:
         data = self.cleaned_data["quantity"]
         if data <= 0:
             raise forms.ValidationError(
@@ -269,11 +269,11 @@ class AddBatchForm(ModelForm):
 
         return data
 
-    def clean_created_by(self):
+    def clean_created_by(self) -> str:
         object_str_representation: str = self.cleaned_data.get('name')
         return clean_form_created_by(self, object_str_representation)
 
-    def clean_updated_by(self):
+    def clean_updated_by(self) -> str:
         return clean_form_updated_by(self)
 
 
@@ -353,7 +353,7 @@ class SendGoodsForm(ModelForm):
                 "Select a valid choice. That choice is not one of the available choices.")
         return item_type
 
-    def clean_quantity(self):
+    def clean_quantity(self) -> int:
         item_type: ItemType = self.cleaned_data.get("type")
         quantity = self.cleaned_data.get("quantity")
         if quantity <= 0:
@@ -366,11 +366,11 @@ class SendGoodsForm(ModelForm):
 
         return quantity
 
-    def clean_created_by(self):
+    def clean_created_by(self) -> str:
         object_str_representation: str = self.cleaned_data.get('name')
         return clean_form_created_by(self, object_str_representation)
 
-    def clean_updated_by(self):
+    def clean_updated_by(self) -> str:
         return clean_form_updated_by(self)
 
 

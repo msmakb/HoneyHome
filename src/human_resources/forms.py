@@ -101,11 +101,11 @@ class AddPersonForm(ModelForm):
             'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
 
-    def clean_created_by(self):
+    def clean_created_by(self) -> str:
         object_str_representation: str = self.cleaned_data.get('name')
         return clean_form_created_by(self, object_str_representation)
 
-    def clean_updated_by(self):
+    def clean_updated_by(self) -> str:
         return clean_form_updated_by(self)
 
     def clean_phone_number(self) -> str:
@@ -176,11 +176,11 @@ class EmployeeForm(ModelForm):
             'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
 
-    def clean_created_by(self):
+    def clean_created_by(self) -> str:
         object_str_representation: str = self.cleaned_data.get('position')
         return clean_form_created_by(self, object_str_representation)
 
-    def clean_updated_by(self):
+    def clean_updated_by(self) -> str:
         return clean_form_updated_by(self)
 
 
@@ -254,7 +254,7 @@ class AddTaskForm(ModelForm):
             'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
 
-    def clean_employee(self):
+    def clean_employee(self) -> Employee:
         employee: Employee = self.cleaned_data["employee"]
         employee_choices: list[tuple] = list(self.fields['employee'].choices)
         employee_name: str = employee.person.name
@@ -268,9 +268,9 @@ class AddTaskForm(ModelForm):
                 "Select a valid choice. That choice is not one of the available choices.")
         return employee
 
-    def clean_created_by(self):
+    def clean_created_by(self) -> str:
         object_str_representation: str = self.cleaned_data.get('task')
         return clean_form_created_by(self, object_str_representation)
 
-    def clean_updated_by(self):
+    def clean_updated_by(self) -> str:
         return clean_form_updated_by(self)
