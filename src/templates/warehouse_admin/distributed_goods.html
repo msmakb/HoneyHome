@@ -5,6 +5,7 @@
 <table style="text-align:center;" class="table table-striped">
     <thead>
     <tr>
+        <th scope="col">NO.</th>
         <th scope="col">NAME</th>
         <th scope="col">GENDER</th>
         <th scope="col">NATIONALITY</th>
@@ -13,13 +14,14 @@
     </tr>
     </thead>
     <tbody>
-    {% for key, value in Distributors.items %}
+    {% for distributor in page_obj %}
     <tr>
-        <td>{{value.distributor.person.name}}</td>
-        <td>{{value.distributor.person.gender}}</td>
-        <td>{{value.distributor.person.nationality}}</td>
-        <td>{{value.quantityOfGoods}}</td>
-        <td><a class="btn btn-sm btn-info" href="{% url namespaec|add:'DistributorStockPage' value.distributor.id %}">View</a></td>
+        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+        <td>{{ distributor.person.name }}</td>
+        <td>{{ distributor.person.gender }}</td>
+        <td>{{ distributor.person.nationality }}</td>
+        <td>{{ distributor.stock.getTotalGoodsInStock }}</td>
+        <td><a class="btn btn-sm btn-info" href="{% url namespaec|add:'DistributorStockPage' distributor.stock.id %}">View</a></td>
     </tr>
     {% endfor %}
     </tbody>

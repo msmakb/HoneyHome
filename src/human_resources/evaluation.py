@@ -183,7 +183,7 @@ def allTimeEvaluation(emp_id: int) -> float:
             return 0
 
 
-def getEvaluation(emp_id: Optional[int] = -1) -> dict:
+def getEvaluation(emp_id: Optional[int] = -1) -> dict[str, float | Employee]:
     """
     This function if employee id not specified it will return all employees' evaluations 
     else it will return the evaluation of the specified employee's evaluations
@@ -220,7 +220,7 @@ def getEvaluation(emp_id: Optional[int] = -1) -> dict:
     return evaluation
 
 
-def allEmployeesWeeklyEvaluations():
+def allEmployeesWeeklyEvaluations() -> float:
     rate: float = 0
     count: int = 0
     employees: QuerySet[Employee] = Employee.filter(
@@ -236,7 +236,7 @@ def allEmployeesWeeklyEvaluations():
         return 0
 
 
-def allEmployeesMonthlyEvaluations():
+def allEmployeesMonthlyEvaluations() -> float:
     rate: float = 0
     count: int = 0
     employees: QuerySet[Employee] = Employee.filter(
@@ -252,7 +252,7 @@ def allEmployeesMonthlyEvaluations():
         return 0
 
 
-def allEmployeesMonthlyTaskRate():
+def allEmployeesMonthlyTaskRate() -> float:
     rate: float = 0
     count: int = 0
     employees: QuerySet[Employee] = Employee.filter(
@@ -268,7 +268,7 @@ def allEmployeesMonthlyTaskRate():
         return 0
 
 
-def allEmployeesMonthlyOverallEvaluation():
+def allEmployeesMonthlyOverallEvaluation() -> float:
     rate: float = 0
     count: int = 0
     employees: QuerySet[Employee] = Employee.objects.filter(

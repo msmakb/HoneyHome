@@ -1,14 +1,21 @@
 from datetime import timedelta
 import logging
+from logging import Logger
 import re
+from typing import Callable
 
 from django.conf import settings
 from django.contrib.auth import logout
 from django.db.models.query import QuerySet
-from django.http import HttpResponseForbidden, HttpRequest, Http404
+from django.http import (HttpResponsePermanentRedirect,
+                         HttpResponseForbidden,
+                         HttpRequest,
+                         HttpResponse,
+                         Http404)
 from django.shortcuts import redirect
 from django.urls import reverse, resolve
 from django.utils import timezone
+from django.utils.timezone import datetime
 
 from . import constants
 from . import messages as MSG
@@ -17,18 +24,18 @@ from .models import AuditEntry, BlockedClient
 from .parameters import getParameterValue
 from .utils import getClientIp, getUserAgent, getUserRole
 
-logger = logging.getLogger(constants.LOGGERS.MIDDLEWARE)
+logger: Logger = logging.getLogger(constants.LOGGERS.MIDDLEWARE)
 
 
 class AllowedClientMiddleware(object):
 
-    def __init__(self, get_response):
-        self.get_response = get_response
+    def __init__(self, get_response) -> None:
+        self.get_response: Callable[[HttpRequest], HttpResponse] = get_response
         self.request: HttpRequest = None
         self.requester_ip: str = None
         self.requester_agent: str = None
         self.user: str = None
-        self.last_audit_entry: QuerySet = None
+        self.last_audit_entry: QuerySet[AuditEntry] = None
         if settings.DEBUG:
             from .cron import setMagicNumber
             from .parameters import _saveDefaultParametersToDataBase
@@ -36,7 +43,7 @@ class AllowedClientMiddleware(object):
             setMagicNumber()
             _saveDefaultParametersToDataBase()
 
-    def __call__(self, request: HttpRequest):
+    def __call__(self, request: HttpRequest) -> HttpResponse | HttpResponsePermanentRedirect | HttpResponseForbidden:
         self.request = request
         self.requester_ip = getClientIp(request)
         self.requester_agent = getUserAgent(request)
@@ -48,7 +55,7 @@ class AllowedClientMiddleware(object):
         # set to 7 days, the last object that will be reset, It will be #
         # saved in the in 'MAGIC_NUMBER' parameter, to make the search  #
         # in the table 'AuditEntry' faster and more scalable            #
-        start_chunk_object_id: int = getParameterValue(                      #
+        start_chunk_object_id: int = getParameterValue(                 #
             constants.PARAMETERS.MAGIC_NUMBER)                          #
         self.last_audit_entry = AuditEntry.filter(                      #
             id__gte=start_chunk_object_id)                              #
@@ -64,7 +71,7 @@ class AllowedClientMiddleware(object):
                               username=self.user)
 
         # If the requester posting
-        if request.method == constants.POST:
+        if request.method == constants.POST_METHOD:
 
             # Is posting an HTML for attack
             if self.isThereHtmlInPost():
@@ -78,7 +85,7 @@ class AllowedClientMiddleware(object):
                               action=constants.ACTION.NORMAL_POST,
                               username=self.user)
 
-            time: timezone.datetime = timezone.now() - timedelta(
+            time: datetime = timezone.now() - timedelta(
                 milliseconds=getParameterValue(
                     constants.PARAMETERS.BETWEEN_POST_REQUESTS_TIME))
             last_posts_count: int = self.last_audit_entry.filter(
@@ -122,7 +129,7 @@ class AllowedClientMiddleware(object):
         # ------------------------------------------------------------------- #
         #       Up this point executed before the response have been set      #
         # ------------------------------------------------------------------- #
-        response = self.get_response(request)                                 #
+        response: HttpResponse = self.get_response(request)                   #
         # ------------------------------------------------------------------- #
         #     After this point everything executed with response been set     #
         # ------------------------------------------------------------------- #
@@ -199,7 +206,7 @@ class AllowedClientMiddleware(object):
                        + f"was {block_type} blocked")
 
     def cleanupUnsuspiciousPostRequests(self) -> None:
-        last_posts: QuerySet = self.last_audit_entry.filter(
+        last_posts: QuerySet[AuditEntry] = self.last_audit_entry.filter(
             ip=self.requester_ip,
             action=constants.ACTION.NORMAL_POST)
         for index, post in enumerate(last_posts):
@@ -209,7 +216,7 @@ class AllowedClientMiddleware(object):
                 post.delete(constants.SYSTEM_MIDDLEWARE_NAME)
 
     def getRequesterFailedAttempts(self) -> int:
-        failed_attempts: QuerySet = self.last_audit_entry.filter(
+        failed_attempts: QuerySet[AuditEntry] = self.last_audit_entry.filter(
             ip=self.requester_ip,
             action=constants.ACTION.LOGGED_FAILED)
 
@@ -219,8 +226,8 @@ class AllowedClientMiddleware(object):
         blocked_client: BlockedClient = BlockedClient.get(ip=self.requester_ip)
         block_type: str = blocked_client.block_type
         if block_type == constants.BLOCK_TYPES.TEMPORARY:
-            blocked_time: timezone.datetime = blocked_client.updated
-            time_to_unblocked: timezone.datetime = blocked_time + timedelta(
+            blocked_time: datetime = blocked_client.updated
+            time_to_unblocked: datetime = blocked_time + timedelta(
                 days=getParameterValue(
                     constants.PARAMETERS.TEMPORARY_BLOCK_PERIOD))
             if time_to_unblocked <= timezone.now():
@@ -262,15 +269,15 @@ class AllowedClientMiddleware(object):
 
 
 class LoginRequiredMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
+    def __init__(self, get_response) -> None:
+        self.get_response: Callable[[HttpRequest], HttpResponse] = get_response
 
-    def __call__(self, request: HttpRequest):
-        response = self.get_response(request)
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        response: HttpResponse = self.get_response(request)
 
         return response
 
-    def process_view(self, request: HttpRequest, *args, **kwargs):
+    def process_view(self, request: HttpRequest, *args, **kwargs) -> HttpResponsePermanentRedirect | None:
         time_out: int = getParameterValue(constants.PARAMETERS.TIME_OUT_PERIOD)
         if not request.user.is_authenticated:
             if request.path.startswith(reverse('admin:index')):
@@ -291,18 +298,18 @@ class LoginRequiredMiddleware:
 
 
 class AllowedUserMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
+    def __init__(self, get_response) -> None:
+        self.get_response: Callable[[HttpRequest], HttpResponse] = get_response
         self.request: HttpRequest = None
 
-    def __call__(self, request: HttpRequest):
+    def __call__(self, request: HttpRequest) -> HttpResponse:
         self.request = request
-        response = self.get_response(request)
+        response: HttpResponse = self.get_response(request)
 
         return response
 
     @newEmployee
-    def process_view(self, request: HttpRequest, *args, **kwargs):
+    def process_view(self, request: HttpRequest, *args, **kwargs) -> HttpResponsePermanentRedirect | None:
         if request.user.is_authenticated:
             path_name: str = resolve(request.path_info).url_name
             # Is requesting admin dashboard
@@ -315,7 +322,8 @@ class AllowedUserMiddleware:
 
             elif request.user.groups.exists():
                 role: str = getUserRole(request).replace(' ', '')
-                excluded_pages: list = settings.EXCLUDED_PAGES_FORM_REQUIRED_AUTHENTICATION
+                excluded_pages: list = list(
+                    settings.EXCLUDED_PAGES_FORM_REQUIRED_AUTHENTICATION)
                 excluded_pages += constants.PAGES.CREATE_USER_PAGE
                 conditions = (
                     not str(request.path_info).startswith(f'/{role}/'),

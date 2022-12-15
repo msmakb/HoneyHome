@@ -1,5 +1,6 @@
 import logging
-from typing import Union
+from logging import Logger
+from typing import Any, Union
 
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
@@ -13,17 +14,17 @@ from human_resources.models import Employee, Task
 from . import constants
 from .models import BaseModel
 
-logger = logging.getLogger(constants.LOGGERS.MAIN)
-logger_models = logging.getLogger(constants.LOGGERS.MODELS)
+logger: Logger = logging.getLogger(constants.LOGGERS.MAIN)
+logger_models: Logger = logging.getLogger(constants.LOGGERS.MODELS)
 
 
 class Pagination:
 
-    def __init__(self, queryset: QuerySet, page_num: int, paginate_by: int = constants.ROWS_PER_PAGE):
+    def __init__(self, queryset: QuerySet, page_num: int, paginate_by: int = constants.ROWS_PER_PAGE) -> None:
         self.page_num: int = page_num
         self.paginator: Paginator = Paginator(queryset, paginate_by)
 
-    def getPageObject(self) -> QuerySet:
+    def getPageObject(self) -> QuerySet | dict[str, Any]:
         return self.paginator.get_page(self.page_num)
 
     @property
@@ -59,40 +60,46 @@ def setCreatedByUpdatedBy(requester: Union[HttpRequest, str], obj: BaseModel, ch
 
 
 def clean_form_created_by(self: ModelForm, object_str_representation: str) -> str:
-    try:
-        user: User = self.request.user
-    except:
-        raise TypeError(
-            "Request must be passed in the form and declared as self.request")
-    instance: BaseModel = self.instance
-    created = not instance.id
-    if created:
-        created_by: str = user.get_full_name()
-        logger.info(f"Database change in [{self.__class__.Meta.model.__name__}] "
-                    + f"adding new object. [{object_str_representation}] By: {created_by}")
+    if self.is_valid():
+        try:
+            user: User = self.request.user
+        except:
+            raise TypeError(
+                "Request must be passed in the form and declared as self.request")
+        instance: BaseModel = self.instance
+        created = not instance.id
+        if created:
+            created_by: str = user.get_full_name()
+            logger.info(f"Database change in [{self.__class__.Meta.model.__name__}] "
+                        + f"adding new object. [{object_str_representation}] By: {created_by}")
+        else:
+            if not instance.created_by:
+                raise TypeError("'NoneTypeError' Something went wrong!!")
+            created_by: str = instance.created_by
+        return created_by
     else:
-        if not instance.created_by:
-            raise TypeError("'NoneTypeError' Something went wrong!!")
-        created_by: str = instance.created_by
-    return created_by
+        return None
 
 
 def clean_form_updated_by(self: ModelForm) -> str:
-    try:
-        user: User = self.request.user
-    except:
-        raise TypeError(
-            "Request must be passed in the form and declared as self.request")
-    instance: BaseModel = self.instance
-    updated_by: str = user.get_full_name()
-    created = not instance.id
-    if not created:
-        logger.info(f"Database change in [{self.__class__.Meta.model.__name__}] "
-                    + f"at object [{instance.__str__()}] By: {updated_by}")
-    return updated_by
+    if self.is_valid():
+        try:
+            user: User = self.request.user
+        except:
+            raise TypeError(
+                "Request must be passed in the form and declared as self.request")
+        instance: BaseModel = self.instance
+        updated_by: str = user.get_full_name()
+        created = not instance.id
+        if not created:
+            logger.info(f"Database change in [{self.__class__.Meta.model.__name__}] "
+                        + f"at object [{instance.__str__()}] By: {updated_by}")
+        return updated_by
+    else:
+        return None
 
 
-def getUserRole(requester: Union[HttpRequest, User]) -> str:
+def getUserRole(requester: Union[HttpRequest, User]) -> str | None:
     user: User = None
     if isinstance(requester, User):
         user = requester

@@ -15,40 +15,55 @@
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Full Name</label>
             <div>{{ PersonForm.name }}</div>
+            {% if "name" in PersonForm.errors %}<span class="text-danger">{{ PersonForm.errors.name }}</span>{% endif %}
         </div>
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Nationality</label>
             <div>{{ PersonForm.nationality }}</div>
+            {% if "nationality" in PersonForm.errors %}<span
+                class="text-danger">{{ PersonForm.errors.nationality }}</span>{% endif %}
         </div>
     </div>
     <div class="row">
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Gender</label>
             <div>{{ PersonForm.gender }}</div>
+            {% if "gender" in PersonForm.errors %}<span
+                class="text-danger">{{ PersonForm.errors.gender }}</span>{% endif %}
         </div>
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Date of Birth</label>
             <div>{{ PersonForm.date_of_birth }}</div>
+            {% if "date_of_birth" in PersonForm.errors %}<span
+                class="text-danger">{{ PersonForm.errors.date_of_birth }}</span>{% endif %}
         </div>
     </div>
     <div class="row">
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Address</label>
             <div>{{ PersonForm.address }}</div>
+            {% if "address" in PersonForm.errors %}<span
+                class="text-danger">{{ PersonForm.errors.address }}</span>{% endif %}
         </div>
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Phone number</label>
             <div>{{ PersonForm.phone_number }}</div>
+            {% if "phone_number" in PersonForm.errors %}<span
+                class="text-danger">{{ PersonForm.errors.phone_number }}</span>{% endif %}
         </div>
     </div>
     <div class="row">
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Position</label>
             <div>{{ employee_form.position }}</div>
+            {% if "position" in employee_form.errors %}<span
+                class="text-danger">{{ employee_form.errors.position }}</span>{% endif %}
         </div>
         <div class="form-group" style="width: 45%; margin-left: 50px;">
             <label for="exampleInputPassword1">Contacting email</label>
             <div>{{ PersonForm.contacting_email }}</div>
+            {% if "contacting_email" in PersonForm.errors %}<span
+                class="text-danger">{{ PersonForm.errors.contacting_email }}</span>{% endif %}
         </div>
     </div>
     <center>

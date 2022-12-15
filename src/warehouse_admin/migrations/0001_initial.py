@@ -16,15 +16,18 @@ class Migration(migrations.Migration):
             name='Batch',
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('created_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('created_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('updated_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('updated_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=20)),
                 ('code', models.CharField(blank=True, max_length=30, null=True)),
                 ('arrival_date', models.DateField(blank=True, null=True)),
                 ('quantity', models.IntegerField(blank=True, null=True)),
-                ('description', models.TextField(blank=True, max_length=500, null=True)),
+                ('description', models.TextField(
+                    blank=True, max_length=500, null=True)),
             ],
             options={
                 'abstract': False,
@@ -34,14 +37,17 @@ class Migration(migrations.Migration):
             name='ItemType',
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('created_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('created_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('updated_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('updated_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=20)),
                 ('code', models.CharField(blank=True, max_length=10, null=True)),
                 ('weight', models.IntegerField(blank=True, null=True)),
-                ('is_retail', models.BooleanField(blank=True, default=False, null=True)),
+                ('is_retail', models.BooleanField(
+                    blank=True, default=False, null=True)),
             ],
             options={
                 'abstract': False,
@@ -51,9 +57,11 @@ class Migration(migrations.Migration):
             name='Stock',
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('created_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('created_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('updated_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('updated_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('id', models.AutoField(primary_key=True, serialize=False)),
             ],
             options={
@@ -64,13 +72,16 @@ class Migration(migrations.Migration):
             name='RetailItem',
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('created_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('created_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('updated_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('updated_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('quantity', models.IntegerField()),
                 ('price', models.IntegerField()),
-                ('type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.itemtype')),
+                ('type', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.itemtype')),
             ],
             options={
                 'abstract': False,
@@ -80,13 +91,16 @@ class Migration(migrations.Migration):
             name='RetailCard',
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('created_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('created_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('updated_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('updated_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('conversion_date', models.DateField(auto_now_add=True)),
                 ('weight', models.IntegerField()),
-                ('type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.itemtype')),
+                ('type', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.itemtype')),
             ],
             options={
                 'abstract': False,
@@ -96,20 +110,29 @@ class Migration(migrations.Migration):
             name='ItemCard',
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('created_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('created_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('updated_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('updated_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('quantity', models.IntegerField()),
-                ('status', models.CharField(choices=[('Good', 'Good'), ('Damaged', 'Damaged'), ('Frozen', 'Frozen')], default='Good', max_length=10)),
+                ('status', models.CharField(choices=[
+                 ('Good', 'Good'), ('Damaged', 'Damaged'), ('Frozen', 'Frozen')], default='Good', max_length=10)),
                 ('price', models.IntegerField(blank=True, null=True)),
                 ('receiving_date', models.DateField(auto_now_add=True)),
-                ('received_from', models.CharField(default='Yemen', max_length=50)),
-                ('is_transforming', models.BooleanField(blank=True, default=False, null=True)),
-                ('is_priced', models.BooleanField(blank=True, default=False, null=True)),
-                ('batch', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.batch')),
-                ('stock', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.stock')),
-                ('type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.itemtype')),
+                ('received_from', models.CharField(
+                    default='Yemen', max_length=50)),
+                ('is_transforming', models.BooleanField(
+                    blank=True, default=False, null=True)),
+                ('is_priced', models.BooleanField(
+                    blank=True, default=False, null=True)),
+                ('batch', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.batch')),
+                ('stock', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.stock')),
+                ('type', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.itemtype')),
             ],
             options={
                 'abstract': False,
@@ -119,14 +142,17 @@ class Migration(migrations.Migration):
             name='GoodsMovement',
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('created_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('created_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('updated_by', models.CharField(blank=True, max_length=50, null=True)),
+                ('updated_by', models.CharField(
+                    blank=True, max_length=50, null=True)),
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('sender', models.CharField(blank=True, max_length=50, null=True)),
                 ('receiver', models.CharField(max_length=50)),
                 ('date', models.DateField(auto_now_add=True)),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.itemcard')),
+                ('item', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='warehouse_admin.itemcard')),
             ],
             options={
                 'abstract': False,

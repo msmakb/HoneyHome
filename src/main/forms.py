@@ -3,6 +3,14 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 
+class DateInput(forms.DateInput):
+    input_type: str = 'date'
+
+
+class DateTimeInput(forms.DateInput):
+    input_type: str = 'datetime-local'
+
+
 class CreateUserForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):

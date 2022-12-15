@@ -1,4 +1,6 @@
 import logging
+from logging import Logger
+from typing import Any
 
 from django.db.models import Q
 from django.db.models.functions import Lower
@@ -13,7 +15,7 @@ from main import messages as MSG
 from main.models import Person
 from main.utils import Pagination
 from main.utils import getUserBaseTemplate as base
-from main.utils import getUserRole, resolvePageUrl
+from main.utils import resolvePageUrl
 
 from .evaluation import (allEmployeesMonthlyEvaluations,
                          allEmployeesMonthlyOverallEvaluation,
@@ -24,7 +26,7 @@ from .forms import AddPersonForm, AddTaskForm, EmployeeForm
 from .models import Employee, Task, TaskRate, Week, WeeklyRate
 from .utils import isRequesterCEO, isUserAllowedToModify
 
-logger = logging.getLogger(constants.LOGGERS.HUMAN_RESOURCES)
+logger: Logger = logging.getLogger(constants.LOGGERS.HUMAN_RESOURCES)
 
 
 # ------------------------------Dashboard------------------------------ #
@@ -37,7 +39,7 @@ def humanResourcesDashboard(request: HttpRequest) -> HttpResponse:
     employees: int = Employee.countAll()
     distributors: int = Distributor.countAll()
 
-    context: dict = {
+    context: dict[str, Any] = {
         'in_progress': in_progress,
         'unsubmitted': unsubmitted,
         'employees': employees,
@@ -59,15 +61,15 @@ def employeesPage(request: HttpRequest) -> HttpResponse:
     page_obj: QuerySet[Task] = pagination.getPageObject()
     is_paginated: bool = pagination.isPaginated
 
-    context: dict = {'page_obj': page_obj, 'is_paginated': is_paginated,
-                     'base': base(request)}
+    context: dict[str, Any] = {'page_obj': page_obj, 'is_paginated': is_paginated,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.EMPLOYEES_TEMPLATE, context)
 
 
 def addEmployeePage(request: HttpRequest) -> HttpResponse:
     person_form = AddPersonForm(request)
     employee_form = EmployeeForm(request)
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         person_form = AddPersonForm(request, request.POST)
         employee_form = EmployeeForm(request, request.POST)
         if person_form.is_valid() and employee_form.is_valid():
@@ -78,22 +80,22 @@ def addEmployeePage(request: HttpRequest) -> HttpResponse:
 
             return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEES_PAGE))
 
-    context: dict = {'PersonForm': person_form, 'employee_form': employee_form,
-                     'base': base(request)}
+    context: dict[str, Any] = {'PersonForm': person_form, 'employee_form': employee_form,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.ADD_EMPLOYEE_TEMPLATE, context)
 
 
 def employeePage(request: HttpRequest, pk: int, hash=None) -> HttpResponse:
     employee: Employee = get_object_or_404(Employee, id=pk)
-    evaluation: dict = getEvaluation(emp_id=pk)
+    evaluation: dict[str, float | Employee] = getEvaluation(emp_id=pk)
     if not isUserAllowedToModify(request.user, employee.position, constants.ROLES.CEO):
         return redirect(constants.PAGES.UNAUTHORIZED_PAGE)
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         employee.person.setPhoto(request, request.FILES["image_file"])
         MSG.EMPLOYEE_PHOTO_UPDATED(request)
 
-    context: dict = {'Employee': employee, 'Evaluation': evaluation,
-                     'base': base(request)}
+    context: dict[str, Any] = {'Employee': employee, 'Evaluation': evaluation,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.EMPLOYEE_RECORD_TEMPLATE, context)
 
 
@@ -104,7 +106,7 @@ def updateEmployeePage(request: HttpRequest, pk: int) -> HttpResponse:
         return redirect(constants.PAGES.UNAUTHORIZED_PAGE)
     employee_form = EmployeeForm(request, instance=employee)
     person_form = AddPersonForm(request, instance=person)
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         person_form = AddPersonForm(request, request.POST, instance=person)
         employee_form = EmployeeForm(request, request.POST, instance=employee)
         if person_form.is_valid() and employee_form.is_valid():
@@ -114,8 +116,8 @@ def updateEmployeePage(request: HttpRequest, pk: int) -> HttpResponse:
 
             return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEE_RECORD_PAGE), pk)
 
-    context: dict = {'PersonForm': person_form, 'employee_form': employee_form,
-                     'base': base(request)}
+    context: dict[str, Any] = {'PersonForm': person_form, 'employee_form': employee_form,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.UPDATE_EMPLOYEE_TEMPLATE, context)
 
 
@@ -123,13 +125,13 @@ def deleteEmployeePage(request: HttpRequest, pk: int) -> HttpResponse:
     employee: Employee = get_object_or_404(Employee, id=pk)
     if not isUserAllowedToModify(request.user, employee.position, constants.ROLES.CEO):
         return redirect(constants.PAGES.UNAUTHORIZED_PAGE)
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         employee.delete(request)
         MSG.EMPLOYEE_REMOVED(request)
 
         return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEES_PAGE))
 
-    context: dict = {'Employee': employee, 'base': base(request)}
+    context: dict[str, Any] = {'Employee': employee, 'base': base(request)}
     return render(request, constants.TEMPLATES.DELETE_EMPLOYEE_TEMPLATE, context)
 
 
@@ -142,14 +144,14 @@ def distributorsPage(request: HttpRequest) -> HttpResponse:
     page_obj: QuerySet[Task] = pagination.getPageObject()
     is_paginated: bool = pagination.isPaginated
 
-    context: dict = {'page_obj': page_obj, 'is_paginated': is_paginated,
-                     'base': base(request)}
+    context: dict[str, Any] = {'page_obj': page_obj, 'is_paginated': is_paginated,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.DISTRIBUTORS_TEMPLATE, context)
 
 
 def addDistributorPage(request: HttpRequest) -> HttpResponse:
     person_form = AddPersonForm(request, )
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         person_form = AddPersonForm(request, request.POST)
         if person_form.is_valid():
             person_form.save()
@@ -159,17 +161,19 @@ def addDistributorPage(request: HttpRequest) -> HttpResponse:
 
             return redirect(resolvePageUrl(request, constants.PAGES.DISTRIBUTORS_PAGE))
 
-    context: dict = {'PersonForm': person_form, 'base': base(request)}
+    context: dict[str, Any] = {
+        'PersonForm': person_form, 'base': base(request)}
     return render(request, constants.TEMPLATES.ADD_DISTRIBUTOR_TEMPLATE, context)
 
 
 def distributorPage(request: HttpRequest, pk: int) -> HttpResponse:
     distributor: Distributor = get_object_or_404(Distributor, id=pk)
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         distributor.person.setPhoto(request, request.FILES["image_file"])
         MSG.DISTRIBUTOR_PHOTO_UPDATED(request)
 
-    context: dict = {'Distributor': distributor, 'base': base(request)}
+    context: dict[str, Any] = {'Distributor': distributor,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.DISTRIBUTOR_RECORD_TEMPLATE, context)
 
 
@@ -177,7 +181,7 @@ def updateDistributorPage(request: HttpRequest, pk: int) -> HttpResponse:
     distributor: Distributor = get_object_or_404(Distributor, id=pk)
     person: Person = Person.get(id=distributor.person.id)
     person_form = AddPersonForm(request, instance=person)
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         person_form = AddPersonForm(request, request.POST, instance=person)
         if person_form.is_valid():
             person_form.save()
@@ -185,20 +189,21 @@ def updateDistributorPage(request: HttpRequest, pk: int) -> HttpResponse:
 
             return redirect(resolvePageUrl(request, constants.PAGES.DISTRIBUTOR_RECORD_PAGE), pk)
 
-    context: dict = {'PersonForm': person_form, 'distributor_id': distributor.id,
-                     'base': base(request)}
+    context: dict[str, Any] = {'PersonForm': person_form, 'distributor_id': distributor.id,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.UPDATE_DISTRIBUTOR_TEMPLATE, context)
 
 
 def deleteDistributorPage(request: HttpRequest, pk: int) -> HttpResponse:
     distributor: Distributor = get_object_or_404(Distributor, id=pk)
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         distributor.delete(request)
         MSG.DISTRIBUTOR_REMOVED(request)
 
         return redirect(resolvePageUrl(request, constants.PAGES.DISTRIBUTORS_PAGE))
 
-    context: dict = {'Distributor': distributor, 'base': base(request)}
+    context: dict[str, Any] = {'Distributor': distributor,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.DELETE_DISTRIBUTOR_TEMPLATE, context)
 
 
@@ -210,22 +215,22 @@ def employeeTasksPage(request: HttpRequest) -> HttpResponse:
     page_obj: QuerySet[Task] = pagination.getPageObject()
     is_paginated: bool = pagination.isPaginated
 
-    context: dict = {'page_obj': page_obj, 'is_paginated': is_paginated,
-                     'base': base(request)}
+    context: dict[str, Any] = {'page_obj': page_obj, 'is_paginated': is_paginated,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.EMPLOYEES_TASKS_TEMPLATE, context)
 
 
 def addTaskPage(request: HttpRequest) -> HttpResponse:
     form = AddTaskForm(request)
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         form = AddTaskForm(request, request.POST)
         if form.is_valid():
             form.save()
             MSG.TASK_ADDED(request)
 
-        return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEES_TASKS_PAGE))
+            return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEES_TASKS_PAGE))
 
-    context: dict = {'form': form, 'base': base(request)}
+    context: dict[str, Any] = {'form': form, 'base': base(request)}
     return render(request, constants.TEMPLATES.ADD_TASK_TEMPLATE, context)
 
 
@@ -239,8 +244,8 @@ def taskPage(request: HttpRequest, pk: int) -> HttpResponse:
     except TaskRate.DoesNotExist:
         task_rate = None
 
-    context: dict = {'Task': task, 'TaskRate': task_rate,
-                     'base': base(request)}
+    context: dict[str, Any] = {'Task': task, 'TaskRate': task_rate,
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.DETAILED_TASK_TEMPLATE, context)
 
 
@@ -251,15 +256,15 @@ def updateTaskPage(request: HttpRequest, pk: int) -> HttpResponse:
         return redirect(constants.PAGES.UNAUTHORIZED_PAGE)
 
     form = AddTaskForm(request, instance=task)
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         form = AddTaskForm(request, request.POST, instance=task)
         if form.is_valid():
             form.save()
             MSG.TASK_DATA_UPDATED(request)
 
-        return redirect(resolvePageUrl(request, constants.PAGES.DETAILED_TASK_PAGE), pk)
+            return redirect(resolvePageUrl(request, constants.PAGES.DETAILED_TASK_PAGE), pk)
 
-    context: dict = {'form': form, 'base': base(request)}
+    context: dict[str, Any] = {'form': form, 'base': base(request)}
     return render(request, constants.TEMPLATES.UPDATE_TASK_TEMPLATE, context)
 
 
@@ -269,19 +274,20 @@ def deleteTaskPage(request: HttpRequest, pk: int) -> HttpResponse:
                                  constants.ROLES.HUMAN_RESOURCES):
         return redirect(constants.PAGES.UNAUTHORIZED_PAGE)
 
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         task.delete(request)
         MSG.TASK_REMOVED(request)
 
         return redirect(resolvePageUrl(request, constants.PAGES.EMPLOYEES_TASKS_PAGE))
 
-    context: dict = {'Task': task, 'base': base(request)}
+    context: dict[str, Any] = {'Task': task, 'base': base(request)}
     return render(request, constants.TEMPLATES.DELETE_TASK_TEMPLATE, context)
 
 
 # ------------------------------Evaluation------------------------------ #
 def evaluationPage(request: HttpRequest) -> HttpResponse:
-    context: dict = {'evaluation': getEvaluation(), 'base': base(request)}
+    context: dict[str, Any] = {'evaluation': getEvaluation(),
+                               'base': base(request)}
     return render(request, constants.TEMPLATES.EVALUATION_TEMPLATE, context)
 
 
@@ -289,8 +295,8 @@ def evaluationPage(request: HttpRequest) -> HttpResponse:
 def weeklyEvaluationPage(request: HttpRequest) -> HttpResponse:
     weeks: QuerySet[Week] = Week.filter(is_rated=False)
 
-    context: dict = {'week_to_rate_exists': True,
-                     'base': base(request)}
+    context: dict[str, Any] = {'week_to_rate_exists': True,
+                               'base': base(request)}
     if not weeks.exists():
         MSG.EVALUATION_DONE(request)
         context['week_to_rate_exists'] = False
@@ -308,7 +314,7 @@ def weeklyEvaluationPage(request: HttpRequest) -> HttpResponse:
                 else:
                     week.delete(constants.SYSTEM_NAME)
                     unrated_weeks_to_delete += 1
-        if request.method == constants.POST:
+        if request.method == constants.POST_METHOD:
             for emp in Employees:
                 val: float = request.POST.get(f'val{str(emp.id)}', False)
                 WeeklyRate.create(
@@ -378,7 +384,7 @@ def taskEvaluationPage(request: HttpRequest) -> HttpResponse:
             ~Q(employee__position=constants.ROLES.HUMAN_RESOURCES),
             is_rated=False
         )
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         id: str = request.POST.get('id', False)
         val: str = request.POST.get(f'val{id}', False)
         task: Task = Task.get(id=int(id))
@@ -419,5 +425,5 @@ def taskEvaluationPage(request: HttpRequest) -> HttpResponse:
     if not Tasks.exists():
         MSG.RATE_TASKS_DONE(request)
 
-    context: dict = {'Tasks': Tasks, 'base': base(request)}
+    context: dict[str, Any] = {'Tasks': Tasks, 'base': base(request)}
     return render(request, constants.TEMPLATES.TASK_EVALUATION_TEMPLATE, context)

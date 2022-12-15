@@ -19,7 +19,7 @@ urlpatterns = [
         name=PAGES.MAIN_STORAGE_GOODS_PAGE
     ),
     path(
-        f'{PAGES.DASHBOARD}/Main-Storage/<str:type>/',
+        f'{PAGES.DASHBOARD}/Detailed-Item-Cards/<str:pk>/<str:type>/',
         views.DetailItemCardsPage,
         name=PAGES.DETAIL_ITEM_CARDS_PAGE
     ),

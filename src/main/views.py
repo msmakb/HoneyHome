@@ -1,4 +1,6 @@
 import logging
+from logging import Logger
+from typing import Any
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group, User
@@ -17,18 +19,16 @@ from .forms import CreateUserForm
 from .utils import getUserBaseTemplate as base
 from .utils import getUserRole
 
-logger = logging.getLogger(constants.LOGGERS.MAIN)
+logger: Logger = logging.getLogger(constants.LOGGERS.MAIN)
 
 
 @isAuthenticatedUser
 def index(request: HttpRequest) -> HttpResponse:
-    if request.method == constants.POST:
-        print(request.POST)
+    if request.method == constants.POST_METHOD:
         UserName: str = request.POST.get('user_name')
         Password: str = request.POST.get('password')
         user: User = authenticate(
             request, username=UserName, password=Password)
-        print(user.get_full_name())
 
         if user is not None:
             login(request, user)
@@ -52,7 +52,7 @@ def unauthorized(request: HttpRequest) -> HttpResponse:
 # this is admin dashboard 'for testing purpose only'
 def dashboard(request: HttpRequest) -> HttpResponse:
     group: str = getUserRole(request)
-    context: dict = {'group': group}
+    context: dict[str, Any] = {'group': group}
     return render(request, constants.TEMPLATES.DASHBOARD_TEMPLATE, context)
 
 
@@ -65,37 +65,44 @@ def logoutUser(request: HttpRequest) -> HttpResponse:
 
 
 def createUserPage(request: HttpRequest) -> HttpResponse:
+    requester: User = request.user
+    if getUserRole(request) == constants.ROLES.DISTRIBUTOR:
+        name: str = Distributor.get(account=request.user).person.name
+    else:
+        name: str = Employee.get(account=request.user).person.name
+    if requester.username != name.split(' ')[0]:
+        return redirect(constants.PAGES.INDEX)
     form = CreateUserForm()
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
 
-            old_user: User = request.user
+            old_account: User = request.user
             # Get last inserted user object
-            new_user: User = User.objects.all().order_by('-id')[0]
-            new_user.first_name = old_user.first_name
-            new_user.last_name = old_user.last_name
-            if getUserRole(old_user) == constants.ROLES.DISTRIBUTOR:
-                user: Distributor = Distributor.get(account=old_user)
+            new_account: User = User.objects.all().order_by('-id')[0]
+            new_account.first_name = old_account.first_name
+            new_account.last_name = old_account.last_name
+            if getUserRole(old_account) == constants.ROLES.DISTRIBUTOR:
+                user: Distributor = Distributor.get(account=old_account)
                 Group.objects.get(name=constants.ROLES.DISTRIBUTOR
-                                  ).user_set.add(new_user)
+                                  ).user_set.add(new_account)
             else:
-                user: Employee = Employee.get(account=old_user)
-                Group.objects.get(name=user.position).user_set.add(new_user)
+                user: Employee = Employee.get(account=old_account)
+                Group.objects.get(name=user.position).user_set.add(new_account)
                 if user.position == constants.ROLES.CEO:
-                    new_user.is_superuser = True
-                    new_user.is_staff = True
-                    new_user.save()
+                    new_account.is_superuser = True
+                    new_account.is_staff = True
+                    new_account.save()
 
-            user.setAccount(request, new_user)
+            user.setAccount(request, new_account)
             logout(request)
-            old_user.delete()
+            old_account.delete()
             MSG.LOGIN_WITH_NEW_ACCOUNT(request)
 
             return redirect(constants.PAGES.INDEX)
 
-    context: dict = {'form': form}
+    context: dict[str, Any] = {'form': form}
     return render(request, constants.TEMPLATES.CREATE_USER_TEMPLATE, context)
 
 
@@ -104,7 +111,7 @@ def tasks(request: HttpRequest) -> HttpResponse:
     Tasks: Task = Task.filter(~Q(status=constants.TASK_STATUS.LATE_SUBMISSION) & ~Q(
         status=constants.TASK_STATUS.ON_TIME), employee__account=request.user)
 
-    if request.method == constants.POST:
+    if request.method == constants.POST_METHOD:
 
         task_id = request.POST.get('task_id', False)
         task: Task = Task.get(id=int(task_id))
@@ -132,5 +139,5 @@ def tasks(request: HttpRequest) -> HttpResponse:
                         deadline_date=timezone.now() + timezone.timedelta(days=3)
                         )
 
-    context = {'Tasks': Tasks, 'base': base(request)}
+    context: dict[str, Any] = {'Tasks': Tasks, 'base': base(request)}
     return render(request, constants.TEMPLATES.TASKS_TEMPLATE, context)

@@ -10,22 +10,27 @@
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Name</label>
             <div>{{form.name}}</div>
+            <span class="text-danger">{{ form.errors.name }}</span>
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Code</label>
             <div>{{form.code}}</div>
+            <span class="text-danger">{{ form.errors.code }}</span>
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Arrival Date</label>
             <div>{{form.arrival_date}}</div>
+            <span class="text-danger">{{ form.errors.arrival_date }}</span>
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Quantity</label>
             <div>{{form.quantity}}</div>
+            <span class="text-danger">{{ form.errors.quantity }}</span>
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Description</label>
             <div>{{form.description}}</div>
+            <span class="text-danger">{{ form.errors.description }}</span>
         </div>
         <div style="width: 60%; float: right; margin:auto; margin-top: 20px;">
             <a style="margin:auto;" href="{% url namespaec|add:'BatchesPage' %}" class="btn btn-secondary">Cancel</a>

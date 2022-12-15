@@ -1,9 +1,9 @@
-from django.urls import path
+from django.urls import path, URLResolver, URLPattern
 
 from . import views
 from .constants import PAGES
 
-urlpatterns = [
+urlpatterns: list[URLResolver | URLPattern] = [
     path(
         '',
         views.index,

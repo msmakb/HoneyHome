@@ -1,10 +1,12 @@
-from django.urls import path
+from django.urls import path, URLResolver, URLPattern
+
 from main.constants import PAGES
 from main.views import tasks
+
 from . import views
 
-app_name = 'human_resources'
-urlpatterns = [
+app_name: str = 'human_resources'
+urlpatterns: list[URLResolver | URLPattern] = [
     # Dashboard URL
     path(
         f'{PAGES.DASHBOARD}/',

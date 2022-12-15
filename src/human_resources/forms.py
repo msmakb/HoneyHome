@@ -109,21 +109,6 @@ class AddPersonForm(ModelForm):
         return clean_form_updated_by(self)
 
     def clean_phone_number(self) -> str:
-        """
-        This function to validate the phone number inserted with the following format:
-        The pattern format is not secure enough to be the only validator.
-        Format: [+][1 to 3 numbers][space][9 to 14 numbers].
-
-        Raises:
-            forms.ValidationError: The phone number must be started with '+'.
-            forms.ValidationError: Only '+' sing in the begging and digits are acceptable.
-            forms.ValidationError: There must be a space ' ' between the country key and the phone number.
-            forms.ValidationError: The country key must be between 1-3 digits.
-            forms.ValidationError: The phone number must be between 9-14 digits.
-
-        Returns:
-            str: A valid format for phon number
-        """
         phone_number: str = self.cleaned_data.get('phone_number')
         splitted: str = phone_number.split(' ')
         # '+' sign in the begging
@@ -268,6 +253,20 @@ class AddTaskForm(ModelForm):
             'created_by': forms.HiddenInput(attrs={'required': False}),
             'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
+
+    def clean_employee(self):
+        employee: Employee = self.cleaned_data["employee"]
+        employee_choices: list[tuple] = list(self.fields['employee'].choices)
+        employee_name: str = employee.person.name
+        clean: bool = False
+        for choice in employee_choices:
+            if employee_name == choice[1]:
+                clean = True
+                break
+        if not clean:
+            raise forms.ValidationError(
+                "Select a valid choice. That choice is not one of the available choices.")
+        return employee
 
     def clean_created_by(self):
         object_str_representation: str = self.cleaned_data.get('task')

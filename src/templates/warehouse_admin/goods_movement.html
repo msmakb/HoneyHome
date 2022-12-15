@@ -9,8 +9,10 @@
     <thead>
     <tr>
         <th scope="col">ITEM</th>
+        <th scope="col">ITEM CODE</th>
         <th scope="col">BATCH</th>
         <th scope="col">QUANTITY</th>
+        <th scope="col">STATUS</th>
         <th scope="col">SENDER</th>
         <th scope="col">RECEIVER</th>
         <th scope="col">DATE</th>
@@ -19,9 +21,11 @@
     <tbody>
     {% for goods in GoodsMovement %}
     <tr>
-        <td>{{goods.item.type}}</td>
-        <td>{{goods.item.batch}}</td>
-        <td>{{goods.item.quantity}}</td>
+        <td>{{goods.item}}</td>
+        <td>{{goods.code}}</td>
+        <td>{{goods.batch}}</td>
+        <td>{{goods.quantity}}</td>
+        <td>{{goods.status}}</td>
         <td>{{goods.sender}}</td>
         <td>{{goods.receiver}}</td>
         <td>{{goods.date}}</td>

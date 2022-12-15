@@ -14,18 +14,24 @@
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Employee</label>
             <div>{{ form.employee }}</div>
+            {% if "employee" in form.errors %}<span class="text-danger">{{ form.errors.employee }}</span>{% endif %}
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Task</label>
             <div>{{ form.task }}</div>
+            {% if "task" in form.errors %}<span class="text-danger">{{ form.errors.task }}</span>{% endif %}
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Description</label>
             <div>{{ form.description }}</div>
+            {% if "description" in form.errors %}<span
+                class="text-danger">{{ form.errors.description }}</span>{% endif %}
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Deadline</label>
             <div>{{ form.deadline_date }}</div>
+            {% if "deadline_date" in form.errors %}<span
+                class="text-danger">{{ form.errors.deadline_date }}</span>{% endif %}
         </div>
         <center>
             <div style="margin:auto; margin-top: 20px;">

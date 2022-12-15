@@ -10,18 +10,22 @@
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Name</label>
             <div>{{form.name}}</div>
+            <span class="text-danger">{{ form.errors.name }}</span>
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">code</label>
             <div>{{form.code}}</div>
+            <span class="text-danger">{{ form.errors.code }}</span>
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">weight</label>
             <div>{{form.weight}}</div>
+            <span class="text-danger">{{ form.errors.weight }}</span>
         </div>
         <div class="form-group" style="margin-left: 50px;">
-            <span>{{form.is_retail}}</span>
             <label for="exampleInputPassword1">Retail Item</label>
+            <span>{{form.is_retail}}</span>
+            <span class="text-danger">{{ form.errors.is_retail }}</span>
         </div>
         <div style="width: 60%; float: right; margin:auto; margin-top: 20px;">
             <a style="margin:auto;" href="{% url namespaec|add:'RegisteredItemsPage' %}" class="btn btn-secondary">Cancel</a>

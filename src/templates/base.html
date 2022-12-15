@@ -60,7 +60,11 @@
                 </style>       
             {% endif %}
             <div class="float-child2">
-                <div>{% block content %}{% endblock %}</div>
+                <div>
+                    {% block content %}
+                    {% endblock %}
+                    {% include 'pagination.html' %}
+                </div>
             </div>
         
             {% if userRole != "CEO" %}

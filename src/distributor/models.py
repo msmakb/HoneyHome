@@ -1,5 +1,9 @@
+from typing import Union
+
 from django.contrib.auth.models import User
 from django.db import models
+from django.http import HttpRequest
+
 from main.models import BaseModel, Person
 from warehouse_admin.models import ItemType, Batch, Stock
 
@@ -17,6 +21,18 @@ class Distributor(BaseModel):
     def __str__(self) -> str:
         return self.person.name
 
+    def setPerson(self, requester: Union[HttpRequest, str], person: Person) -> None:
+        self.person = person
+        self.setCreatedByUpdatedBy(requester)
+
+    def setAccount(self, requester: Union[HttpRequest, str], account: User) -> None:
+        self.account = account
+        self.setCreatedByUpdatedBy(requester)
+
+    def setStock(self, requester: Union[HttpRequest, str], stock: Stock) -> None:
+        self.stock = stock
+        self.setCreatedByUpdatedBy(requester)
+
     @property
     def getId(self) -> int:
         return self.id
@@ -25,28 +41,13 @@ class Distributor(BaseModel):
     def getPerson(self) -> Person:
         return self.person
 
-    @getPerson.setter
-    def setPerson(self, person: Person) -> None:
-        self.person = person
-        self.save()
-
     @property
     def getAccount(self) -> User:
         return self.account
 
-    @getAccount.setter
-    def setAccount(self, account: User) -> None:
-        self.account = account
-        self.save()
-
     @property
     def getStock(self) -> Stock:
         return self.stock
-
-    @getStock.setter
-    def setStock(self, stock: Stock) -> None:
-        self.stock = stock
-        self.save()
 
 
 class SalesHistory(BaseModel):

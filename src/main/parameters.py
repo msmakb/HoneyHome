@@ -1,65 +1,170 @@
-import logging as _logging
-from typing import Union as _union
+from dataclasses import dataclass
+import logging as logging
+from logging import Logger
+from typing import Union
 
+from .constants import ACCESS_TYPE, DATA_TYPE, LOGGERS
 from .models import Parameter as _parameter
 
-_logger = _logging.getLogger('HoneyHome.Main')
+logger: Logger = logging.getLogger(LOGGERS.MAIN)
 
 
-def _getDefaultParameters() -> dict:
-    DEFAULT_PARAMETERS = {
-        'ALLOWED_LOGGED_IN_ATTEMPTS': '5',  # -> int
-        'ALLOWED_LOGGED_IN_ATTEMPTS_RESET': '1',  # -> int
-        'MAX_TEMPORARY_BLOCK': '5',  # -> int
-        'TEMPORARY_BLOCK_PERIOD': '1',  # -> int
-        'TIME_OUT_PERIOD': '1440',  # -> int
-        'BETWEEN_POST_REQUESTS_TIME': '500',  # -> int
-        'MAGIC_NUMBER': '1',  # -> int
-    }
-    return DEFAULT_PARAMETERS
+@dataclass
+class _DefaultParameter:
+    name: str
+    value: str
+    access_type: str
+    parameter_type: str
+    description: str
 
 
-def _getParametersDescription() -> dict:
-    DEFAULT_PARAMETERS = {
-        'ALLOWED_LOGGED_IN_ATTEMPTS': 'Allowed login attempts before the user get blocked from the site. Note: IT MUST BE AN INTEGER.',
-        'ALLOWED_LOGGED_IN_ATTEMPTS_RESET': 'This is the period of resetting the failed login attempt in days.  Note: IT MUST BE AN INTEGER.',
-        'MAX_TEMPORARY_BLOCK': 'The number of temporary blocks of failing to login before getting blocked forever. Note: IT MUST BE AN INTEGER.',
-        'TEMPORARY_BLOCK_PERIOD': 'The period of temporary block in days. Note: IT MUST BE AN INTEGER.',
-        'TIME_OUT_PERIOD': 'Specifies the number of minutes before the Session time-out when logged in. The default is 1440 minutes, which is one day. Note: IT MUST BE AN INTEGER.',
-        'BETWEEN_POST_REQUESTS_TIME': 'This is the milliseconds countdown before allowing the to do anther post request (1000 milliseconds = 1 second). Note: IT MUST BE AN INTEGER.',
-        'MAGIC_NUMBER': 'DO NOT CHANGE THIS. THIS CONTROLLED BY THE SYSTEM ONLY.',
-    }
-    return DEFAULT_PARAMETERS
+def _getDefaultParam() -> list[_DefaultParameter]:
+    default_parameters: list[_DefaultParameter] = list()
+    default_parameters.append(
+        _DefaultParameter(
+            name="ALLOWED_LOGGED_IN_ATTEMPTS",
+            value="5",
+            description="Allowed login attempts before the user get blocked from the site. Note: IT MUST BE AN INTEGER.",
+            access_type=ACCESS_TYPE.ADMIN_ACCESS,
+            parameter_type=DATA_TYPE.INTEGER
+        )
+    )
+    default_parameters.append(
+        _DefaultParameter(
+            name="ALLOWED_LOGGED_IN_ATTEMPTS_RESET",
+            value="1",
+            description="This is the period of resetting the failed login attempt in days.  Note: IT MUST BE AN INTEGER.",
+            access_type=ACCESS_TYPE.ADMIN_ACCESS,
+            parameter_type=DATA_TYPE.INTEGER
+        )
+    )
+    default_parameters.append(
+        _DefaultParameter(
+            name="MAX_TEMPORARY_BLOCK",
+            value="5",
+            description="The number of temporary blocks of failing to login before getting blocked forever. Note: IT MUST BE AN INTEGER.",
+            access_type=ACCESS_TYPE.ADMIN_ACCESS,
+            parameter_type=DATA_TYPE.INTEGER
+        )
+    )
+    default_parameters.append(
+        _DefaultParameter(
+            name="TEMPORARY_BLOCK_PERIOD",
+            value="1",
+            description="The period of temporary block in days. Note: IT MUST BE AN INTEGER.",
+            access_type=ACCESS_TYPE.ADMIN_ACCESS,
+            parameter_type=DATA_TYPE.INTEGER
+        )
+    )
+    default_parameters.append(
+        _DefaultParameter(
+            name="TIME_OUT_PERIOD",
+            value="1440",
+            description="Specifies the number of minutes before the Session time-out when logged in. The default is 1440 minutes, which is one day. Note: IT MUST BE AN INTEGER.",
+            access_type=ACCESS_TYPE.ADMIN_ACCESS,
+            parameter_type=DATA_TYPE.INTEGER
+        )
+    )
+    default_parameters.append(
+        _DefaultParameter(
+            name="BETWEEN_POST_REQUESTS_TIME",
+            value="500",
+            description="This is the milliseconds countdown before allowing the to do anther post request (1000 milliseconds = 1 second). Note: IT MUST BE AN INTEGER.",
+            access_type=ACCESS_TYPE.ADMIN_ACCESS,
+            parameter_type=DATA_TYPE.INTEGER
+        )
+    )
+    default_parameters.append(
+        _DefaultParameter(
+            name="MAGIC_NUMBER",
+            value="1",
+            description="DO NOT CHANGE THIS. THIS CONTROLLED BY THE SYSTEM ONLY.",
+            access_type=ACCESS_TYPE.No_ACCESS,
+            parameter_type=DATA_TYPE.INTEGER
+        )
+    )
+    return default_parameters
 
 
 def _saveDefaultParametersToDataBase() -> None:
     # This executed one time only, when parameters table is created
     created_by = "System on Initialization"
-    for name, value in _getDefaultParameters().items():
-        if not _parameter.isExists(name=name):
+    for pram in _getDefaultParam():
+        if not _parameter.isExists(name=pram.name):
+            logger.info(f"The default parameter {pram.name}"
+                        + " added to the database.")
             _parameter.create(
                 created_by,
-                name=name,
-                value=value,
-                description=_getParametersDescription().get(name, 'no description'),
+                name=pram.name,
+                value=pram.value,
+                description=pram.description,
+                access_type=pram.access_type,
+                parameter_type=pram.parameter_type,
             )
 
 
-def getParameterValue(key: str) -> _union[str, int]:
-    if key not in _getDefaultParameters():
-        raise KeyError
+def getParameterValue(key: str) -> Union[str, int, float, bool]:
     if not isinstance(key, str):
-        raise ValueError
+        raise ValueError("The key must be a string.")
     try:
-        try:
-            param = int(_parameter.get(name=key).getValue)
-            return param
-        except ValueError:
-            return _parameter.get(name=key).getValue
+        param: _parameter = _parameter.get(name=key)
+        match param.getParameterType:
+            case DATA_TYPE.INTEGER:
+                value: int = int(param.getValue)
+                return value
+            case DATA_TYPE.FLOAT:
+                value: float = float(param.getValue)
+                return value
+            case DATA_TYPE.BOOLEAN:
+                val: str = param.getValue
+                true_con: tuple[bool, ...] = (
+                    val.lower() == 'yes',
+                    val.lower() == 'true',
+                    val == '1',
+                )
+                false_con: tuple[bool, ...] = (
+                    val.lower() == 'no',
+                    val.lower() == 'false',
+                    val == '0'
+                )
+                if any(true_con):
+                    return True
+                elif any(false_con):
+                    return False
+                else:
+                    raise ValueError
+            case _:
+                return param.getValue
     except _parameter.DoesNotExist:
-        _logger.warning(f"The parameter [{key}] dose not exist in database!!")
-        try:
-            param = int(_getDefaultParameters().get(key))
-            return param
-        except ValueError:
-            return _getDefaultParameters().get(key)
+        logger.warning(f"The parameter [{key}] dose not exist in database!!")
+        for pram in _getDefaultParam():
+            if key == pram.name:
+                match pram.parameter_type:
+                    case DATA_TYPE.INTEGER:
+                        value: int = int(pram.value)
+                        return value
+                    case DATA_TYPE.FLOAT:
+                        value: float = float(pram.value)
+                        return value
+                    case DATA_TYPE.BOOLEAN:
+                        val: str = pram.value
+                        true_con: tuple[bool, ...] = (
+                            val.lower() == 'yes',
+                            val.lower() == 'true',
+                            val == '1',
+                        )
+                        false_con: tuple[bool, ...] = (
+                            val.lower() == 'no',
+                            val.lower() == 'false',
+                            val == '0'
+                        )
+                        if any(true_con):
+                            return True
+                        elif any(false_con):
+                            return False
+                        else:
+                            raise ValueError
+                    case _:
+                        return pram.value
+        raise KeyError("The parameter does not exist in the database "
+                       + "nor the default parameters.")

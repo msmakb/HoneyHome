@@ -13,6 +13,18 @@
         padding: 5px;
         text-decoration: none;
     }
+    .side-nave-item-active{
+        font-size: 24px;
+        color: white;
+        padding: 5px;
+        text-decoration: none;
+    }
+    .side-nave-item:hover{
+        font-size: 24px;
+        color: white;
+        padding: 5px;
+        text-decoration: none;
+    }
     .n{
         background: linear-gradient(to right, #636363, #4e4e4e);
         position: absolute;
@@ -31,10 +43,19 @@
 <nav class="n">
     <div style="margin-left: 10px;">
         {% for menu_name, menu_url in userMenu.items %}
+            {% url namespaec|add:menu_url as path %}
             {% if 'Dashboard' in menu_name %}
-                <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{% url namespaec|add:menu_url %}">{{menu_name}}</a></p>
+                {% if request.path == path %}
+                    <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item-active" href="{{ path }}">{{ menu_name }}</a></p>
+                {% else %}
+                    <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item" href="{{ path }}">{{ menu_name }}</a></p>
+                {% endif %}
             {% else %}
-                <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{% url namespaec|add:menu_url %}">{{menu_name}}</a></p>
+                {% if request.path == path %}
+                    <p style="margin-bottom: 5px;"><a class="side-nave-item-active" href="{{ path }}">{{ menu_name }}</a></p>
+                {% else %}
+                    <p style="margin-bottom: 5px;"><a class="side-nave-item" href="{{ path }}">{{ menu_name }}</a></p>
+                {% endif %}
             {% endif %}
         {% endfor %}
     </div>

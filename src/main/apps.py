@@ -5,8 +5,8 @@ from django.db.models.signals import post_migrate
 
 
 class MainConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'main'
+    default_auto_field: str = 'django.db.models.BigAutoField'
+    name: str = 'main'
 
     def ready(self) -> None:
         from . import signals

@@ -2,30 +2,42 @@
 import ast as _ast
 from collections import namedtuple as _NT
 from pathlib import Path as _path
+from typing import Final
 
 with open(_path(__file__).resolve().parent.parent / 'countries.txt', 'r') as _file:
     _countries = _ast.literal_eval(_file.read())
-_main_app__templates_folder: str = '.'
-_ceo_templates_folder: str = 'ceo'
-_distributor_templates_folder: str = 'distributor'
-_warehouse_admin_templates_folder: str = 'warehouse_admin'
-_human_resources_templates_folder: str = 'human_resources'
-_social_media_manager_templates_folder: str = 'social_media_manager'
-_accounting_manager_templates_folder: str = 'accounting_manager'
+_main_app__templates_folder: Final[str] = '.'
+_ceo_templates_folder: Final[str] = 'ceo'
+_distributor_templates_folder: Final[str] = 'distributor'
+_warehouse_admin_templates_folder: Final[str] = 'warehouse_admin'
+_human_resources_templates_folder: Final[str] = 'human_resources'
+_social_media_manager_templates_folder: Final[str] = 'social_media_manager'
+_accounting_manager_templates_folder: Final[str] = 'accounting_manager'
 print("Declaring Constants...")
 # ---------------------------------- public --------------------------------------- #
-BASE_MODEL_FIELDS: tuple = ('created', 'created_by',
-                            'updated', 'updated_by')
-COUNTRY: dict = _countries
-HTML_TAGS_PATTERN: str = '<.*?>((.|\n)*)<\/.*?>'
-MAIN_STORAGE_ID: int = 1
-PERSONAL_PHOTOS_FOLDER: str = 'photographs'
-POST: str = 'POST'
-ROWS_PER_PAGE: int = 10
-SYSTEM_CRON_NAME: str = "System Cron"
-SYSTEM_MIDDLEWARE_NAME: str = 'Middleware System'
-SYSTEM_NAME: str = 'System'
-SYSTEM_SIGNALS_NAME: str = 'System Signals'
+BASE_MODEL_FIELDS: Final[tuple[str, ...]] = ('created', 'created_by',
+                                             'updated', 'updated_by')
+COUNTRY: Final[dict[str, str]] = _countries
+HTML_TAGS_PATTERN: Final[str] = '<.*?>((.|\n)*)<\/.*?>'
+MAIN_STORAGE_ID: Final[int] = 1
+MAIN_STORAGE_NAME: Final[str] = 'Main Storage'
+PERSONAL_PHOTOS_FOLDER: Final[str] = 'photographs'
+POST_METHOD: Final[str] = 'POST'
+GET_METHOD: Final[str] = 'GET'
+ROWS_PER_PAGE: Final[int] = 10
+SYSTEM_CRON_NAME: Final[str] = "System Cron"
+SYSTEM_MIDDLEWARE_NAME: Final[str] = 'Middleware System'
+SYSTEM_NAME: Final[str] = 'System'
+SYSTEM_SIGNALS_NAME: Final[str] = 'System Signals'
+ACCESS_TYPE = _NT('str', [
+    'No_ACCESS',
+    'ADMIN_ACCESS',
+    'FULL_ACCESS'
+])(
+    '0',
+    '1',
+    '2'
+)
 ACTION = _NT('str', [
     'FIRST_VISIT',
     'LOGGED_IN',
@@ -51,6 +63,17 @@ ADMIN_SITE = _NT('str', [
     'Honey Home Administration',
     'Honey Home',
     'Admin Dashboard',
+)
+DATA_TYPE = _NT('str', [
+    'STRING',
+    'INTEGER',
+    'FLOAT',
+    'BOOLEAN'
+])(
+    '0',
+    '1',
+    '2',
+    '3'
 )
 PARAMETERS = _NT('str', [
     'ALLOWED_LOGGED_IN_ATTEMPTS',
@@ -93,6 +116,15 @@ BLOCK_TYPES = _NT('str', [
     'Unblocked',
     'Temporary',
     'Indefinitely',
+)
+ITEM_STATUS = _NT('str', [
+    'GOOD',
+    'DAMAGED',
+    'FROZEN',
+])(
+    'Good',
+    'Damaged',
+    'Frozen',
 )
 LOGGERS = _NT('str', [
     'MAIN',
@@ -141,17 +173,23 @@ GENDER = _NT('str', [
     'Female'
 )
 CHOICES = _NT('tuple', [
+    'ACCESS_TYPE',
+    'DATA_TYPE',
     'BLOCK_TYPE',
     'COUNTRY',
     'GENDER',
     'POSITIONS',
     'TASK_STATUS',
+    'ITEM_STATUS',
 ])(
+    [(access_type, access_type) for access_type in ACCESS_TYPE],
+    [(data_type, data_type) for data_type in DATA_TYPE],
     [(block_type, block_type) for block_type in BLOCK_TYPES],
     [(country, country) for country in COUNTRY.values()],
     [(gender, gender) for gender in GENDER],
     [(role, role) for role in ROLES if role != ROLES.DISTRIBUTOR],
     [(status, status) for status in TASK_STATUS],
+    [(status, status) for status in ITEM_STATUS],
 )
 TEMPLATES = _NT('str', [
     # Main templates
@@ -184,6 +222,17 @@ TEMPLATES = _NT('str', [
 
     # CEO templates
     'CEO_DASHBOARD_TEMPLATE',
+    # Warehouse admin templates
+    'WAREHOUSE_ADMIN_DASHBOARD_TEMPLATE',
+    'MAIN_STORAGE_GOODS_TEMPLATE',
+    'DETAIL_ITEM_CARD_TEMPLATE',
+    'ADD_GOODS_TEMPLATE',
+    'BATCHES_TEMPLATE',
+    'ADD_BATCH_TEMPLATE',
+    'SEND_GOODS_TEMPLATE',
+    'REGISTERED_ITEMS_TEMPLATE',
+    'REGISTER_ITEM_TEMPLATE',
+    'DISTRIBUTED_GOODS_TEMPLATE',
 ])(
     # Main templates
     f'{_main_app__templates_folder}/index.html',
@@ -215,6 +264,17 @@ TEMPLATES = _NT('str', [
 
     # CEO templates
     f'{_ceo_templates_folder}/dashboard.html',
+    # Warehouse admin templates
+    f'{_warehouse_admin_templates_folder}/dashboard.html',
+    f'{_warehouse_admin_templates_folder}/main_storage_goods.html',
+    f'{_warehouse_admin_templates_folder}/detail_item_cards.html',
+    f'{_warehouse_admin_templates_folder}/add_goods.html',
+    f'{_warehouse_admin_templates_folder}/batches.html',
+    f'{_warehouse_admin_templates_folder}/add_batch.html',
+    f'{_warehouse_admin_templates_folder}/send_goods.html',
+    f'{_warehouse_admin_templates_folder}/registered_items.html',
+    f'{_warehouse_admin_templates_folder}/register_item.html',
+    f'{_warehouse_admin_templates_folder}/distributed_goods.html',
 )
 PAGES = _NT('str', [
     # Accounting manager pages

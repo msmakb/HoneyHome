@@ -5,7 +5,7 @@ from main.utils import getUserRole
 from .constants import PAGES, ROLES
 
 
-ACCOUNTING_MANAGER_MENU = {
+ACCOUNTING_MANAGER_MENU: dict[str, str] = {
     "Dashboard": PAGES.ACCOUNTING_MANAGER_DASHBOARD,
     "Sales": PAGES.SALES_PAGE,
     "Pricing": PAGES.PRICING_PAGE,
@@ -14,7 +14,7 @@ ACCOUNTING_MANAGER_MENU = {
     "My Tasks": PAGES.TASKS_PAGE,
 }
 
-CEO_MENU = {
+CEO_MENU: dict[str, str] = {
     "Dashboard": PAGES.CEO_DASHBOARD,
     "Sales": PAGES.SALES_PAGE,
     "Pricing": PAGES.PRICING_PAGE,
@@ -36,7 +36,7 @@ CEO_MENU = {
     # "Questionnaires": "",
 }
 
-DISTRIBUTOR_MENU = {
+DISTRIBUTOR_MENU: dict[str, str] = {
     "Dashboard": PAGES.DISTRIBUTOR_DASHBOARD,
     "Goods": PAGES.GOODS_PAGE,
     "Send Payment": PAGES.SEND_PAYMENT_PAGE,
@@ -45,7 +45,7 @@ DISTRIBUTOR_MENU = {
     "History": PAGES.HISTORY_PAGE,
 }
 
-HUMAN_RESOURCES_MENU = {
+HUMAN_RESOURCES_MENU: dict[str, str] = {
     "Dashboard": PAGES.HUMAN_RESOURCES_DASHBOARD,
     "Employees": PAGES.EMPLOYEES_PAGE,
     "Distributors": PAGES.DISTRIBUTORS_PAGE,
@@ -53,14 +53,14 @@ HUMAN_RESOURCES_MENU = {
     "Evaluation": PAGES.EVALUATION_PAGE,
     "My Tasks": PAGES.TASKS_PAGE,
 }
-SOCIAL_MEDIA_MANAGER_MENU = {
+SOCIAL_MEDIA_MANAGER_MENU: dict[str, str] = {
     "Dashboard": 'SocialMediaManagerDashboard',
     "Customers": 'CustomersPage',
     "Questionnaires": 'QuestionnairesPage',
     # "File Manager": '',
     "My Tasks": PAGES.TASKS_PAGE,
 }
-WAREHOUSE_ADMIN_MENU = {
+WAREHOUSE_ADMIN_MENU: dict[str, str] = {
     "Dashboard": PAGES.WAREHOUSE_ADMIN_DASHBOARD,
     "Main Storage Goods": PAGES.MAIN_STORAGE_GOODS_PAGE,
     "Distributed Goods": PAGES.DISTRIBUTED_GOODS_PAGE,
@@ -74,21 +74,24 @@ WAREHOUSE_ADMIN_MENU = {
 }
 
 
-def getUserMenu(request: HttpRequest) -> dict:
+def getUserMenu(request: HttpRequest) -> dict[str, str]:
     role: str = getUserRole(request)
+    if role is None:
+        raise ValueError("Role must not be None")
 
-    if role == ROLES.ACCOUNTING_MANAGER:
-        return ACCOUNTING_MANAGER_MENU
-    elif role == ROLES.CEO:
-        return CEO_MENU
-    elif role == ROLES.DISTRIBUTOR:
-        return DISTRIBUTOR_MENU
-    elif role == ROLES.HUMAN_RESOURCES:
-        return HUMAN_RESOURCES_MENU
-    elif role == ROLES.SOCIAL_MEDIA_MANAGER:
-        return SOCIAL_MEDIA_MANAGER_MENU
-    elif role == ROLES.WAREHOUSE_ADMIN:
-        return WAREHOUSE_ADMIN_MENU
-    else:
-        raise NotImplementedError(
-            f"The menu is not implemented for this role '{role}'.")
+    match role:
+        case ROLES.ACCOUNTING_MANAGER:
+            return ACCOUNTING_MANAGER_MENU
+        case ROLES.CEO:
+            return CEO_MENU
+        case ROLES.DISTRIBUTOR:
+            return DISTRIBUTOR_MENU
+        case ROLES.HUMAN_RESOURCES:
+            return HUMAN_RESOURCES_MENU
+        case ROLES.SOCIAL_MEDIA_MANAGER:
+            return SOCIAL_MEDIA_MANAGER_MENU
+        case ROLES.WAREHOUSE_ADMIN:
+            return WAREHOUSE_ADMIN_MENU
+
+    raise NotImplementedError(f"The menu is not implemented "
+                              + "for this role '{role}'.")

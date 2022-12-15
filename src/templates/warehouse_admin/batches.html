@@ -8,6 +8,7 @@
 <table style="text-align:center;" class="table table-striped">
     <thead>
     <tr>
+        <th scope="col">NO.</th>
         <th scope="col">NAME</th>
         <th scope="col">CODE</th>
         <th scope="col">ARRIVAL DATE</th>
@@ -16,8 +17,9 @@
     </tr>
     </thead>
     <tbody>
-    {% for batch in Batches %}
+    {% for batch in page_obj %}
     <tr>
+        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
         <td>{{batch.name}}</td>
         <td>{{batch.code}}</td>
         <td>{{batch.arrival_date}}</td>

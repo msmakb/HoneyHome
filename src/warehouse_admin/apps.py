@@ -3,8 +3,8 @@ from django.db.models.signals import post_migrate
 
 
 class WarehouseAdminConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'warehouse_admin'
+    default_auto_field: str = 'django.db.models.BigAutoField'
+    name: str = 'warehouse_admin'
 
     def ready(self) -> None:
         from .signals import onMigratingStockModel

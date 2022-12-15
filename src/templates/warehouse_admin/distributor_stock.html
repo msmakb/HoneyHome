@@ -2,29 +2,35 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'SendGoodsPage' distributor.id %}">Send Goods</a></td>
+    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'SendGoodsPage' distributor.id %}">Send
+            Goods</a></td>
 </div>
 <h2>Distributor Stock - Name: {{distributor.person.name}}</h2>
 <table style="text-align:center;" class="table table-striped">
     <thead>
-    <tr>
-        <th scope="col">ITEM</th>
-        <th scope="col">BATCH</th>
-        <th scope="col">QUANTITY</th>
-        <th scope="col">RECIVING DATE</th>
-        <th scope="col">RECEIVED FROM</th>
-    </tr>
+        <tr>
+            <th scope="col">NO.</th>
+            <th scope="col">ITEM</th>
+            <th scope="col">BATCHES</th>
+            <th scope="col">QUANTITY</th>
+            <th scope="col">DETAILS</th>
+        </tr>
     </thead>
     <tbody>
-    {% for item in Items %}
-    <tr>
-        <td>{{item.type}}</td>
-        <td>{{item.batch}}</td>
-        <td>{{item.quantity}}</td>
-        <td>{{item.receiving_date}}</td>
-        <td>{{item.received_from}}</td>
-    </tr>
-    {% endfor %}
+        {% for item in page_obj %}
+        <tr>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+            <td>{{ item.type }}</td>
+            <td>
+                {% for batch in item.batch %}
+                <p style="margin: auto;"><small>{{ batch.0 }}: {{ batch.1 }}</small></p>
+                {% endfor %}
+            </td>
+            <td>{{ item.quantity }}</td>
+            <td><a class="btn btn-sm btn-info"
+                    href="{% url namespaec|add:'DetailItemCardsPage' distributor.stock.id item.type %}">Show</a></td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
 {% endblock %}

@@ -3,8 +3,8 @@ from django.db.models.signals import post_save, pre_delete
 
 
 class HumanResourcesConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'human_resources'
+    default_auto_field: str = 'django.db.models.BigAutoField'
+    name: str = 'human_resources'
 
     def ready(self) -> None:
         from . import signals
@@ -13,8 +13,9 @@ class HumanResourcesConfig(AppConfig):
 
         # After creating new employee/distributor or update
         post_save.connect(signals.onAddingUpdatingEmployee, sender=Employee)
-        post_save.connect(signals.onAddingUpdatingDistributor, sender=Distributor)
-        
+        post_save.connect(signals.onAddingUpdatingDistributor,
+                          sender=Distributor)
+
         # Before deleting employee/distributor or task
         pre_delete.connect(signals.deleteUserAccount, sender=Employee)
         pre_delete.connect(signals.deleteUserAccount, sender=Distributor)
