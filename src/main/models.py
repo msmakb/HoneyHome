@@ -46,7 +46,6 @@ class BaseModel(models.Model):
         """
         user: User = None
         requester_name: str = ''
-        obj: Self = self
         if not requester:
             requester_name = 'Unknown User'
         elif isinstance(requester, HttpRequest):
@@ -62,22 +61,21 @@ class BaseModel(models.Model):
                 logger.error(exception)
                 raise exception
         if created:
-            obj = self.getLastInsertedObject()
-            obj.created_by = requester_name
-            obj.updated_by = requester_name
+            self.created_by = requester_name
+            self.updated_by = requester_name
             logger.info(
-                f"Database change in [{obj.__class__.__name__}] model "
-                + f"adding new object. ID: {obj.id} By: {user}")
+                f"Database change in [{self.__class__.__name__}] model "
+                + f"adding new object. ID: {self.id} By: {user}")
         else:
-            obj.updated_by = requester_name
-            logger.info(f"Database change in [{obj.__class__.__name__}] "
-                        + f"model at object ID: {obj.id} By: {user}")
-        obj.save()
+            self.updated_by = requester_name
+            logger.info(f"Database change in [{self.__class__.__name__}] "
+                        + f"model at object ID: {self.id} By: {user}")
+        self.save()
 
     @classmethod
     def create(cls, requester: Union[HttpRequest, str], *args, **kwargs) -> Self:
         obj: Self = cls.objects.create(*args, **kwargs)
-        cls.setCreatedByUpdatedBy(cls, requester, created=True)
+        obj.setCreatedByUpdatedBy(requester, created=True)
         return obj
 
     def delete(self, requester: Union[HttpRequest, str], *args, **kwargs) -> tuple[int, dict[str, int]]:
@@ -141,7 +139,7 @@ class BaseModel(models.Model):
         """
         query: QuerySet[Self] = queryset
         if queryset is not None:
-            if not isinstance(queryset, QuerySet) or not isinstance(queryset[0], Self):
+            if not isinstance(queryset, QuerySet) or not isinstance(queryset.first(), cls):
                 raise NotImplementedError
         else:
             query = cls.objects.all()

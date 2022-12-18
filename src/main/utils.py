@@ -125,11 +125,11 @@ def getUserBaseTemplate(request: HttpRequest) -> str:
     return 'base.html'
 
 
-def getEmployeesTasks(request: HttpRequest) -> QuerySet:
+def getEmployeesTasks(request: HttpRequest) -> QuerySet[Task]:
     employee: Employee = Employee.get(account=request.user)
-    Tasks: Task = Task.filter(~Q(status=constants.TASK_STATUS.LATE_SUBMISSION) &
-                              ~Q(status=constants.TASK_STATUS.ON_TIME),
-                              employee=employee)
+    Tasks: QuerySet[Task] = Task.filter(~Q(status=constants.TASK_STATUS.LATE_SUBMISSION) &
+                                        ~Q(status=constants.TASK_STATUS.ON_TIME),
+                                        employee=employee)
 
     return Tasks
 

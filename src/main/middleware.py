@@ -313,7 +313,7 @@ class AllowedUserMiddleware:
         if request.user.is_authenticated:
             path_name: str = resolve(request.path_info).url_name
             # Is requesting admin dashboard
-            if not self.isAllowedToAccessesAdmin():
+            if not self.isAllowedToAccessAdmin(request):
                 raise Http404
 
             # The requester in THE unauthorized page
@@ -343,13 +343,13 @@ class AllowedUserMiddleware:
 
         return None
 
-    def isAllowedToAccessesAdmin(self) -> bool:
-        if self.request.path.startswith(reverse('admin:index')):
-            if self.request.user.is_superuser:
+    def isAllowedToAccessAdmin(self, request: HttpRequest) -> bool:
+        if request.path.startswith(reverse('admin:index')):
+            if request.user.is_superuser:
                 return True
             else:
-                logger.warning(f'Non-allowed user [{self.request.user}] attempted '
-                               + f'to access admin site at "{self.request.get_full_path()}".'
-                               + f' IP: {getClientIp(self.request)}')
+                logger.warning(f'Non-allowed user [{request.user}] attempted '
+                               + f'to access admin site at "{request.get_full_path()}".'
+                               + f' IP: {getClientIp(request)}')
                 return False
         return True

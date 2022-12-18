@@ -83,6 +83,15 @@ def _getDefaultParam() -> list[_DefaultParameter]:
             parameter_type=DATA_TYPE.INTEGER
         )
     )
+    default_parameters.append(
+        _DefaultParameter(
+            name="TEST",
+            value="TEST_PARAMETER",
+            description="Just for testing propose.",
+            access_type=ACCESS_TYPE.No_ACCESS,
+            parameter_type=DATA_TYPE.STRING
+        )
+    )
     return default_parameters
 
 
@@ -90,6 +99,8 @@ def _saveDefaultParametersToDataBase() -> None:
     # This executed one time only, when parameters table is created
     created_by = "System on Initialization"
     for pram in _getDefaultParam():
+        if pram.name == "TEST":
+            continue
         if not _parameter.isExists(name=pram.name):
             logger.info(f"The default parameter {pram.name}"
                         + " added to the database.")
@@ -136,7 +147,9 @@ def getParameterValue(key: str) -> Union[str, int, float, bool]:
             case _:
                 return param.getValue
     except _parameter.DoesNotExist:
-        logger.warning(f"The parameter [{key}] dose not exist in database!!")
+        if key != "TEST":
+            logger.warning(f"The parameter [{key}] "
+                           + "dose not exist in database!")
         for pram in _getDefaultParam():
             if key == pram.name:
                 match pram.parameter_type:
