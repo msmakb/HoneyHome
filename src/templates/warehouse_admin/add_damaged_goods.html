@@ -2,11 +2,14 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
-    <div class="form-control"><h4 style="text-align: center;">Add Damaged Goods</h4></div>
+    <div class="form-control">
+        <h4 style="text-align: center;">Add Damaged Goods</h4>
+    </div>
 </div>
 <form method="POST">
     {% csrf_token %}
-    <div style="width: 60%; margin:auto;">
+    {{form.as_p}}
+    {% comment %} <div style="width: 60%; margin:auto;">
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Item</label>
             <div>{{form.type}}</div>
@@ -24,13 +27,14 @@
             <div>{{form.received_from}}</div>
         </div>
         <div style="width: 60%; float: right; margin:auto; margin-top: 20px;">
-            <a style="margin:auto;" href="{% url namespaec|add:'DamagedGoodsPage' %}" class="btn btn-secondary">Cancel</a>
+            <a style="margin:auto;" href="{% url namespaec|add:'DamagedGoodsPage' %}"
+                class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-xs btn-info">Add Damaged Goods</button>
         </div>
         <div class="form-group" style="width: 30%; margin: auto; margin-top: 100px; ">
             <ul>
                 {% for message in messages %}
-                    <span style="display: grid; color: red;">{{ message }}</span>
+                <span style="display: grid; color: red;">{{ message }}</span>
                 {% endfor %}
                 <h6 style="margin-bottom: 0px;">Available Items in the stock</h6>
                 {% for -, value in availableItems.items %}
@@ -38,7 +42,7 @@
                 {% endfor %}
             </ul>
         </div>
-    </div>
+    </div> {% endcomment %}
 </form>
 
 

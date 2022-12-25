@@ -4,7 +4,7 @@ from django.db.models.query import QuerySet
 from django.forms import ModelForm
 from django.http import HttpRequest
 
-from .constants import BASE_MODEL_FIELDS, PARAMETERS, ROWS_PER_PAGE, ACCESS_TYPE
+from .constants import BASE_MODEL_FIELDS, ROWS_PER_PAGE, ACCESS_TYPE
 from .models import AuditEntry, BlockedClient, Parameter, Person
 from .utils import setCreatedByUpdatedBy
 

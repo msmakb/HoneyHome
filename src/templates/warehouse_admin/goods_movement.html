@@ -2,35 +2,35 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="">Download History</a></td>
+    <td><a id="button" class="btn btn-xs btn-secondary">Download History</a></td>
 </div>
 <h2>Goods Movement History</h2>
 <table style="text-align:center;" class="table table-striped">
     <thead>
-    <tr>
-        <th scope="col">ITEM</th>
-        <th scope="col">ITEM CODE</th>
-        <th scope="col">BATCH</th>
-        <th scope="col">QUANTITY</th>
-        <th scope="col">STATUS</th>
-        <th scope="col">SENDER</th>
-        <th scope="col">RECEIVER</th>
-        <th scope="col">DATE</th>
-    </tr>
+        <tr>
+            <th scope="col">ITEM</th>
+            <th scope="col">ITEM CODE</th>
+            <th scope="col">BATCH</th>
+            <th scope="col">QUANTITY</th>
+            <th scope="col">STATUS</th>
+            <th scope="col">SENDER</th>
+            <th scope="col">RECEIVER</th>
+            <th scope="col">DATE</th>
+        </tr>
     </thead>
     <tbody>
-    {% for goods in GoodsMovement %}
-    <tr>
-        <td>{{goods.item}}</td>
-        <td>{{goods.code}}</td>
-        <td>{{goods.batch}}</td>
-        <td>{{goods.quantity}}</td>
-        <td>{{goods.status}}</td>
-        <td>{{goods.sender}}</td>
-        <td>{{goods.receiver}}</td>
-        <td>{{goods.date}}</td>
-    </tr>
-    {% endfor %}
+        {% for goods in GoodsMovement %}
+        <tr>
+            <td>{{goods.item}}</td>
+            <td>{{goods.code}}</td>
+            <td>{{goods.batch}}</td>
+            <td>{{goods.quantity}}</td>
+            <td>{{goods.status}}</td>
+            <td>{{goods.sender}}</td>
+            <td>{{goods.receiver}}</td>
+            <td>{{goods.date}}</td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
 {% endblock %}

@@ -85,6 +85,33 @@ def _getDefaultParam() -> list[_DefaultParameter]:
     )
     default_parameters.append(
         _DefaultParameter(
+            name="WEEKLY_RATE_TASK_NAME",
+            value="Evaluate employees",
+            description="The name of the task given to the HR to rate the employees.",
+            access_type=ACCESS_TYPE.ADMIN_ACCESS,
+            parameter_type=DATA_TYPE.STRING
+        )
+    )
+    default_parameters.append(
+        _DefaultParameter(
+            name="WEEKLY_RATE_TASK_DESCRIPTION",
+            value="Make sure to rate each employee on their weekly evaluations.",
+            description="The description of the task given to the HR to rate the employees.",
+            access_type=ACCESS_TYPE.ADMIN_ACCESS,
+            parameter_type=DATA_TYPE.STRING
+        )
+    )
+    default_parameters.append(
+        _DefaultParameter(
+            name="WEEKLY_RATE_TASK_PERIOD",
+            value="7",
+            description="The period in days to submit the task given to the HR to rate the employees. Note: IT MUST BE AN INTEGER.",
+            access_type=ACCESS_TYPE.ADMIN_ACCESS,
+            parameter_type=DATA_TYPE.INTEGER
+        )
+    )
+    default_parameters.append(
+        _DefaultParameter(
             name="TEST",
             value="TEST_PARAMETER",
             description="Just for testing propose.",

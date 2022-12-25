@@ -167,7 +167,7 @@ class BaseModel(models.Model):
         return cls.objects.filter(*arg, **kwarg).count()
 
     @classmethod
-    def orderFiltered(cls, order_by: str, *args, reverse=False, **kwargs) -> int:
+    def orderFiltered(cls, order_by: str, *args, reverse=False, **kwargs) -> QuerySet[Self]:
         """
         Order the filtered queryset.
         """

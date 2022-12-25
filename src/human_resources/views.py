@@ -125,7 +125,7 @@ def deleteEmployeePage(request: HttpRequest, pk: int) -> HttpResponse:
     employee: Employee = get_object_or_404(Employee, id=pk)
     if not isUserAllowedToModify(request.user, employee.position, constants.ROLES.CEO):
         return redirect(constants.PAGES.UNAUTHORIZED_PAGE)
-    if request.method == constants.POST_METHOD:
+    if request.method == constants.DELETE_METHOD:
         employee.delete(request)
         MSG.EMPLOYEE_REMOVED(request)
 
@@ -196,7 +196,7 @@ def updateDistributorPage(request: HttpRequest, pk: int) -> HttpResponse:
 
 def deleteDistributorPage(request: HttpRequest, pk: int) -> HttpResponse:
     distributor: Distributor = get_object_or_404(Distributor, id=pk)
-    if request.method == constants.POST_METHOD:
+    if request.method == constants.DELETE_METHOD:
         distributor.delete(request)
         MSG.DISTRIBUTOR_REMOVED(request)
 
@@ -274,7 +274,7 @@ def deleteTaskPage(request: HttpRequest, pk: int) -> HttpResponse:
                                  constants.ROLES.HUMAN_RESOURCES):
         return redirect(constants.PAGES.UNAUTHORIZED_PAGE)
 
-    if request.method == constants.POST_METHOD:
+    if request.method == constants.DELETE_METHOD:
         task.delete(request)
         MSG.TASK_REMOVED(request)
 

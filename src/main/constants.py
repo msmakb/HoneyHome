@@ -22,8 +22,9 @@ HTML_TAGS_PATTERN: Final[str] = '<.*?>((.|\n)*)<\/.*?>'
 MAIN_STORAGE_ID: Final[int] = 1
 MAIN_STORAGE_NAME: Final[str] = 'Main Storage'
 PERSONAL_PHOTOS_FOLDER: Final[str] = 'photographs'
-POST_METHOD: Final[str] = 'POST'
 GET_METHOD: Final[str] = 'GET'
+POST_METHOD: Final[str] = 'POST'
+DELETE_METHOD: Final[str] = 'DELETE'
 ROWS_PER_PAGE: Final[int] = 10
 SYSTEM_CRON_NAME: Final[str] = "System Cron"
 SYSTEM_MIDDLEWARE_NAME: Final[str] = 'Middleware System'
@@ -74,23 +75,6 @@ DATA_TYPE = _NT('str', [
     '1',
     '2',
     '3'
-)
-PARAMETERS = _NT('str', [
-    'ALLOWED_LOGGED_IN_ATTEMPTS',
-    'ALLOWED_LOGGED_IN_ATTEMPTS_RESET',
-    'MAX_TEMPORARY_BLOCK',
-    'TEMPORARY_BLOCK_PERIOD',
-    'TIME_OUT_PERIOD',
-    'BETWEEN_POST_REQUESTS_TIME',
-    'MAGIC_NUMBER',
-])(
-    'ALLOWED_LOGGED_IN_ATTEMPTS',
-    'ALLOWED_LOGGED_IN_ATTEMPTS_RESET',
-    'MAX_TEMPORARY_BLOCK',
-    'TEMPORARY_BLOCK_PERIOD',
-    'TIME_OUT_PERIOD',
-    'BETWEEN_POST_REQUESTS_TIME',
-    'MAGIC_NUMBER',
 )
 CRON_AT = _NT('str', [
     'EVERY_MINUTE',
@@ -190,6 +174,15 @@ CHOICES = _NT('tuple', [
     [(role, role) for role in ROLES if role != ROLES.DISTRIBUTOR],
     [(status, status) for status in TASK_STATUS],
     [(status, status) for status in ITEM_STATUS],
+)
+RESPONSE_STATUS_CODE = _NT('int', [
+    'SUCCESS',
+    'REDIRECT',
+    'FORBIDDEN'
+])(
+    200,
+    302,
+    403
 )
 TEMPLATES = _NT('str', [
     # Main templates
@@ -414,4 +407,27 @@ PAGES = _NT('str', [
     'RetailGoodsPage',
     'ConvertToRetailPage',
     'AddRetailGoodsPage',
+)
+PARAMETERS = _NT('str', [
+    "ALLOWED_LOGGED_IN_ATTEMPTS",
+    "ALLOWED_LOGGED_IN_ATTEMPTS_RESET",
+    "MAX_TEMPORARY_BLOCK",
+    "TEMPORARY_BLOCK_PERIOD",
+    "TIME_OUT_PERIOD",
+    "BETWEEN_POST_REQUESTS_TIME",
+    "MAGIC_NUMBER",
+    "WEEKLY_RATE_TASK_NAME",
+    "WEEKLY_RATE_TASK_DESCRIPTION",
+    "WEEKLY_RATE_TASK_PERIOD"
+])(
+    "ALLOWED_LOGGED_IN_ATTEMPTS",
+    "ALLOWED_LOGGED_IN_ATTEMPTS_RESET",
+    "MAX_TEMPORARY_BLOCK",
+    "TEMPORARY_BLOCK_PERIOD",
+    "TIME_OUT_PERIOD",
+    "BETWEEN_POST_REQUESTS_TIME",
+    "MAGIC_NUMBER",
+    "WEEKLY_RATE_TASK_NAME",
+    "WEEKLY_RATE_TASK_DESCRIPTION",
+    "WEEKLY_RATE_TASK_PERIOD"
 )

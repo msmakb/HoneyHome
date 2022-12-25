@@ -37,7 +37,7 @@ class Employee(BaseModel):
 class Task(BaseModel):
 
     employee: Employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    task: str = models.CharField(max_length=20)
+    task: str = models.CharField(max_length=30)
     description: str = models.TextField(max_length=500, default="-")
     status: str = models.CharField(max_length=20, choices=constants.CHOICES.TASK_STATUS,
                                    default=constants.TASK_STATUS.IN_PROGRESS)
@@ -65,12 +65,12 @@ class Task(BaseModel):
         # If the deadline date is declared
         if not self.submission_date:
             if self.deadline_date:
-                time_difference = str(self.deadline_date - timezone.now())[:-7]
-                # Check if the time difference is a negative value
-                if time_difference[0].startswith('-'):
+                time_difference: str = str(self.deadline_date - timezone.now())
+                # Check if the time difference is a negative value or 0:00:00
+                if time_difference.startswith('-') or time_difference.startswith("0:00:00"):
                     return 'Overdue'
                 else:
-                    return time_difference
+                    return time_difference[:-7] if len(time_difference.split(":")[-1]) > 6 else time_difference
             else:
                 return "Open"
         else:
@@ -93,11 +93,11 @@ class Task(BaseModel):
         self.setCreatedByUpdatedBy(requester)
 
     def setDeadlineDate(self, requester: Union[HttpRequest, str], deadline_date: timezone.datetime) -> None:
-        self.deadline_date = timezone.datetime(deadline_date)
+        self.deadline_date = deadline_date
         self.setCreatedByUpdatedBy(requester)
 
     def setSubmissionDate(self, requester: Union[HttpRequest, str], submission_date: timezone.datetime) -> None:
-        self.submission_date = timezone.datetime(submission_date)
+        self.submission_date = submission_date
         self.setCreatedByUpdatedBy(requester)
 
     def setRated(self, requester: Union[HttpRequest, str], is_rated: bool) -> None:

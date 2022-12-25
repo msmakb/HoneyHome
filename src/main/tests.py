@@ -37,9 +37,13 @@ class TestInitialization(TestCase):
 
     def test_is_superuser_ceo_created(self) -> None:
         users: QuerySet[User] = User.objects.all()
-        self.assertIsNotNone(users)
-        self.assertEquals(users.first().first_name, "CEO")
-        self.assertTrue(users.first().is_superuser)
+        self.assertEquals(users.count(), 1)
+        employees: QuerySet[Employee] = Employee.objects.all()
+        self.assertEquals(employees.count(), 1)
+        ceo: Employee = employees.first()
+        self.assertEquals(ceo.person.name, "CEO")
+        self.assertEquals(ceo.account.first_name, "CEO")
+        self.assertTrue(ceo.account.is_superuser)
 
 
 class TestCron(TestCase):

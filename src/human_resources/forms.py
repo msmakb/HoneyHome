@@ -1,7 +1,9 @@
 from django import forms
+from django.core.validators import validate_email
 from django.db.models.query import QuerySet
 from django.forms import ModelForm
 from django.http import HttpRequest
+from django.utils import timezone
 
 from main import constants
 from main.models import Person
@@ -110,6 +112,8 @@ class AddPersonForm(ModelForm):
 
     def clean_phone_number(self) -> str:
         phone_number: str = self.cleaned_data.get('phone_number')
+        if not phone_number:
+            raise forms.ValidationError("This field is required.")
         splitted: str = phone_number.split(' ')
         # '+' sign in the begging
         if phone_number[0] != '+':
@@ -136,6 +140,13 @@ class AddPersonForm(ModelForm):
                 "The phone number must be between 9-14 digits.")
 
         return phone_number
+
+    def clean_contacting_email(self):
+        contacting_email = self.cleaned_data["contacting_email"]
+        if not contacting_email:
+            raise forms.ValidationError("This field is required.")
+        validate_email(contacting_email)
+        return contacting_email
 
 
 class EmployeeForm(ModelForm):
@@ -267,6 +278,18 @@ class AddTaskForm(ModelForm):
             raise forms.ValidationError(
                 "Select a valid choice. That choice is not one of the available choices.")
         return employee
+
+    def clean_deadline_date(self):
+        deadline_date = self.cleaned_data.get("deadline_date")
+        if deadline_date:
+            if deadline_date < (timezone.now() + timezone.timedelta(hours=1)):
+                raise forms.ValidationError(
+                    "Sorry, please input a valid date and time more than an hour from this moment.")
+            elif deadline_date > (timezone.now() + timezone.timedelta(days=30)):
+                raise forms.ValidationError(
+                    "Sorry, You cannot make the deadline date for more than a month.")
+
+        return deadline_date
 
     def clean_created_by(self) -> str:
         object_str_representation: str = self.cleaned_data.get('task')

@@ -43,8 +43,10 @@ def monthlyRate(emp_id: int) -> float:
         WEEKS_IN_A_MONTH = 4
         rate: float = 0
         count: int = 0
+        month_period: tuple[timezone.datetime, ...] = (
+            timezone.now() - timezone.timedelta(days=30), timezone.now())
         emp_weekly_rates: QuerySet[WeeklyRate] = WeeklyRate.orderFiltered(
-            'id', reverse=True, employee=emp_id)
+            'id', reverse=True, employee=emp_id, created__range=month_period)
         for i in emp_weekly_rates:
             if count == WEEKS_IN_A_MONTH:
                 break
@@ -71,19 +73,24 @@ def getTaskRateFrom(emp_id: int, days: int) -> float:
     """
     rate: float = 0
     count: int = 0
-    empTasks: QuerySet[Task] = Task.filter(employee=emp_id, created__range=(
-        timezone.now() - timezone.timedelta(days=days), timezone.now()))
-    if empTasks.exists():
-        for task in empTasks:
-            try:
-                task_rate: TaskRate = TaskRate.get(task=task)
-                rate += task_rate.rate
-                rate += task_rate.on_time_rate
-                count += 1
-            except TaskRate.DoesNotExist:
-                pass
-        if count != 0:
-            return round(((rate / count) / 2), 2)
+    period: tuple[timezone.datetime, ...] = (
+        timezone.now() - timezone.timedelta(days=days), timezone.now())
+    empTasks: QuerySet[Task] = Task.filter(
+        employee=emp_id, created__range=period)
+    # if empTasks.exists():
+    for task in empTasks:
+        try:
+            task_rate: TaskRate = TaskRate.get(task=task,
+                                               created__range=period)
+            if not task_rate:
+                continue
+            rate += task_rate.rate
+            rate += task_rate.on_time_rate
+            count += 1
+        except TaskRate.DoesNotExist:
+            pass
+    if count != 0:
+        return round(((rate / count) / 2), 2)
 
     return 0
 
@@ -114,7 +121,7 @@ def weeklyRate(emp_id: int) -> float:
         float: Employee weekly rate
     """
     if not _newEmployee(emp_id):
-        last_week: Week = Week.getLastInsertedObject()
+        last_week: Week = Week.orderFiltered("created").last()
         weekly_rate: WeeklyRate = WeeklyRate.get(
             week=last_week, employee=emp_id)
         if weekly_rate:

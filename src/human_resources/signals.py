@@ -43,8 +43,7 @@ def onAddingUpdatingEmployee(sender: Employee, instance: Employee, created: bool
             instance.person = person
             instance.save()
         else:
-            Person.objects.create(name=constants.ROLES.CEO)
-            person: Person = Person.getLastInsertedObject()
+            person: Person = Person.objects.create(name=constants.ROLES.CEO)
             super_user: User = _createUserAccount(person, is_ceo=True)
             print(f"  Super User '{super_user.username}' was created.")
             Group.objects.get(name=instance.position).user_set.add(super_user)

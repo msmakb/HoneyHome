@@ -12,7 +12,7 @@
   </div>
   <div class="modal-footer">
     <a href="{% url namespaec|add:'TaskPage' Task.id %}" class="btn btn-secondary">Close</a>
-    <form method="POST">
+    <form method="DELETE">
       {% csrf_token %}
       <button type="submit" class="btn btn-xs btn-outline-danger">Remove</button>
     </form>

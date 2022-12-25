@@ -10,7 +10,7 @@
   </div>
   <div class="modal-footer">
     <a class="btn btn-secondary" href="{% url namespaec|add:'DistributorPage' Distributor.id %}">Close</a>
-    <form method="POST">
+    <form method="DELETE">
       {% csrf_token %}
       <button type="submit" class="btn btn-xs btn-outline-danger">Delete</button>
     </form>
