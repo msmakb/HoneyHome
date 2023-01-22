@@ -3,6 +3,8 @@ from typing import Callable, Final
 from django.contrib import messages
 from django.http import HttpRequest
 
+from warehouse_admin.models import ItemCard
+
 """============================= Main Messages ============================="""
 BLOCK_WARNING: Final[Callable[[HttpRequest], None]] = lambda request: messages.warning(
     request, "WARNING!! The system logged you out for spamming, "
@@ -58,3 +60,11 @@ TASKS_EVALUATION_DONE: Final[Callable[[HttpRequest], None]] = lambda request: me
 WEEKS_DELETED: Final[Callable[[HttpRequest], None]] = lambda request, i: messages.warning(
     request, f"{i} unrated week/s have been deleted from"
     + " database, only last unrated week left.")
+
+"""======================== Warehouse Admin Messages ========================"""
+DECLINED_TRANSFORMING: Final[Callable[[HttpRequest, ItemCard], None]] = lambda request, item: messages.success(
+    request, f"The transformed goods {item.type} from {item.sender} to {item.receiver} has been DECLINED")
+APPROVED_TRANSFORMING: Final[Callable[[HttpRequest, ItemCard], None]] = lambda request, item: messages.success(
+    request, f"The transformed goods {item.type} from {item.sender} to {item.receiver} has been APPROVED")
+NO_TRANSFORMING: Final[Callable[[HttpRequest], None]] = lambda request: messages.info(
+    request, "There are no transformed goods to be approved")

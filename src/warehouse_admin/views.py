@@ -5,13 +5,14 @@ from django.contrib import messages
 from django.core.exceptions import EmptyResultSet
 from django.db.models.functions import Lower
 from django.db.models.query import QuerySet
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, Http404
 from django.http.request import QueryDict
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.utils import timezone
 
 from distributor.models import Distributor
 from main import constants
+from main import messages as MSG
 from main.utils import Pagination
 from main.utils import getUserBaseTemplate as base
 from main.utils import resolvePageUrl, exportAsCsv
@@ -508,28 +509,44 @@ def AddDamagedGoodsPage(request: HttpRequest) -> HttpResponse:
     return render(request, 'warehouse_admin/add_damaged_goods.html', context)
 
 
-def TransformedGoodsPage(request: HttpRequest) -> HttpResponse:
-    Items = ItemCard.objects.filter(is_transforming=True)
+def transformedGoodsPage(request: HttpRequest) -> HttpResponse:
+    items: QuerySet[ItemCard] = ItemCard.filter(is_transforming=True)
 
-    context = {'Items': Items, 'base': base(
-        request)}
+    if not items.exists():
+        MSG.NO_TRANSFORMING(request)
+
+    context: dict[str, Any] = {'Items': items,
+                               'base': base(request)}
     return render(request, 'warehouse_admin/transformed_goods.html', context)
 
 
-def ApproveTransformedGoods(request: HttpRequest, pk: int) -> HttpResponse:
-    item = ItemCard.objects.get(id=pk)
-    item.is_transforming = False
-    item.save()
+def approveTransformingGoods(request: HttpRequest, pk: int) -> HttpResponseRedirect:
+    item: ItemCard = get_object_or_404(ItemCard, id=pk)
+    if not item.is_transforming:
+        raise Http404
 
-    if not ItemCard.objects.filter(is_transforming=True).exists():
-        messages.info(request, "There is no transformed goods to be approved")
-        from main.models import Task
-        task = Task.objects.get(id=10)
-        task.is_rated = True
-        task.status = "On-Time"
-        task.save()
-    messages.success(
-        request, f"The transformed goods '{item.type}' from '{item.received_from}' to '{item.getReceiver()}' has been 'approved'")
+    MSG.APPROVED_TRANSFORMING(request, item)
+    stock: Stock = Stock.get(id=item.transforming_to_stock)
+    distributer: Distributor = item.stock.getStockOwner()
+    item.setStock(request, stock)
+    item.setReceivedFrom(request, distributer.person.name)
+    item.setPriced(request, False)
+    item.setPrice(request, None)
+    item.setTransforming(request, False)
+    item.setTransformingToStock(request, 0)
+
+    return redirect(resolvePageUrl(request, constants.PAGES.TRANSFORMED_GOODS_PAGE))
+
+
+def declineTransformingGoods(request: HttpRequest, pk: int) -> HttpResponseRedirect:
+    item: ItemCard = get_object_or_404(ItemCard, id=pk)
+    if not item.is_transforming:
+        raise Http404
+
+    MSG.DECLINED_TRANSFORMING(request, item)
+    item.setTransforming(request, False)
+    item.setTransformingToStock(request, 0)
+
     return redirect(resolvePageUrl(request, constants.PAGES.TRANSFORMED_GOODS_PAGE))
 
 

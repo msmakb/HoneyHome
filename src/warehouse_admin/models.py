@@ -80,15 +80,12 @@ class Stock(BaseModel):
         if self.id == constants.MAIN_STORAGE_ID:
             stock = constants.MAIN_STORAGE_NAME
         else:
-            try:
-                from distributor.models import Distributor
-                distributor: Distributor = Distributor.get(stock=self.id)
-                stock = distributor.person.name.split(' ')[0]
-            except Distributor.DoesNotExist:
-                return super().__str__()
+            from distributor.models import Distributor
+            distributor: Distributor = self.getStockOwner()
+            stock = distributor.person.name.split(' ')[0]
         return stock + " Stock"
 
-    def getTotalGoodsInStock(self):
+    def getTotalGoodsInStock(self) -> int:
         total: int = 0
         item_cards: QuerySet[ItemCard] = ItemCard.filter(
             stock=self, is_transforming=False, )  # is_priced=True)
@@ -96,6 +93,17 @@ class Stock(BaseModel):
             total += item.quantity
 
         return total
+
+    def getStockOwner(self):
+        from distributor.models import Distributor
+        if self.id == constants.MAIN_STORAGE_ID:
+            return None
+
+        try:
+            distributor: Distributor = Distributor.get(stock__id=self.id)
+            return distributor
+        except Distributor.DoesNotExist:
+            return super().__str__()
 
 
 class ItemCard(BaseModel):
@@ -110,6 +118,7 @@ class ItemCard(BaseModel):
     received_from: str = models.CharField(default=constants.COUNTRY.get("YEMEN"),
                                           max_length=50)
     is_transforming: bool = models.BooleanField(default=False)
+    transforming_to_stock: int = models.SmallIntegerField(default=0)
     is_priced: bool = models.BooleanField(default=False)
     note: str = models.CharField(max_length=255, blank=True, null=True)
 
@@ -122,15 +131,31 @@ class ItemCard(BaseModel):
 
     @property
     def receiver(self) -> str:
-        if self.stock.id == constants.MAIN_STORAGE_ID:
-            return None
+        """ Only if transforming """
+        if not self.is_transforming:
+            return "Not Transforming"
+
+        if self.transforming_to_stock == constants.MAIN_STORAGE_ID:
+            return "Main Storage"
+        from distributor.models import Distributor
+        distributor: Distributor = Distributor.get(
+            stock__id=self.transforming_to_stock)
+        print(distributor)
+        return distributor.person.name
+
+    @property
+    def sender(self):
+        """ Only if transforming """
+        if not self.is_transforming:
+            return "Not Transforming"
+
+        if self.stock == constants.MAIN_STORAGE_ID:
+            return "Main Storage"
         else:
-            try:
-                from distributor.models import Distributor
-                distributor: Distributor = Distributor.get(stock=self.stock)
-                return distributor.person.name
-            except Distributor.DoesNotExist:
-                return None
+            from distributor.models import Distributor
+            distributor: Distributor = Distributor.get(
+                stock=self.stock)
+            return distributor.person.name
 
     @property
     def total_price(self) -> float:
@@ -167,7 +192,7 @@ class ItemCard(BaseModel):
         self.status = status
         self.setCreatedByUpdatedBy(request)
 
-    def setPrice(self, request: HttpRequest, price: str) -> None:
+    def setPrice(self, request: HttpRequest, price: float) -> None:
         self.price = price
         self.setCreatedByUpdatedBy(request)
 
@@ -179,8 +204,12 @@ class ItemCard(BaseModel):
         self.is_transforming = is_transforming
         self.setCreatedByUpdatedBy(request)
 
-    def setPriced(self, request: HttpRequest, is_priced: str) -> None:
+    def setPriced(self, request: HttpRequest, is_priced: bool) -> None:
         self.is_priced = is_priced
+        self.setCreatedByUpdatedBy(request)
+
+    def setTransformingToStock(self, request: HttpRequest, stock_id: int) -> None:
+        self.transforming_to_stock = stock_id
         self.setCreatedByUpdatedBy(request)
 
 

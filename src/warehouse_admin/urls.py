@@ -88,13 +88,18 @@ urlpatterns = [
     # Transformed Goods URLs
     path(
         f'{PAGES.DASHBOARD}/Transformed-Goods/',
-        views.TransformedGoodsPage,
+        views.transformedGoodsPage,
         name=PAGES.TRANSFORMED_GOODS_PAGE
     ),
     path(
-        f'{PAGES.DASHBOARD}/Approve-Transformed/<str:pk>/',
-        views.ApproveTransformedGoods,
+        f'{PAGES.DASHBOARD}/Approve-Transformed-Goods/<str:pk>/',
+        views.approveTransformingGoods,
         name=PAGES.APPROVE_TRANSFORMED_GOODS_PAGE
+    ),
+    path(
+        f'{PAGES.DASHBOARD}/Decline-Transformed-Goods/<str:pk>/',
+        views.declineTransformingGoods,
+        name=PAGES.DECLINE_TRANSFORMED_GOODS_PAGE
     ),
     # Retail Goods URLs
     path(
