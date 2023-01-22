@@ -1,7 +1,8 @@
 import logging
-from typing import Any
+from typing import Any, Callable
 
 from django.contrib import messages
+from django.core.exceptions import EmptyResultSet
 from django.db.models.functions import Lower
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
@@ -13,9 +14,10 @@ from distributor.models import Distributor
 from main import constants
 from main.utils import Pagination
 from main.utils import getUserBaseTemplate as base
-from main.utils import resolvePageUrl
+from main.utils import resolvePageUrl, exportAsCsv
 
-from .forms import (AddBatchForm, AddGoodsForm, AddRetailGoodsForm,
+from .filters import GoodsMovementFilter
+from .forms import (AddBatchForm, AddDamagedGoodsForm, AddGoodsForm, AddRetailGoodsForm,
                     ConvertToRetailForm, RegisterItemForm, SendGoodsForm)
 from .models import (Batch, GoodsMovement, ItemCard, ItemType, RetailCard,
                      RetailItem, Stock)
@@ -95,9 +97,10 @@ def AddGoodsPage(request: HttpRequest) -> HttpResponse:
         updated_post.update({'stock': stock})
         form = AddGoodsForm(request, updated_post)
         if form.is_valid():
-            type: ItemType = form.cleaned_data.get('type')
-            batch: Batch = form.cleaned_data.get('batch')
-            received_from: str = form.cleaned_data.get('received_from')
+            form_data: dict[str, Any] = form.cleaned_data
+            type: ItemType = form_data.get('type')
+            batch: Batch = form_data.get('batch')
+            received_from: str = form_data.get('received_from')
             item_card: QuerySet[ItemCard] = ItemCard.filter(
                 stock=constants.MAIN_STORAGE_ID,
                 type=type,
@@ -299,7 +302,7 @@ def SendGoodsPage(request: HttpRequest, pk: int) -> HttpResponse:
                     request,
                     item=item_type.name,
                     code=item_type.code,
-                    batch=batch,
+                    batch=str(batch),
                     quantity=quantity,
                     status=constants.ITEM_STATUS.GOOD,
                     sender=constants.MAIN_STORAGE_NAME,
@@ -307,14 +310,46 @@ def SendGoodsPage(request: HttpRequest, pk: int) -> HttpResponse:
 
             return redirect(resolvePageUrl(request, constants.PAGES.DISTRIBUTOR_STOCK_PAGE), distributor.stock.id)
 
-    context = {'form': form, 'base': base(request)}
+    context = {'form': form, 'distributor': distributor, 'base': base(request)}
     return render(request, constants.TEMPLATES.SEND_GOODS_TEMPLATE, context)
 
 
 def GoodsMovementPage(request: HttpRequest) -> HttpResponse:
-    goodsMovement = GoodsMovement.getAllOrdered('created', reverse=True)
-    context = {'GoodsMovement': goodsMovement, 'base': base(
-        request)}
+    queryset: QuerySet[GoodsMovement] = GoodsMovement.getAllOrdered(
+        'created', reverse=True)
+    goodsMovementFilter = GoodsMovementFilter(
+        request.GET, queryset=queryset)
+    queryset = goodsMovementFilter.qs
+
+    if request.method == constants.POST_METHOD:
+        fields = ['item', 'code', 'batch',
+                  'quantity', 'sender',
+                  'receiver', 'created', 'status']
+        labels_to_change: dict[str, str] = {'created': 'Date'}
+        values_to_change: dict[str, Callable] = {
+            'created': lambda date: timezone.datetime.strftime(date, '%d/%m/%Y')
+        }
+        file_name: str = "Goods Movement History"
+        try:
+            response: HttpResponse = exportAsCsv(
+                queryset=queryset,
+                fileName=file_name,
+                fields=fields,
+                labels_to_change=labels_to_change,
+                values_to_change=values_to_change
+            )
+            return response
+        except EmptyResultSet:
+            messages.warning(request, "No data to export to the CSV file.")
+
+    page: str = request.GET.get('page')
+    pagination = Pagination(goodsMovementFilter.qs, int(page)
+                            if page is not None else 1)
+    page_obj: QuerySet[ItemCard] = pagination.getPageObject()
+    is_paginated: bool = pagination.isPaginated
+
+    context = {'page_obj': page_obj, 'base': base(request), 'is_paginated': is_paginated,
+               'goodsMovementFilter': goodsMovementFilter}
     return render(request, 'warehouse_admin/goods_movement.html', context)
 
 
@@ -328,50 +363,58 @@ def DamagedGoodsPage(request: HttpRequest) -> HttpResponse:
 
 
 def AddDamagedGoodsPage(request: HttpRequest) -> HttpResponse:
-    MainStorageStock = Stock.objects.get(id=1)
-    form = SendGoodsForm(1)
-    availableItems = {}
-    Items = ItemCard.objects.filter(stock=1, status='Good')
-    for i in Items:
-        availableItems[i.id] = {'name': i.type,
-                                'batch': i.batch, 'quantity': i.quantity}
-    if request.method == "POST":
-        form = SendGoodsForm(1, request.POST)
-        if form.is_valid:
-            name = form['type'].value()
-            batch = form['batch'].value()
-            quantity = form['quantity'].value()
-            received_from = form['received_from'].value()
-            is_available = False
-            for key, value in availableItems.items():
-                if str(value['name']) == name and str(value['batch']) == batch and int(value['quantity']) >= int(quantity):
-                    name = ItemType.objects.get(name=str(value['name']))
-                    batch = Batch.objects.get(name=str(value['batch']))
-                    is_available = True
-                    if int(value['quantity']) == int(quantity):
-                        ItemCard.objects.get(
-                            type=name, batch=batch, stock=1, quantity=int(quantity)).delete()
-                    else:
-                        q = ItemCard.objects.get(
-                            type=name, batch=batch, stock=1)
-                        q.quantity = int(q.quantity - int(quantity))
-                        q.save()
+    form = AddDamagedGoodsForm(
+        request, constants.MAIN_STORAGE_ID, show_batch=True)
+    if request.method == constants.POST_METHOD:
+        form = AddDamagedGoodsForm(
+            request, constants.MAIN_STORAGE_ID, request.POST, show_batch=True)
+        if form.is_valid():
+            print("Valid Form")
+            return redirect(resolvePageUrl(request, constants.PAGES.DAMAGED_GOODS_PAGE))
+    # form = SendGoodsForm(request, 1)
+    # availableItems = {}
+    # Items = ItemCard.objects.filter(stock=1, status='Good')
+    # for i in Items:
+    #     availableItems[i.id] = {'name': i.type,
+    #                             'batch': i.batch, 'quantity': i.quantity}
+    # if request.method == "POST":
+    #     form = SendGoodsForm(request, 1, request.POST)
+    #     if form.is_valid:
+    #         name = form['type'].value()
+    #         batch = form['batch'].value()
+    #         quantity = form['quantity'].value()
+    #         received_from = form['received_from'].value()
+    #         is_available = False
+    #         for key, value in availableItems.items():
+    #             if str(value['name']) == name and str(value['batch']) == batch and int(value['quantity']) >= int(quantity):
+    #                 name = ItemType.objects.get(name=str(value['name']))
+    #                 batch = Batch.objects.get(name=str(value['batch']))
+    #                 is_available = True
+    #                 if int(value['quantity']) == int(quantity):
+    #                     ItemCard.objects.get(
+    #                         type=name, batch=batch, stock=1, quantity=int(quantity)).delete()
+    #                 else:
+    #                     q = ItemCard.objects.get(
+    #                         type=name, batch=batch, stock=1)
+    #                     q.quantity = int(q.quantity - int(quantity))
+    #                     q.save()
 
-            if is_available:
-                ItemCard.objects.create(type=ItemType.objects.get(name=name),
-                                        batch=Batch.objects.get(
-                                            name=str(batch)),
-                                        stock=MainStorageStock,
-                                        quantity=quantity,
-                                        status='Damaged',
-                                        received_from=received_from)
-            else:
-                messages.info(
-                    request, "Item or quantity is not available in the stock")
-                return redirect(resolvePageUrl(request, constants.PAGES.ADD_DAMAGED_GOODS_PAGE))
-        return redirect(resolvePageUrl(request, constants.PAGES.DAMAGED_GOODS_PAGE))
-    context = {'availableItems': availableItems, 'form': form, 'base': base(
-        request)}
+    #         if is_available:
+    #             ItemCard.objects.create(type=ItemType.objects.get(name=name),
+    #                                     batch=Batch.objects.get(
+    #                                         name=str(batch)),
+    #                                     stock=MainStorageStock,
+    #                                     quantity=quantity,
+    #                                     status='Damaged',
+    #                                     received_from=received_from)
+    #         else:
+    #             messages.info(
+    #                 request, "Item or quantity is not available in the stock")
+    #             return redirect(resolvePageUrl(request, constants.PAGES.ADD_DAMAGED_GOODS_PAGE))
+    #     return redirect(resolvePageUrl(request, constants.PAGES.DAMAGED_GOODS_PAGE))
+    # context = {'availableItems': availableItems, 'form': form, 'base': base(
+    #     request)}
+    context: dict[str, Any] = {"form": form, "base": base(request)}
     return render(request, 'warehouse_admin/add_damaged_goods.html', context)
 
 

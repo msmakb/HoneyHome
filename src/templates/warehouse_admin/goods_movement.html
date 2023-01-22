@@ -1,13 +1,58 @@
 {% extends base %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+{% include 'alerts.html' %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-secondary">Download History</a></td>
+    <form method="POST">
+        {% csrf_token %}
+        <td><button type="submit" id="export_button" class="btn btn-xs btn-info">Export History</button></td>
+    </form>
 </div>
 <h2>Goods Movement History</h2>
+
+
+<form method="GET" class="form-inline">
+    <div class="container shadow p-3 mb-5 bg-white rounded">
+        <div class="row">
+
+            <div class="col form-group">
+                <label class="" for="{{ goodsMovementFilter.form.item.auto_id }}">
+                    {{ goodsMovementFilter.form.item.label }}
+                </label>
+                {{ goodsMovementFilter.form.item }}
+            </div>
+            <div class="col form-group">
+                <label class="" for="{{ goodsMovementFilter.form.sender.auto_id }}">
+                    {{ goodsMovementFilter.form.sender.label }}
+                </label>
+                {{ goodsMovementFilter.form.sender }}
+            </div>
+            <div class="col form-group">
+                <label class="" for="{{ goodsMovementFilter.form.receiver.auto_id }}">
+                    {{ goodsMovementFilter.form.receiver.label }}
+                </label>
+                {{ goodsMovementFilter.form.receiver }}
+            </div>
+            <div class="col form-group">
+                <label class="" for="{{ goodsMovementFilter.form.created.auto_id }}">
+                    {{ goodsMovementFilter.form.created.label }}
+                </label>
+                {{ goodsMovementFilter.form.created }}
+            </div>
+            <div class="row">
+                <button type="submit" class="col-4 btn btn-md btn-outline-dark"
+                    style="margin-top: -50px; margin-left: 10px;">Filter</button>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+
 <table style="text-align:center;" class="table table-striped">
     <thead>
         <tr>
+            <th scope="col">NO</th>
             <th scope="col">ITEM</th>
             <th scope="col">ITEM CODE</th>
             <th scope="col">BATCH</th>
@@ -19,16 +64,17 @@
         </tr>
     </thead>
     <tbody>
-        {% for goods in GoodsMovement %}
+        {% for goods in page_obj %}
         <tr>
-            <td>{{goods.item}}</td>
-            <td>{{goods.code}}</td>
-            <td>{{goods.batch}}</td>
-            <td>{{goods.quantity}}</td>
-            <td>{{goods.status}}</td>
-            <td>{{goods.sender}}</td>
-            <td>{{goods.receiver}}</td>
-            <td>{{goods.date}}</td>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+            <td>{{ goods.item }}</td>
+            <td>{{ goods.code }}</td>
+            <td>{{ goods.batch }}</td>
+            <td>{{ goods.quantity }}</td>
+            <td>{{ goods.status }}</td>
+            <td>{{ goods.sender }}</td>
+            <td>{{ goods.receiver }}</td>
+            <td>{{ goods.date }}</td>
         </tr>
         {% endfor %}
     </tbody>
