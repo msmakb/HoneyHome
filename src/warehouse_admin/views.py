@@ -40,6 +40,32 @@ def MainStorageGoodsPage(request: HttpRequest) -> HttpResponse:
         status='Good',
         is_transforming=False
     )
+
+    if request.method == constants.POST_METHOD:
+        fields = ['type__name', 'type__code', 'batch__name',
+                  'quantity', 'received_from', 'created']
+        labels_to_change: dict[str, str] = {
+            'type__name': 'item',
+            'type__code': 'code',
+            'batch__name': 'batch',
+            'created': 'receiving date'
+        }
+        values_to_change: dict[str, Callable] = {
+            'created': lambda date: timezone.datetime.strftime(date, '%d/%m/%Y')
+        }
+        file_name: str = "Main Storage Goods"
+        try:
+            response: HttpResponse = exportAsCsv(
+                queryset=item_cards,
+                fileName=file_name,
+                fields=fields,
+                labels_to_change=labels_to_change,
+                values_to_change=values_to_change
+            )
+            return response
+        except EmptyResultSet:
+            messages.warning(request, "No data to export to the CSV file.")
+
     items_list: list[dict[str, str | int | list[str]]] = []
     # Below is a function to combine cards with same name
     for item in item_cards:
@@ -129,6 +155,26 @@ def AddGoodsPage(request: HttpRequest) -> HttpResponse:
 # --------------------------Registered Items--------------------------
 def RegisteredItemsPage(request: HttpRequest) -> HttpResponse:
     item_types: QuerySet[ItemType] = ItemType.getAllOrdered(Lower('name'))
+
+    if request.method == constants.POST_METHOD:
+        fields = ['id', 'name', 'code', 'weight', 'is_retail']
+        labels_to_change: dict[str, str] = {'id': 'item id'}
+        values_to_change: dict[str, Callable] = {
+            'is_retail': lambda is_retail: "Yes" if is_retail else "No"
+        }
+        file_name: str = "Registered Items"
+        try:
+            response: HttpResponse = exportAsCsv(
+                queryset=item_types,
+                fileName=file_name,
+                fields=fields,
+                labels_to_change=labels_to_change,
+                values_to_change=values_to_change
+            )
+            return response
+        except EmptyResultSet:
+            messages.warning(request, "No data to export to the CSV file.")
+
     page: str = request.GET.get('page')
     pagination = Pagination(item_types, int(page) if page is not None else 1)
     page_obj: QuerySet[ItemCard] = pagination.getPageObject()
@@ -154,6 +200,23 @@ def RegisterItemPage(request: HttpRequest) -> HttpResponse:
 # -------------------------------Batches-------------------------------
 def BatchesPage(request: HttpRequest) -> HttpResponse:
     Batches: QuerySet[Batch] = Batch.getAllOrdered(Lower('name'))
+
+    if request.method == constants.POST_METHOD:
+        fields = ['id', 'name', 'code', 'quantity',
+                  'arrival_date', 'description']
+        labels_to_change: dict[str, str] = {'id': 'batch id'}
+        file_name: str = "Registered Batches"
+        try:
+            response: HttpResponse = exportAsCsv(
+                queryset=Batches,
+                fileName=file_name,
+                fields=fields,
+                labels_to_change=labels_to_change
+            )
+            return response
+        except EmptyResultSet:
+            messages.warning(request, "No data to export to the CSV file.")
+
     page: str = request.GET.get('page')
     pagination = Pagination(Batches, int(page) if page is not None else 1)
     page_obj: QuerySet[ItemCard] = pagination.getPageObject()
@@ -197,6 +260,33 @@ def DistributorStockPage(request: HttpRequest, pk: int) -> HttpResponse:
         status=constants.ITEM_STATUS.GOOD,
         is_transforming=False
     )
+
+    if request.method == constants.POST_METHOD:
+        fields = ['type__name', 'type__code', 'batch__name',
+                  'quantity', 'received_from', 'created']
+        labels_to_change: dict[str, str] = {
+            'type__name': 'item',
+            'type__code': 'code',
+            'batch__name': 'batch',
+            'created': 'receiving date'
+        }
+        values_to_change: dict[str, Callable] = {
+            'created': lambda date: timezone.datetime.strftime(date, '%d/%m/%Y')
+        }
+        file_name: str = str(
+            item_cards.first().stock) if item_cards.exists() else ""
+        try:
+            response: HttpResponse = exportAsCsv(
+                queryset=item_cards,
+                fileName=file_name,
+                fields=fields,
+                labels_to_change=labels_to_change,
+                values_to_change=values_to_change
+            )
+            return response
+        except EmptyResultSet:
+            messages.warning(request, "No data to export to the CSV file.")
+
     items_list: list[dict] = []
     # Below is a function to combine cards with same name
     for item in item_cards:

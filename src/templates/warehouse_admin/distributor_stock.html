@@ -1,10 +1,15 @@
 {% extends base %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+{% include 'alerts.html' %}
 <div style="float: right;">
-    <a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'DistributedGoodsPage' %}">Back</a>
-    <a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'SendGoodsPage' distributor.id %}">Send
-        Goods</a>
+    <form method="POST">
+        {% csrf_token %}
+        <a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'DistributedGoodsPage' %}">Back</a>
+        <td><button type="submit" id="export_button" class="btn btn-xs btn-info">Export</button></td>
+        <a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'SendGoodsPage' distributor.id %}">Send
+            Goods</a>
+    </form>
 </div>
 <h2>Distributor Stock - Name: {{distributor.person.name}}</h2>
 <table style="text-align:center;" class="table table-striped">

@@ -1,8 +1,13 @@
 {% extends base %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+{% include 'alerts.html' %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddBatchPage' %}">Add New Batch</a></td>
+    <form method="POST">
+        {% csrf_token %}
+        <td><button type="submit" id="export_button" class="btn btn-xs btn-info">Export</button></td>
+        <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddBatchPage' %}">Add New Batch</a></td>
+    </form>
 </div>
 <h2>Batches</h2>
 <table style="text-align:center;" class="table table-striped">
