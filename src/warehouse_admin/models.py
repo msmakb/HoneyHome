@@ -111,6 +111,7 @@ class ItemCard(BaseModel):
                                           max_length=50)
     is_transforming: bool = models.BooleanField(default=False)
     is_priced: bool = models.BooleanField(default=False)
+    note: str = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self) -> str:
         return f'{self.type.name}-{self.batch.name}'
