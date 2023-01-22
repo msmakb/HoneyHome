@@ -145,7 +145,7 @@ def exportAsCsv(
     response['Content-Disposition'] = f'attachment; filename="{fileName}.csv"'
     writer = csv.writer(response)
 
-    titles: list = []
+    titles: list[str] = []
     if labels_to_change:
         for row in fields:
             titles.append(labels_to_change[row]
@@ -153,14 +153,13 @@ def exportAsCsv(
     else:
         titles = fields
 
-    writer.writerow([title.title() for title in titles])
+    writer.writerow([title.replace('_', " ").title() for title in titles])
 
     for model_row in queryset:
         row: list[str] = []
         for key, value in model_row.items():
             if values_to_change and key in values_to_change:
-                row.append(str(values_to_change[key](
-                    value)) if value else default_empty_value)
+                row.append(str(values_to_change[key](value)))
             else:
                 row.append(str(value) if value else default_empty_value)
         writer.writerow(row)
