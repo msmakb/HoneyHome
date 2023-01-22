@@ -1,7 +1,9 @@
+from typing import Any
 from django import forms
 from django.db.models.query import QuerySet
 from django.forms import ModelForm
 from django.http import HttpRequest
+from main import constants
 
 from main.forms import DateInput
 from main.utils import clean_form_created_by, clean_form_updated_by
@@ -11,7 +13,7 @@ from .models import Batch, ItemCard, ItemType, RetailItem
 
 class AddGoodsForm(ModelForm):
 
-    def __init__(self, request: HttpRequest, *args, **kwargs):
+    def __init__(self, request: HttpRequest, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if not isinstance(request, HttpRequest):
             raise TypeError("Invalid request object!")
@@ -89,6 +91,8 @@ class AddGoodsForm(ModelForm):
                     'placeholder': 'Received From'
                 }
             ),
+            'created_by': forms.HiddenInput(attrs={'required': False}),
+            'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
 
     def clean_type(self) -> ItemType:
@@ -185,7 +189,13 @@ class RegisterItemForm(ModelForm):
                     'placeholder': '0 grams'
                 }
             ),
-            'is_retail': forms.CheckboxInput()
+            'is_retail': forms.CheckboxInput(
+                attrs={
+                    'class': 'form-check-input'
+                }
+            ),
+            'created_by': forms.HiddenInput(attrs={'required': False}),
+            'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
 
     def clean_weight(self) -> int:
@@ -259,6 +269,8 @@ class AddBatchForm(ModelForm):
                     'placeholder': 'Description'
                 }
             ),
+            'created_by': forms.HiddenInput(attrs={'required': False}),
+            'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
 
     def clean_quantity(self) -> int:
@@ -290,7 +302,9 @@ class SendGoodsForm(ModelForm):
         item_type_choices_to_remove: list[tuple] = []
 
         item_cards: QuerySet[ItemCard] = ItemCard.filter(
-            stock__id=stock_id, type__is_retail=False)
+            stock__id=stock_id,
+            status=constants.ITEM_STATUS.GOOD,
+            type__is_retail=False)
         if item_cards.exists():
             for item in item_cards:
                 if item.type.name in self.available_types:
@@ -337,6 +351,8 @@ class SendGoodsForm(ModelForm):
                     'placeholder': 'Quantity'
                 }
             ),
+            'created_by': forms.HiddenInput(attrs={'required': False}),
+            'updated_by': forms.HiddenInput(attrs={'required': False}),
         }
 
     def clean_type(self) -> ItemType:
@@ -362,7 +378,7 @@ class SendGoodsForm(ModelForm):
         if item_type is not None:
             if self.available_types.get(item_type.name) < quantity:
                 raise forms.ValidationError(
-                    "The specified quantity is not available in the stock")
+                    "The quantity of the specified item and batch is not available in the stock")
 
         return quantity
 
@@ -374,10 +390,183 @@ class SendGoodsForm(ModelForm):
         return clean_form_updated_by(self)
 
 
+class AddDamagedGoodsForm(forms.ModelForm):
+
+    def __init__(self, request: HttpRequest, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if not isinstance(request, HttpRequest):
+            raise TypeError("Invalid request object!")
+        self.request: HttpRequest = request
+
+        item_type_choices: list[tuple] = list(self.fields['type'].choices)
+        batch_choices: list[tuple] = list(self.fields['batch'].choices)
+        item_type_choices_to_remove: list[tuple] = []
+        batch_choices_to_remove: list[tuple] = []
+
+        self.available_types: dict[str: int] = {}
+        item_cards: QuerySet[ItemCard] = ItemCard.filter(
+            stock__id=constants.MAIN_STORAGE_ID,
+            status=constants.ITEM_STATUS.GOOD,
+            type__is_retail=False)
+        if item_cards.exists():
+            for item in item_cards:
+                if item.type.name in self.available_types:
+                    self.available_types[item.type.name] += item.quantity
+                else:
+                    self.available_types[item.type.name] = item.quantity
+
+        for index, choice in enumerate(item_type_choices):
+            if index == 0:
+                continue
+            item_types: ItemType = ItemType.get(name=choice[1])
+            if item_types.name in self.available_types:
+                item_type_choices[index] = (
+                    item_type_choices[index][0],
+                    f"{item_type_choices[index][1]} - available ({self.available_types.get(choice[1])})")
+            else:
+                item_type_choices_to_remove.append(choice)
+
+        available_batch: list[Batch] = [
+            item.batch.name for item in ItemCard.filter(
+                stock__id=constants.MAIN_STORAGE_ID,
+                status=constants.ITEM_STATUS.GOOD,
+                type__is_retail=False)]
+
+        for index, choice in enumerate(batch_choices):
+            if index == 0:
+                continue
+            if choice[1] not in available_batch:
+                batch_choices_to_remove.append(choice)
+
+        for choice in item_type_choices_to_remove:
+            item_type_choices.remove(choice)
+        for choice in batch_choices_to_remove:
+            batch_choices.remove(choice)
+
+        # update choices
+        self.fields['type'].choices = item_type_choices
+        self.fields['type'].widget.choices = item_type_choices
+        self.fields['batch'].choices = batch_choices
+        self.fields['batch'].widget.choices = batch_choices
+
+    class Meta:
+        model = ItemCard
+        fields = [
+            'type',
+            'quantity',
+            'batch',
+            'received_from',
+            'note',
+            'created_by',
+            'updated_by',
+        ]
+        widgets = {
+            'type': forms.Select(
+                attrs={'required': True,
+                       'class': 'form-control'
+                       }
+            ),
+            'quantity': forms.NumberInput(
+                attrs={
+                    'required': True,
+                    'class': 'form-control',
+                    'placeholder': 'Quantity'
+                }
+            ),
+            'batch': forms.Select(
+                attrs={
+                    'required': True,
+                    'class': 'form-control'
+                }
+            ),
+            'received_from': forms.TextInput(
+                attrs={
+                    'required': True,
+                    'class': 'form-control',
+                    'placeholder': 'Received From'
+                }
+            ),
+            'note': forms.Textarea(
+                attrs={
+                    'required': True,
+                    'class': 'form-control',
+                    'placeholder': 'Description'
+                }
+            ),
+            'created_by': forms.HiddenInput(attrs={'required': False}),
+            'updated_by': forms.HiddenInput(attrs={'required': False}),
+        }
+
+    def clean_type(self) -> ItemType:
+        item_type: ItemType = self.cleaned_data.get("type")
+        item_type_choices: list[tuple] = list(self.fields['type'].choices)
+        item_type_name: str = item_type.name
+        clean: bool = False
+        for choice in item_type_choices:
+            if item_type_name == str(choice[1].split(' - available ')[0]):
+                clean = True
+                break
+        if not clean:
+            raise forms.ValidationError(
+                "Select a valid choice. That choice is not one of the available choices.")
+        return item_type
+
+    def clean_batch(self) -> Batch:
+        batch: Batch = self.cleaned_data.get("batch")
+        batch_choices: list[tuple] = list(self.fields['batch'].choices)
+        batch_name: str = batch.name
+        clean: bool = False
+        for choice in batch_choices:
+            if batch_name == str(choice[1].split(' - available ')[0]):
+                clean = True
+                break
+        if not clean:
+            raise forms.ValidationError(
+                "Select a valid choice. That choice is not one of the available choices.")
+        return batch
+
+    def clean_quantity(self) -> int:
+        quantity = self.cleaned_data.get("quantity")
+        if quantity <= 0:
+            raise forms.ValidationError(
+                "Sorry, you must enter a positive number more than 0 for the quantity.")
+
+        return quantity
+
+    def clean_created_by(self) -> str:
+        object_str_representation: str = self.cleaned_data.get('name')
+        return clean_form_created_by(self, object_str_representation)
+
+    def clean_updated_by(self) -> str:
+        return clean_form_updated_by(self)
+
+    def clean(self) -> dict[str, Any]:
+        cleaned_data: dict[str, Any] = super().clean()
+        item_type: ItemType = cleaned_data.get("type")
+        batch: Batch = cleaned_data.get("batch")
+        quantity: int = cleaned_data.get("quantity")
+
+        if item_type is not None:
+            items: QuerySet[ItemCard] = ItemCard.filter(
+                stock__id=constants.MAIN_STORAGE_ID,
+                type=item_type,
+                batch=batch,
+                status=constants.ITEM_STATUS.GOOD)
+            print(item_type, batch, quantity)
+            if not items.exists():
+                self.add_error('batch', forms.ValidationError(
+                    "Sorry, the selected batch in main storage does not contain this type of item."))
+            if sum([item.quantity for item in items]) < quantity:
+                self.add_error('quantity', forms.ValidationError(
+                    "Sorry, the specified quantity of the item for the selected batch is not available in the current stock."))
+
+        return cleaned_data
+
+
 class ConvertToRetailForm(ModelForm):
 
-    def __init__(self, *args, **kwargs):
-        super(ConvertToRetailForm, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         items, batches = [], []
         stock = ItemCard.objects.filter(stock=1)
         for i in stock:

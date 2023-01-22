@@ -8,41 +8,39 @@
 </div>
 <form method="POST">
     {% csrf_token %}
-    {{form.as_p}}
-    {% comment %} <div style="width: 60%; margin:auto;">
+    <div style="width: 60%; margin:auto;">
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Item</label>
             <div>{{form.type}}</div>
+            {% if "type" in form.errors %}<span class="text-danger">{{ form.errors.type }}</span>{% endif %}
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Batch</label>
             <div>{{form.batch}}</div>
+            {% if "batch" in form.errors %}<span class="text-danger">{{ form.errors.batch }}</span>{% endif %}
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Quantity</label>
             <div>{{form.quantity}}</div>
+            {% if "quantity" in form.errors %}<span class="text-danger">{{ form.errors.quantity }}</span>{% endif %}
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Received From</label>
             <div>{{form.received_from}}</div>
+            {% if "received_from" in form.errors %}<span
+                class="text-danger">{{ form.errors.received_from }}</span>{% endif %}
+        </div>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Note</label>
+            <div>{{form.note}}</div>
+            {% if "note" in form.errors %}<span class="text-danger">{{ form.errors.note }}</span>{% endif %}
         </div>
         <div style="width: 60%; float: right; margin:auto; margin-top: 20px;">
             <a style="margin:auto;" href="{% url namespaec|add:'DamagedGoodsPage' %}"
                 class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-xs btn-info">Add Damaged Goods</button>
         </div>
-        <div class="form-group" style="width: 30%; margin: auto; margin-top: 100px; ">
-            <ul>
-                {% for message in messages %}
-                <span style="display: grid; color: red;">{{ message }}</span>
-                {% endfor %}
-                <h6 style="margin-bottom: 0px;">Available Items in the stock</h6>
-                {% for -, value in availableItems.items %}
-                <li>{{value.name}} - {{value.batch}} - {{value.quantity}}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div> {% endcomment %}
+    </div>
 </form>
 
 

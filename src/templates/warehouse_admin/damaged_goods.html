@@ -1,30 +1,40 @@
 {% extends base %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
+{% include 'alerts.html' %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddDamagedGoodsPage' %}">Add Damaged Goods</a></td>
+    <form method="POST">
+        {% csrf_token %}
+        <td><button type="submit" id="export_button" class="btn btn-xs btn-info">Export</button></td>
+        <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddDamagedGoodsPage' %}">Add Damaged
+                Goods</a></td>
+    </form>
 </div>
 <h2>Damaged Goods</h2>
 <table style="text-align:center;" class="table table-striped">
     <thead>
-    <tr>
-        <th scope="col">ITEM</th>
-        <th scope="col">BATCH</th>
-        <th scope="col">QUANTITY</th>
-        <th scope="col">RECIVING DATE</th>
-        <th scope="col">RECEIVED FROM</th>
-    </tr>
+        <tr>
+            <th scope="col">NO.</th>
+            <th scope="col">ITEM</th>
+            <th scope="col">BATCH</th>
+            <th scope="col">QUANTITY</th>
+            <th scope="col">RECEIVED FROM</th>
+            <th scope="col">DATE</th>
+            <th scope="col">DESCRIPTION</th>
+        </tr>
     </thead>
     <tbody>
-    {% for item in Items %}
-    <tr>
-        <td>{{item.type}}</td>
-        <td>{{item.batch}}</td>
-        <td>{{item.quantity}}</td>
-        <td>{{item.receiving_date}}</td>
-        <td>{{item.received_from}}</td>
-    </tr>
-    {% endfor %}
+        {% for item in page_obj %}
+        <tr>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.batch }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.received_from }}</td>
+            <td>{{ item.receiving_date }}</td>
+            <td>{{ item.note }}</td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
 {% endblock %}
