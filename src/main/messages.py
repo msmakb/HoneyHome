@@ -21,8 +21,10 @@ TEMPORARY_ACCOUNT: Final[Callable[[HttpRequest], None]] = lambda request: messag
     request, f"This account you singed in is a temporary account.")
 TIME_OUT: Final[Callable[[HttpRequest], None]] = lambda request: messages.info(
     request, "Your session has timed out. Please login again.")
-WELCOME_MESSAGE = lambda request, first_name: messages.success(
+WELCOME_MESSAGE: Final[Callable[[HttpRequest, str], None]] = lambda request, first_name: messages.success(
     request, f"Hello, {first_name}. Welcome to Honey Home System.")
+EMPTY_RESULT: Final[Callable[[HttpRequest], None]] = lambda request: messages.warning(
+    request, "No data to export to the CSV file.")
 
 """======================== Human Resources Messages ========================"""
 DISTRIBUTOR_ADDED: Final[Callable[[HttpRequest], None]] = lambda request: messages.success(
@@ -68,3 +70,17 @@ APPROVED_TRANSFORMING: Final[Callable[[HttpRequest, ItemCard], None]] = lambda r
     request, f"The transformed goods {item.type} from {item.sender} to {item.receiver} has been APPROVED")
 NO_TRANSFORMING: Final[Callable[[HttpRequest], None]] = lambda request: messages.info(
     request, "There are no transformed goods to be approved")
+CONVERTED_SUCCESSFULLY: Final[Callable[[HttpRequest, str, str], None]] = lambda request, item_name1, item_name2: messages.success(
+    request, f"The conversion of {item_name1} to {item_name2} was successfully")
+DAMAGED_GOODS_DELETED: Final[Callable[[HttpRequest], None]] = lambda request: messages.success(
+    request, f"The damaged goods have been successfully deleted from the system")
+ITEM_ADDED: Final[Callable[[HttpRequest, str, int], None]] = lambda request, item, quantity: messages.success(
+    request, f"Stock update successful! {quantity} {item} have been added.")
+ITEM_REGISTERED: Final[Callable[[HttpRequest, str, int], None]] = lambda request, item, quantity: messages.success(
+    request, "New item has been registered successfully.")
+BATCH_REGISTERED: Final[Callable[[HttpRequest, str, int], None]] = lambda request, item, quantity: messages.success(
+    request, "New batch has been registered successfully.")
+STOCK_UPDATED: Final[Callable[[HttpRequest, str, int], None]] = lambda request, item, quantity: messages.success(
+    request, "Distributor stock updated successfully.")
+DAMAGED_GOODS_ADDED: Final[Callable[[HttpRequest, str, int], None]] = lambda request, item, quantity: messages.success(
+    request, "Damaged goods have been successfully added.")

@@ -175,6 +175,11 @@ urlpatterns = [
         name=PAGES.DAMAGED_GOODS_PAGE
     ),
     path(
+        f'{PAGES.DASHBOARD}/Damaged-Goods-History/',
+        wa_views.damagedGoodsHistoryPage,
+        name=PAGES.DAMAGED_GOODS_HISTORY_PAGE
+    ),
+    path(
         f'{PAGES.DASHBOARD}/Add-Damaged-Goods/',
         wa_views.AddDamagedGoodsPage,
         name=PAGES.ADD_DAMAGED_GOODS_PAGE
@@ -197,19 +202,9 @@ urlpatterns = [
     ),
     # Retail Goods URLs
     path(
-        f'{PAGES.DASHBOARD}/Retail-Goods/',
+        f'{PAGES.DASHBOARD}/Retail-Goods/<str:currentPage>',
         wa_views.RetailGoodsPage,
         name=PAGES.RETAIL_GOODS_PAGE
-    ),
-    path(
-        f'{PAGES.DASHBOARD}/Convert-To-Retail/',
-        wa_views.ConvertToRetailPage,
-        name=PAGES.CONVERT_TO_RETAIL_PAGE
-    ),
-    path(
-        f'{PAGES.DASHBOARD}/Add-Retail-Goods/',
-        wa_views.AddRetailGoodsPage,
-        name=PAGES.ADD_RETAIL_GOODS_PAGE
     ),
     # Accounting manager
     path(

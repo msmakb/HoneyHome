@@ -6,28 +6,35 @@
     <form method="POST">
         {% csrf_token %}
         <td><button type="submit" id="export_button" class="btn btn-xs btn-info">Export</button></td>
-        <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'RegisterItemPage' %}">Register New Items</a></td>
+        <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'RegisterItemPage' %}">Register New
+                Items</a></td>
     </form>
 </div>
 <h2>Registered Items</h2>
 <table style="text-align:center;" class="table table-striped">
     <thead>
-    <tr>
-        <th scope="col">NO.</th>
-        <th scope="col">NAME</th>
-        <th scope="col">CODE</th>
-        <th scope="col">WEIGHT</th>
-    </tr>
+        <tr>
+            <th scope="col">NO.</th>
+            <th scope="col">NAME</th>
+            <th scope="col">CODE</th>
+            <th scope="col">WEIGHT</th>
+            <th scope="col">RETAIL ITEM</th>
+            <th scope="col">PARENT ITEM CODE</th>
+            <th scope="col">DATE OF CREATION</th>
+        </tr>
     </thead>
     <tbody>
-    {% for item in page_obj %}
-    <tr>
-        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
-        <td>{{item.name}}</td>
-        <td>{{item.code}}</td>
-        <td>{{item.weight}}</td>
-    </tr>
-    {% endfor %}
+        {% for item in page_obj %}
+        <tr>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.code }}</td>
+            <td>{% if item.weight %}{{ item.weight }}{% else %}-{% endif %}</td>
+            <td>{% if item.is_retail %}Yes{% else %}No{% endif %}</td>
+            <td>{% if item.retail_child_of %}{{ item.retail_child_of }}{% else %}-{% endif %}</td>
+            <td>{{ item.created.date }}</td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
 {% endblock %}

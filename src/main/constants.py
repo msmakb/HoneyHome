@@ -226,6 +226,13 @@ TEMPLATES = _NT('str', [
     'REGISTERED_ITEMS_TEMPLATE',
     'REGISTER_ITEM_TEMPLATE',
     'DISTRIBUTED_GOODS_TEMPLATE',
+    'DISTRIBUTOR_STOCK_TEMPLATE',
+    'GOODS_MOVEMENT_TEMPLATE',
+    'DAMAGED_GOODS_TEMPLATE',
+    'DAMAGED_GOODS_History_TEMPLATE',
+    'ADD_DAMAGED_GOODS_TEMPLATE',
+    'TRANSFORMED_GOODS_TEMPLATE',
+    'RETAIL_GOODS_TEMPLATE',
 ])(
     # Main templates
     f'{_main_app__templates_folder}/index.html',
@@ -268,6 +275,13 @@ TEMPLATES = _NT('str', [
     f'{_warehouse_admin_templates_folder}/registered_items.html',
     f'{_warehouse_admin_templates_folder}/register_item.html',
     f'{_warehouse_admin_templates_folder}/distributed_goods.html',
+    f'{_warehouse_admin_templates_folder}//distributor_stock.html',
+    f'{_warehouse_admin_templates_folder}/goods_movement.html',
+    f'{_warehouse_admin_templates_folder}/damaged_goods.html',
+    f'{_warehouse_admin_templates_folder}/damaged_goods_history.html',
+    f'{_warehouse_admin_templates_folder}/add_damaged_goods.html',
+    f'{_warehouse_admin_templates_folder}/transformed_goods.html',
+    f'{_warehouse_admin_templates_folder}/retail_goods.html',
 )
 PAGES = _NT('str', [
     # Accounting manager pages
@@ -332,13 +346,12 @@ PAGES = _NT('str', [
     'SEND_GOODS_PAGE',
     'GOODS_MOVEMENT_PAGE',
     'DAMAGED_GOODS_PAGE',
+    'DAMAGED_GOODS_HISTORY_PAGE',
     'ADD_DAMAGED_GOODS_PAGE',
     'TRANSFORMED_GOODS_PAGE',
     'APPROVE_TRANSFORMED_GOODS_PAGE',
     'DECLINE_TRANSFORMED_GOODS_PAGE',
     'RETAIL_GOODS_PAGE',
-    'CONVERT_TO_RETAIL_PAGE',
-    'ADD_RETAIL_GOODS_PAGE',
 ])(
     # Accounting manager pages
     'AccountingManagerDashboard',
@@ -402,13 +415,12 @@ PAGES = _NT('str', [
     'SendGoodsPage',
     'GoodsMovementPage',
     'DamagedGoodsPage',
+    'DamagedGoodsHistoryPage',
     'AddDamagedGoodsPage',
     'TransformedGoodsPage',
     'ApproveTransformedGoods',
     'DeclineTransformedGoods',
     'RetailGoodsPage',
-    'ConvertToRetailPage',
-    'AddRetailGoodsPage',
 )
 PARAMETERS = _NT('str', [
     "ALLOWED_LOGGED_IN_ATTEMPTS",

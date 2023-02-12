@@ -1,50 +1,136 @@
 {% extends base %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'ConvertToRetailPage' %}">Convert to Retail</a></td>
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddRetailGoodsPage' %}">Add Retail Goods</a></td>
+{% include 'alerts.html' %}
+
+<div class="row shadow-lg p-3 mb-5 bg-white rounded">
+    <a class="col btn {% if request.get_full_path|slice:'-12:' == "Retail-Goods" %}btn-light{% else %}btn-dark{% endif %} shadow p-2 m-2 rounded"
+        href="{% url namespaec|add:'RetailGoodsPage' 'Retail-Goods' %}">Retail Goods List</a>
+    <a class="col btn {% if request.get_full_path|slice:'-16:' == "Converted-Retail" %}btn-light{% else %}btn-dark{% endif %} shadow p-2 m-2 rounded"
+        href="{% url namespaec|add:'RetailGoodsPage' 'Converted-Retail' %}">Converted Retail</a>
+    <a class="col btn {% if request.get_full_path|slice:'-10:' == "Add-Retail" %}btn-light{% else %}btn-dark{% endif %} shadow p-2 m-2 rounded"
+        href="{% url namespaec|add:'RetailGoodsPage' 'Add-Retail' %}">Add Retail Goods</a>
+    <a class="col btn {% if request.get_full_path|slice:'-14:' == "Convert-Retail" %}btn-light{% else %}btn-dark{% endif %} shadow p-2 m-2 rounded"
+        href="{% url namespaec|add:'RetailGoodsPage' 'Convert-Retail' %}">Convert to Retaill</a>
 </div>
+
+{% if currentPage == "Retail-Goods" %}
 <h2>Retail Goods</h2>
 <table style="text-align:center;" class="table table-striped">
     <thead>
-    <tr>
-        <th scope="col">ITEM</th>
-        <th scope="col">WEIGHT</th>
-        <th scope="col">QUANTITY</th>
-        <th scope="col">ITEM CODE</th>
-    </tr>
+        <tr>
+            <th scope="col">NO</th>
+            <th scope="col">ITEM</th>
+            <th scope="col">WEIGHT</th>
+            <th scope="col">QUANTITY</th>
+            <th scope="col">ITEM CODE</th>
+        </tr>
     </thead>
     <tbody>
-    {% for item in retailItem %}
-    <tr>
-        <td>{{item.type}}</td>
-        <td>{{item.type.weight}}</td>
-        <td>{{item.quantity}}</td>
-        <td>{{item.type.code}}</td>
-    </tr>
-    {% endfor %}
+        {% for item in page_obj %}
+        <tr>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.type.weight }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.type.code }}</td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
+{% endif %}
+
+{% if currentPage == "Converted-Retail" %}
 <h2>Converted Retail</h2>
 <table style="text-align:center;" class="table table-striped">
     <thead>
-    <tr>
-        <th scope="col">ITEM</th>
-        <th scope="col">WEIGHT</th>
-        <th scope="col">CONVERSION DATE</th>
-        <th scope="col">ITEM CODE</th>
-    </tr>
+        <tr>
+            <th scope="col">NO</th>
+            <th scope="col">ITEM</th>
+            <th scope="col">WEIGHT</th>
+            <th scope="col">LAST CONVERSION DATE</th>
+            <th scope="col">ITEM CODE</th>
+        </tr>
     </thead>
     <tbody>
-    {% for item in retailCard %}
-    <tr>
-        <td>{{item.type}}</td>
-        <td>{{item.weight}}</td>
-        <td>{{item.conversion_date}}</td>
-        <td>{{item.type.code}}</td>
-    </tr>
-    {% endfor %}
+        {% for item in page_obj %}
+        <tr>
+            <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.weight }}</td>
+            <td>{{ item.conversion_date }}</td>
+            <td>{{ item.type.code }}</td>
+        </tr>
+        {% endfor %}
     </tbody>
 </table>
+{% endif %}
+
+{% if currentPage == "Add-Retail" %}
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control">
+        <h4 style="text-align: center;">Add New Retail Goods</h4>
+    </div>
+</div>
+<form method="POST">
+    {% csrf_token %}
+    <div style="width: 60%; margin:auto;">
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Item</label>
+            <div>{{form.type}}</div>
+            {% if "type" in form.errors %}<span class="text-danger">{{ form.errors.type }}</span>{% endif %}
+        </div>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Quantity</label>
+            <div>{{form.quantity}}</div>
+            {% if "quantity" in form.errors %}<span class="text-danger">{{ form.errors.quantity }}</span>{% endif %}
+        </div>
+        <div style="width: 60%; float: right; margin:auto; margin-top: 20px;">
+            <a style="margin:auto;" href="{% url namespaec|add:'RetailGoodsPage' 'Retail-Goods' %}"
+                class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-xs btn-info">Add Retail Goods</button>
+        </div>
+    </div>
+</form>
+{% endif %}
+
+{% if currentPage == "Convert-Retail" %}
+<div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
+    <div class="form-control">
+        <h4 style="text-align: center;">Convert Goods to Retail</h4>
+    </div>
+</div>
+<form method="POST">
+    {% csrf_token %}
+    <div style="width: 60%; margin:auto;">
+        <h4>From</h4>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Type</label>
+            <div>{{form.from_type}}</div>
+            {% if "from_type" in form.errors %}<span class="text-danger">{{ form.errors.from_type }}</span>{% endif %}
+        </div>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Quantity</label>
+            <div>{{form.quantity}}</div>
+            {% if "quantity" in form.errors %}<span class="text-danger">{{ form.errors.quantity }}</span>{% endif %}
+        </div>
+        <h4>To</h4>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Type</label>
+            <div>{{form.type}}</div>
+            {% if "type" in form.errors %}<span class="text-danger">{{ form.errors.type }}</span>{% endif %}
+        </div>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Weight</label>
+            <div>{{form.weight}}</div>
+            {% if "weight" in form.errors %}<span class="text-danger">{{ form.errors.weight }}</span>{% endif %}
+        </div>
+        <div style="width: 60%; float: right; margin:auto; margin-top: 20px;">
+            <a style="margin:auto;" href="{% url namespaec|add:'RetailGoodsPage' 'Retail-Goods' %}"
+                class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-xs btn-info">Convert</button>
+        </div>
+    </div>
+</form>
+{% endif %}
 {% endblock %}

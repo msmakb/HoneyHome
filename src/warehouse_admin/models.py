@@ -13,17 +13,11 @@ class Batch(BaseModel):
     code: str = models.CharField(max_length=30, unique=True)
     arrival_date: datetime.date = models.DateField(null=True, blank=True)
     quantity: int = models.PositiveIntegerField()
+    available_quantity: int = models.PositiveIntegerField(default=0)
     description: str = models.TextField(max_length=500, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name
-
-    def getAvailableQuantity(self) -> int:
-        batch_cards: QuerySet[ItemCard] = ItemCard.filter(batch=self)
-        used_quantity: int = 0
-        for card in batch_cards:
-            used_quantity += card.quantity
-        return self.quantity - used_quantity
 
     def setName(self, request: HttpRequest, name: str) -> None:
         self.name = name
@@ -41,6 +35,10 @@ class Batch(BaseModel):
         self.quantity = quantity
         self.setCreatedByUpdatedBy(request)
 
+    def setAvailableQuantity(self, request: HttpRequest, available_quantity: int) -> None:
+        self.available_quantity = available_quantity
+        self.setCreatedByUpdatedBy(request)
+
     def setDescription(self, request: HttpRequest, description: str) -> None:
         self.description = description
         self.setCreatedByUpdatedBy(request)
@@ -52,6 +50,9 @@ class ItemType(BaseModel):
     code: str = models.CharField(max_length=10, unique=True)
     weight: int = models.IntegerField()
     is_retail: bool = models.BooleanField(default=False)
+    is_retail_child: bool = models.BooleanField(default=False)
+    retail_child_of: str = models.CharField(
+        max_length=10, blank=True, null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -140,7 +141,6 @@ class ItemCard(BaseModel):
         from distributor.models import Distributor
         distributor: Distributor = Distributor.get(
             stock__id=self.transforming_to_stock)
-        print(distributor)
         return distributor.person.name
 
     @property
@@ -223,14 +223,22 @@ class RetailCard(BaseModel):
 
     @property
     def conversion_date(self) -> datetime:
-        return self.created
+        return self.updated
+
+    def setType(self, request: HttpRequest, type: ItemType) -> None:
+        self.type = type
+        self.setCreatedByUpdatedBy(request)
+
+    def setWeight(self, request: HttpRequest, weight: int) -> None:
+        self.weight = weight
+        self.setCreatedByUpdatedBy(request)
 
 
 class RetailItem(BaseModel):
 
     type: ItemType = models.ForeignKey(ItemType, on_delete=models.CASCADE)
     quantity: int = models.PositiveIntegerField()
-    price: int = models.FloatField()
+    price: int = models.FloatField(blank=True, null=True)
 
     def __str__(self) -> str:
         return f'{self.type.name}-{self.type.weight}'
@@ -246,6 +254,22 @@ class RetailItem(BaseModel):
     def setPrice(self, request: HttpRequest, price: str) -> None:
         self.price = price
         self.setCreatedByUpdatedBy(request)
+
+
+class DamagedGoodsHistory(BaseModel):
+
+    item: str = models.CharField(max_length=30)
+    batch: str = models.CharField(max_length=20)
+    quantity: int = models.PositiveIntegerField()
+    received_from: str = models.CharField(max_length=50)
+    description: str = models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return f"{self.item} - {self.batch}"
+
+    @property
+    def date(self) -> datetime:
+        return self.created.date()
 
 
 class GoodsMovement(BaseModel):

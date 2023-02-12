@@ -81,6 +81,11 @@ urlpatterns = [
         name=PAGES.DAMAGED_GOODS_PAGE
     ),
     path(
+        f'{PAGES.DASHBOARD}/Damaged-Goods-History/',
+        views.damagedGoodsHistoryPage,
+        name=PAGES.DAMAGED_GOODS_HISTORY_PAGE
+    ),
+    path(
         f'{PAGES.DASHBOARD}/Add-Damaged-Goods/',
         views.AddDamagedGoodsPage,
         name=PAGES.ADD_DAMAGED_GOODS_PAGE
@@ -103,19 +108,9 @@ urlpatterns = [
     ),
     # Retail Goods URLs
     path(
-        f'{PAGES.DASHBOARD}/Retail-Goods/',
+        f'{PAGES.DASHBOARD}/Retail-Goods/<str:currentPage>',
         views.RetailGoodsPage,
         name=PAGES.RETAIL_GOODS_PAGE
-    ),
-    path(
-        f'{PAGES.DASHBOARD}/Convert-To-Retail/',
-        views.ConvertToRetailPage,
-        name=PAGES.CONVERT_TO_RETAIL_PAGE
-    ),
-    path(
-        f'{PAGES.DASHBOARD}/Add-Retail-Goods/',
-        views.AddRetailGoodsPage,
-        name=PAGES.ADD_RETAIL_GOODS_PAGE
     ),
     path(
         f'{PAGES.DASHBOARD}/My-Tasks/',

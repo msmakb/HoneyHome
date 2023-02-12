@@ -2,7 +2,9 @@
 {% block title %}Dashboard{% endblock %}
 {% block content %}
 <div class="form-group" style="padding: 20px; width: 90%; margin: auto;">
-    <div class="form-control"><h4 style="text-align: center;">Register New Item</h4></div>
+    <div class="form-control">
+        <h4 style="text-align: center;">Register New Item</h4>
+    </div>
 </div>
 <form method="POST">
     {% csrf_token %}
@@ -10,27 +12,69 @@
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Name</label>
             <div>{{form.name}}</div>
-            <span class="text-danger">{{ form.errors.name }}</span>
+            {% if "name" in form.errors %}<span class="text-danger">{{ form.errors.name }}</span>{% endif %}
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">code</label>
             <div>{{form.code}}</div>
-            <span class="text-danger">{{ form.errors.code }}</span>
+            {% if "code" in form.errors %}<span class="text-danger">{{ form.errors.code }}</span>{% endif %}
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">weight</label>
             <div>{{form.weight}}</div>
-            <span class="text-danger">{{ form.errors.weight }}</span>
+            {% if "weight" in form.errors %}<span class="text-danger">{{ form.errors.weight }}</span>{% endif %}
         </div>
         <div class="form-group" style="margin-left: 50px;">
             <label for="exampleInputPassword1">Retail Item</label>
             <span>{{form.is_retail}}</span>
-            <span class="text-danger">{{ form.errors.is_retail }}</span>
+            {% if "is_retail" in form.errors %}<span class="text-danger">{{ form.errors.is_retail }}</span>{% endif %}
+        </div>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Retail Child</label>
+            <span>{{form.is_retail_child}}</span>
+            {% if "is_retail_child" in form.errors %}<span
+                class="text-danger">{{ form.errors.is_retail_child }}</span>{% endif %}
+        </div>
+        <div class="form-group" style="margin-left: 50px;">
+            <label for="exampleInputPassword1">Parent Item Code</label>
+            <span>{{form.retail_child_of}}</span>
+            {% if "retail_child_of" in form.errors %}<span
+                class="text-danger">{{ form.errors.retail_child_of }}</span>{% endif %}
         </div>
         <div style="width: 60%; float: right; margin:auto; margin-top: 20px;">
-            <a style="margin:auto;" href="{% url namespaec|add:'RegisteredItemsPage' %}" class="btn btn-secondary">Cancel</a>
+            <a style="margin:auto;" href="{% url namespaec|add:'RegisteredItemsPage' %}"
+                class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-xs btn-info">Regiester Item</button>
         </div>
     </div>
 </form>
+<script>
+    function toggleIsRetailChildCheckbox() {
+        let checkedVal = document.getElementById("id_is_retail").checked;
+        if (checkedVal == false) {
+            document.getElementById("id_is_retail_child").disabled = true;
+            document.getElementById("id_retail_child_of").disabled = true;
+        }
+        if (checkedVal == true) {
+            document.getElementById("id_is_retail_child").disabled = false;
+            if (document.getElementById("id_is_retail_child").checked == true) {
+                document.getElementById("id_retail_child_of").disabled = false;
+            } else {
+                document.getElementById("id_retail_child_of").disabled = true;
+            }
+        }
+    }
+
+    function toggleIsRetailChildOfInput() {
+        let checkedVal = document.getElementById("id_is_retail_child").checked;
+        if (checkedVal == false) {
+            document.getElementById("id_retail_child_of").disabled = true;
+        }
+        if (checkedVal == true) {
+            document.getElementById("id_retail_child_of").disabled = false;
+        }
+    }
+    toggleIsRetailChildCheckbox();
+    toggleIsRetailChildOfInput();
+</script>
 {% endblock %}

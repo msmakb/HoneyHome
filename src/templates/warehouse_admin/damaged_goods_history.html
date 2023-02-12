@@ -3,12 +3,13 @@
 {% block content %}
 {% include 'alerts.html' %}
 <div style="float: right;">
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'DamagedGoodsHistoryPage' %}">Damaged
-            Goods History</a></td>
-    <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'AddDamagedGoodsPage' %}">Add Damaged
-            Goods</a></td>
+    <form method="POST">
+        {% csrf_token %}
+        <td><button type="submit" id="export_button" class="btn btn-xs btn-info">Export</button></td>
+        <td><a id="button" class="btn btn-xs btn-info" href="{% url namespaec|add:'DamagedGoodsPage' %}">Back</a></td>
+    </form>
 </div>
-<h2>Damaged Goods</h2>
+<h2>Damaged Goods History</h2>
 <table style="text-align:center;" class="table table-striped">
     <thead>
         <tr>
@@ -25,12 +26,12 @@
         {% for item in page_obj %}
         <tr>
             <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
-            <td>{{ item.type }}</td>
+            <td>{{ item.item }}</td>
             <td>{{ item.batch }}</td>
             <td>{{ item.quantity }}</td>
             <td>{{ item.received_from }}</td>
-            <td>{{ item.receiving_date }}</td>
-            <td>{{ item.note }}</td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.description }}</td>
         </tr>
         {% endfor %}
     </tbody>

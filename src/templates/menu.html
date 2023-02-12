@@ -43,7 +43,11 @@
 <nav class="n">
     <div style="margin-left: 10px;">
         {% for menu_name, menu_url in userMenu.items %}
-            {% url namespaec|add:menu_url as path %}
+            {% if menu_name == "Retail Goods" %}
+                {% url namespaec|add:menu_url "Retail-Goods" as path %}
+            {% else %}
+                {% url namespaec|add:menu_url as path %}
+            {% endif %}
             {% if 'Dashboard' in menu_name %}
                 {% if request.path == path %}
                     <p style="margin-bottom: 5px; margin-top: 10px;"><a class="side-nave-item-active" href="{{ path }}">{{ menu_name }}</a></p>
