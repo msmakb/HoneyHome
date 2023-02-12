@@ -21,6 +21,9 @@ class BatchAdmin(ModelAdmin):
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
 
+    def delete_model(self, request: HttpRequest, obj: Batch) -> None:
+        return obj.delete(request)
+
     def save_model(self, request: HttpRequest, obj: Batch, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
         super().save_model(request, obj, form, change)
@@ -36,6 +39,9 @@ class ItemTypeAdmin(ModelAdmin):
     ordering: tuple[str, ...] = (Lower('name'), 'code',)
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
+
+    def delete_model(self, request: HttpRequest, obj: ItemType) -> None:
+        return obj.delete(request)
 
     def save_model(self, request: HttpRequest, obj: ItemType, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
@@ -61,6 +67,9 @@ class ItemCardAdmin(ModelAdmin):
     def receiving_date(self, obj: ItemCard):
         return obj.receiving_date
 
+    def delete_model(self, request: HttpRequest, obj: ItemCard) -> None:
+        return obj.delete(request)
+
     def save_model(self, request: HttpRequest, obj: ItemCard, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
         super().save_model(request, obj, form, change)
@@ -82,6 +91,9 @@ class GoodsMovementAdmin(ModelAdmin):
     def date(self, obj: GoodsMovement) -> str:
         return obj.date
 
+    def delete_model(self, request: HttpRequest, obj: GoodsMovement) -> None:
+        return obj.delete(request)
+
     def save_model(self, request: HttpRequest, obj: GoodsMovement, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
         super().save_model(request, obj, form, change)
@@ -98,6 +110,9 @@ class RetailCardAdmin(ModelAdmin):
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
 
+    def delete_model(self, request: HttpRequest, obj: RetailCard) -> None:
+        return obj.delete(request)
+
     def save_model(self, request: HttpRequest, obj: RetailCard, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
         super().save_model(request, obj, form, change)
@@ -112,6 +127,9 @@ class RetailItemAdmin(ModelAdmin):
     ordering: tuple[str, ...] = (Lower('type__name'),)
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
+
+    def delete_model(self, request: HttpRequest, obj: RetailItem) -> None:
+        return obj.delete(request)
 
     def save_model(self, request: HttpRequest, obj: RetailItem, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
@@ -130,6 +148,9 @@ class StockAdmin(ModelAdmin):
 
     def has_change_permission(self, *args, **kwargs) -> bool:
         return False
+
+    def delete_model(self, request: HttpRequest, obj: Stock) -> None:
+        return obj.delete(request)
 
     def save_model(self, request: HttpRequest, obj: Stock, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)

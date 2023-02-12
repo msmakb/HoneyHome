@@ -21,6 +21,9 @@ class EmployeeAdmin(ModelAdmin):
     def name(self, obj: Employee) -> str:
         return obj.person.name
 
+    def delete_model(self, request: HttpRequest, obj: Employee) -> None:
+        return obj.delete(request)
+
     def save_model(self, request: HttpRequest, obj: Employee, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
         super().save_model(request, obj, form, change)
@@ -38,6 +41,9 @@ class TaskAdmin(ModelAdmin):
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
 
+    def delete_model(self, request: HttpRequest, obj: Task) -> None:
+        return obj.delete(request)
+
     def save_model(self, request: HttpRequest, obj: Task, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
         super().save_model(request, obj, form, change)
@@ -52,6 +58,9 @@ class TaskRateAdmin(ModelAdmin):
     ordering: tuple[str, ...] = ('created',)
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
+
+    def delete_model(self, request: HttpRequest, obj: TaskRate) -> None:
+        return obj.delete(request)
 
     def save_model(self, request: HttpRequest, obj: TaskRate, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
@@ -68,6 +77,9 @@ class WeekAdmin(ModelAdmin):
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
 
+    def delete_model(self, request: HttpRequest, obj: Week) -> None:
+        return obj.delete(request)
+
     def save_model(self, request: HttpRequest, obj: Week, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
         super().save_model(request, obj, form, change)
@@ -82,6 +94,9 @@ class WeeklyRateAdmin(ModelAdmin):
     ordering: tuple[str, ...] = ('created',)
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
+
+    def delete_model(self, request: HttpRequest, obj: WeeklyRate) -> None:
+        return obj.delete(request)
 
     def save_model(self, request: HttpRequest, obj: WeeklyRate, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)

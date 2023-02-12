@@ -18,6 +18,9 @@ class AuditEntryAdmin(ModelAdmin):
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
 
+    def delete_model(self, request: HttpRequest, obj: AuditEntry) -> None:
+        return obj.delete(request)
+
     def has_add_permission(self, *args, **kwargs) -> bool:
         return False
 
@@ -36,6 +39,9 @@ class BlockedClientAdmin(ModelAdmin):
 
     def has_add_permission(self, *args, **kwargs) -> bool:
         return False
+
+    def delete_model(self, request: HttpRequest, obj: BlockedClient) -> None:
+        return obj.delete(request)
 
     def save_model(self, request: HttpRequest, obj: BlockedClient, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)
@@ -81,6 +87,9 @@ class PersonAdmin(ModelAdmin):
     ordering: tuple[str, ...] = (Lower('name'),)
     list_per_page: int = ROWS_PER_PAGE
     exclude: tuple[str, ...] = BASE_MODEL_FIELDS
+
+    def delete_model(self, request: HttpRequest, obj: Person) -> None:
+        return obj.delete(request)
 
     def save_model(self, request: HttpRequest, obj: Person, form: ModelForm, change: bool) -> None:
         setCreatedByUpdatedBy(request, obj, change)

@@ -1,4 +1,6 @@
 from django.contrib.admin import ModelAdmin, register
+from django.http import HttpRequest
+
 from main.constants import BASE_MODEL_FIELDS, ROWS_PER_PAGE
 from main.utils import setCreatedByUpdatedBy
 from .models import Distributor, SalesHistory
@@ -12,6 +14,9 @@ class DistributorAdmin(ModelAdmin):
     search_fields = ('person__name', 'account__username')
     list_per_page = ROWS_PER_PAGE
     exclude = BASE_MODEL_FIELDS
+
+    def delete_model(self, request: HttpRequest, obj: Distributor) -> None:
+        return obj.delete(request)
 
     def save_model(self, request, obj, form, change):
         setCreatedByUpdatedBy(request, obj, change)
@@ -32,6 +37,9 @@ class SalesHistoryAdmin(ModelAdmin):
     search_fields = ('distributor__person__name',)
     list_per_page = ROWS_PER_PAGE
     exclude = BASE_MODEL_FIELDS
+
+    def delete_model(self, request: HttpRequest, obj: SalesHistory) -> None:
+        return obj.delete(request)
 
     def save_model(self, request, obj, form, change):
         setCreatedByUpdatedBy(request, obj, change)
